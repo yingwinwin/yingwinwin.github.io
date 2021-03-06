@@ -1,8 +1,8 @@
 module.exports = {
   title: 'yingwinwin的前端之路',
   tagline: '多读书，多看报，少吃零食，多睡觉',
-  url: 'https://yingwinwin.github.io/',
-  baseUrl: '/',
+  url: 'https://yingwinwin.github.io',
+  baseUrl: '/win',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
