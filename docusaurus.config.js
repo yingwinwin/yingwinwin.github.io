@@ -2,12 +2,14 @@ module.exports = {
   title: 'yingwinwin的前端之路',
   tagline: '多读书，多看报，少吃零食，多睡觉',
   url: 'https://yingwinwin.github.io/',
-  baseUrl: '/',
+  baseUrl: '/yingwinwin.github.io/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'yingwinwin', // Usually your GitHub org/user name.
-  projectName: 'yingwinwin', // Usually your repo name.
+  projectName: 'yingwinwin.github.io', // Usually your repo name.
+  GIT_USER: 'yingwinwin',
+  USE_SSH: true,
   themeConfig: {
     navbar: {
       title: 'yingwinwin',
