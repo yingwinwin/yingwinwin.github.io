@@ -8,8 +8,6 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'yingwinwin', // Usually your GitHub org/user name.
   projectName: 'yingwinwin.github.io', // Usually your repo name.
-  GIT_USER: 'yingwinwin',
-  USE_SSH: true,
   themeConfig: {
     navbar: {
       title: 'yingwinwin',
