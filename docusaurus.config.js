@@ -89,13 +89,13 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),   // 这个是点击来之后边上侧边栏的配置
           // Please change this to your repo.
           editUrl:
-            'https://github.com/yingwinwin/yingwinwin.github.io/tree/master/docs',  // 项目url
+            'https://github.com/yingwinwin/yingwinwin.github.io/tree/master',  // 项目url
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/yingwinwin/yingwinwin.github.io/blob/master/blog',
+            'https://github.com/yingwinwin/yingwinwin.github.io/blob/master',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'), // 主题使用的css
