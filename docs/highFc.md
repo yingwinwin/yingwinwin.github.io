@@ -23,3 +23,28 @@ Function.prototype.before = function beforeSay(cb) {
 };
 say.before(() => console.log("before"))(1, 2);
 ```
+
+```js
+// 多个异步请求，同时获取最终结果
+let fs = require("fs");
+let obj = {};
+
+const after = (times, callback) => {
+  return function () {
+    if (--times == 0) {
+      callback(); // 当调用的次数到0的时候，就输出传入的callback，解决异步输出问题
+    }
+  };
+};
+let cb = after(2, () => {
+  console.log(obj);
+});
+fs.readFile("./1.txt", "utf8", (err, data) => {
+  obj.a = data;
+  cb();
+});
+fs.readFile("./2.txt", "utf8", (err, data) => {
+  obj.b = data;
+  cb();
+});
+```
