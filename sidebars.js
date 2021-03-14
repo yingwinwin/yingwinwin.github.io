@@ -5,12 +5,16 @@ module.exports = {
       type: "category", // 类别
       label: "javaScript基础", // 一级标题
       items: [
-        // 对象的继承，原型
         "RegExp", // md文件中设置的id ，这里找的是当前id是webpack文件的那篇文章
         {
           type: "category",
           label: "函数", // 二级标题
           items: ["highFc"],
+        },
+        {
+          type: "category",
+          label: "类", // 二级标题
+          items: [], // 继承和原型
         },
         {
           type: "category",
@@ -21,6 +25,16 @@ module.exports = {
           type: "category",
           label: "异步",
           items: ["promise"],
+        },
+        {
+          type: "category",
+          label: "手写API",
+          /* 
+            1.函数：bind，call，apply
+            2.数组：forEach，map，filter，some，every，reduce
+            3.类：create
+          */
+          items: [],
         },
       ],
     },
