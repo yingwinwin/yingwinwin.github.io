@@ -46,7 +46,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "CSS相关", // 一级标题
-      items: [], // 盒模型，float布局，定位，felx，glad，一些小技巧
+      items: ["remFit"], // 盒模型，float布局，定位，felx，glad，一些小技巧
     },
     {
       type: "category", // 类别
@@ -56,7 +56,28 @@ module.exports = {
     {
       type: "category", // 类别
       label: "React", // 一级标题
-      items: [],
+      items: [
+        {
+          type: "category",
+          label: "生态圈",
+          items: ["reactHook"], // redux，hook，
+        },
+        {
+          type: "category",
+          label: "组件封装/常用逻辑",
+          items: [],
+        },
+        {
+          type: "category",
+          label: "问题解决",
+          items: [],
+        },
+      ],
+    },
+    {
+      type: "category", // 类别
+      label: "More", // 一级标题
+      items: [], // Electron， Chrome插件，java，Vue，Angular
     },
   ],
 };
