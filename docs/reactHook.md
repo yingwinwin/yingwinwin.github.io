@@ -312,3 +312,7 @@ const LikeButton: React.FC = () => {
 }
 export default LikeButton;
 ```
+
+### useMemo
+### useCallback
+### useReducer

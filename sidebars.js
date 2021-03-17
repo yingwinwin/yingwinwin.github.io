@@ -28,13 +28,13 @@ module.exports = {
         },
         {
           type: "category",
-          label: "手写API",
+          label: "API实现",
           /* 
             1.函数：bind，call，apply
             2.数组：forEach，map，filter，some，every，reduce
             3.类：create
           */
-          items: [],
+          items: ["call"],
         },
       ],
     },
