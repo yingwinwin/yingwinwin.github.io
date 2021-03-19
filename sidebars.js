@@ -76,6 +76,11 @@ module.exports = {
     },
     {
       type: "category", // 类别
+      label: "面试题", // 一级标题
+      items: ["block"], // 搞不懂的面试题
+    },
+    {
+      type: "category", // 类别
       label: "More", // 一级标题
       items: [], // Electron， Chrome插件，java，Vue，Angular
     },
