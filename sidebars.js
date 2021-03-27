@@ -1,3 +1,7 @@
+/* 
+  什么时候我这些都补充好，并且都烂熟于心，我是不是就很厉害了？ 加油吧！
+*/
+
 module.exports = {
   // 设置进去文档tabs的侧边栏
   someError: [
@@ -51,7 +55,13 @@ module.exports = {
     {
       type: "category", // 类别
       label: "CS基础", // 一级标题
-      items: [], // HTTP协议，数据结构，算法等等
+      items: [
+        {
+          type: "category", // 类别
+          label: "算法", // 一级标题
+          items: [], // 刷一刷算法题
+        }
+      ], // HTTP协议，数据结构，算法等等
     },
     {
       type: "category", // 类别
@@ -70,6 +80,11 @@ module.exports = {
         {
           type: "category",
           label: "问题解决",
+          items: ['reactUseTs', 'timeDeal'],
+        },
+        {
+          type: "category",
+          label: "底层原理", // 待学习
           items: [],
         },
       ],
@@ -83,6 +98,11 @@ module.exports = {
       type: "category", // 类别
       label: "More", // 一级标题
       items: [], // Electron， Chrome插件，java，Vue，Angular
+    },
+    {
+      type: "category", // 类别
+      label: "看书总结", // 一级标题
+      items: [], // js忍者秘籍， 你不知道的js123， js高级程序设计3， 犀牛书
     },
   ],
 };

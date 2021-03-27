@@ -10,17 +10,17 @@ const features = [
   {
     title: "HTML",
     // imageUrl: "img/undraw_docusaurus_mountain.svg",
-    description: <>清晰的布局</>,
+    description: <>清晰的布局，在开始分析设计组件的时候，布局就应该想好了，不仅关乎到CSS的编写，也同样会影响到js的逻辑编写，相对CSS和JS来说，简单一些。</>,
   },
   {
     title: "CSS",
     // imageUrl: "img/undraw_docusaurus_tree.svg",
-    description: <>优雅的CSS</>,
+    description: <>优雅的CSS，最近写项目，觉得CSS编程好重要，如果CSS做的不够好，逻辑改动甚至会影响到样式的变动，所以这边也至关重要。</>,
   },
   {
     title: "JavaScript",
     // imageUrl: "img/undraw_docusaurus_react.svg",
-    description: <>扎实的js基础</>,
+    description: <>扎实的js基础，因为在公司一直做业务的东西，关于逻辑的内容很久不写了，感觉这样真的不太好，想重新写一下轮播图，贪吃蛇还有俄罗斯方块，练习一下自己的js基础。最近爱上了封装UI组件无法自拔。想多学习一下优雅的写法。</>,
   },
 ];
 
