@@ -101,4 +101,7 @@ Change事件 | ChangeEvent | <T = Element> | `input:React.ChangeEvent<HTMLInputE
 动画事件 | AnimationEvent | <T = Element> | - 
 过渡事件 | TransitionEvent | <T = Element> | - 
 
+
+### 5. 引入包的时候报错
+- 不一定是因为路径错误，可能是因为包里面没有export导出，或者没有文件中没有任何内容。ts识别不到当前的文件，进行报错，所以如果真的确定路径是没有任何问题的话。去看看tsconfig的配置，或者看看自己有没有export当前的模块吧
 ### 不定时更新...
