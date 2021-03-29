@@ -26,13 +26,30 @@ const enum USER_ROLE1 {  // 语义化
 console.log(USER_ROLE1.USER)
 ```
 
+- 枚举类型编译为js代码
+
+```ts
+enum Color {Red, Green, Blue}
+let c: Color = Color.Green;  // 1
+let colorName: string = Color[2];  // 'Blue'
+
+var Color = {};
+Color[Color['Red'] = 0] = 'Red';
+Color[Color['Green'] = 1] = 'Green';
+Color[Color['Blue'] = 2] = 'Blue';
+```
+
 ### 2. 动态调用和赋值的问题
 - 问题:  前端需要处理一些逻辑，动态取值,这个时候只能设置state的值为`[key:string]:any`不然就会报错。
+
+- 如果确定要取的值的话可以定义type来专门放当前可能取到的字符串
+
 ```tsx
 /* state需要这样处理 */
 interface IState {
     [key:string]: any
 }
+type valueType = 'value1' | 'value2';
 
 class App extends Component<{},IState> {
     constructor(props:{}) {
@@ -44,7 +61,7 @@ class App extends Component<{},IState> {
     }
 
     /* 同时改变两个input的方法 */
-    handleChange = (e:React.ChangeEvent<HTMLInputElement>, setValue:string) => {
+    handleChange = (e:React.ChangeEvent<HTMLInputElement>, setValue:valueType) => {
         this.setState({
             [setValue]: e.target.value;
         })
@@ -59,6 +76,8 @@ class App extends Component<{},IState> {
     }
 }
 ```
+
+
 
 ### 3. 定义后台接口的问题
 
@@ -103,5 +122,5 @@ Change事件 | ChangeEvent | <T = Element> | `input:React.ChangeEvent<HTMLInputE
 
 
 ### 5. 引入包的时候报错
-- 不一定是因为路径错误，可能是因为包里面没有export导出，或者没有文件中没有任何内容。ts识别不到当前的文件，进行报错，所以如果真的确定路径是没有任何问题的话。去看看tsconfig的配置，或者看看自己有没有export当前的模块吧
+- 不一定是因为路径错误，可能是因为包里面没有export导出，或者文件中没有任何内容。ts识别不到当前的文件，进行报错，所以如果真的确定路径是没有任何问题的话。去看看tsconfig的配置，或者看看自己有没有export当前的模块吧
 ### 不定时更新...
