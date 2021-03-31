@@ -1,33 +1,18 @@
-# Website
+### 利用Docusaurus 2搭建的博客，具体可以看官方API
+[Docusaurus 2](https://v2.docusaurus.io/)
 
-This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
+### 主要记录的内容
+- 记录自己在工作中遇到的问题
+    - 2021年全年目标：
+    1. 写过的项目都有可以总结记录的点
+    2. 努力码好每一块砖，写出可维护性高，可扩展性强的代码，不要因为自己之前代码写的差，而做了很多维护性的工作。             
+- 记录自己在学习之后的总结
+    - 2021年上半年目标：
+    1. 读书: js忍者秘籍、你不知道的js中（6月末前）
+    2. 学习react相关源码部分，完成公司的hook分享打下基础
+    3. 封装自己的组件库table、date、form
 
-## Installation
-
-```console
-yarn install
-```
-
-## Local Development
-
-```console
-yarn start
-```
-
-This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
-
-```console
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-```console
-GIT_USER=yingwinwin USE_SSH=true npm deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+- 愿望：希望自己可以少加班，多学习。
+- 我会努力更新的...天分不够，只能靠努力了，加油！
+### 具体内容看博客地址
+- [yingwinwin的博客](https://yingwinwin.github.io/)
