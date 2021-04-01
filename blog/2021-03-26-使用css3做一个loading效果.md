@@ -150,4 +150,4 @@ export default Loading;
 ```
 
 - 效果
-![image](../static/resource/loading.png);
+![image](../static/resource/loading.png)

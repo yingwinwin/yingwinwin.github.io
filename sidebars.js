@@ -50,7 +50,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "CSS相关", // 一级标题
-      items: ["remFit"], // 盒模型，float布局，定位，felx，glad，一些小技巧
+      items: ["remFit"], // 盒模型，float布局，定位，felx，glad一些小技巧
     },
     {
       type: "category", // 类别
@@ -79,21 +79,22 @@ module.exports = {
         },
         {
           type: "category",
-          label: "底层原理", // 待学习
-          items: [],
+          label: "原理", // 待学习
+          items: ["reactTheory_JSX"],
         },
       ],
     },
     {
       type: "category",
       label: "问题解决",
-      items: ['reactUseTs', 'timeDeal'],
+      items: ['reactUseTs', 'timeDeal', "cssDeal"],
     },
     {
-      type: "category", // 类别
-      label: "面试题", // 一级标题
-      items: ["block"], // 搞不懂的面试题
+      type: "category",
+      label: "花里胡哨的面试题",
+      items: ["view"],
     },
+    
     {
       type: "category", // 类别
       label: "More", // 一级标题
