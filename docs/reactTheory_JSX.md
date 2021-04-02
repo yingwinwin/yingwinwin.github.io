@@ -168,14 +168,15 @@ element1.type = 'div'; // 错误操作，react17后会报错，17之前只是建
   + 会自动引入jsx()进行虚拟dom的转换
 
 ### 1. React.createElement();
-- 实现createElement，传入参数当前节点的类型，节点的属性，儿子和儿子们
+- createElement，传入参数当前节点的类型，节点的属性，儿子和儿子们
 ```js
 function createElement(type, config, children) {
   let props = {...config};
+  /* 如果传入的参数长度大于3，就把后面的参数截取为一个数组 */
   if (arguments.length > 3) {
     children = Array.prototype.slice.call(arguments, 2);
   }
-  props.children = children;
+  props.children = children;  // 如果没有直接把children放到props里面
 
   return {
     type,
@@ -188,5 +189,54 @@ const React = {
 }
 
 export default React;
+```
 
+### 2. ReactDOM.render()
+1. 传入vdom，和挂载的root节点
+2. 把vdom进行真实dom的渲染
+3. 把虚拟dom的属性更新属性到真实dom的属性上
+4. 把儿子们也都变成真实的DOM挂载到自己的dom结构上，通过递归，dom.appendchild
+5. 然后把自己挂载到容器上
+
+```js
+/**
+ * @description 用于react把虚拟dom渲染为真实节点到父节点上
+ * @param {object} vdom 虚拟dom
+ * @param {object} container 真实root节点
+ */
+function render(vdom, container) {
+    /* 创建一个真实的dom元素 */
+    const dom = creactDOM(vdom);
+    /* 挂载到root节点上 */
+    container.appendChild(dom)
+};
+
+/**
+ * @description 根据不同情况创建真实的dom节点
+ * @param {object} vdom 虚拟dom
+ * @returns 真实的dom节点
+ */
+function creactDOM(vdom) {
+    /* 如果是字符串或者数字，直接返回文本节点 */
+    if(typeof vdom === 'string' || typeof vdom === 'number') {
+        return document.createTextNode(vdom);
+    }
+
+    /* 否则就是虚拟dom，把当前type，创建成新的真实节点 */
+    let { type, props } = vdom;
+    let dom = document.createElement(type);
+    /* 更新真实节点上面的属性 */
+    // updateProps(dom, props);
+    return dom
+}
+
+function updateProps(dom, props) {
+    
+}
+
+const ReactDOM = {
+    render
+}
+
+export default ReactDOM;
 ```
