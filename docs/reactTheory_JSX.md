@@ -226,12 +226,55 @@ function creactDOM(vdom) {
     let { type, props } = vdom;
     let dom = document.createElement(type);
     /* 更新真实节点上面的属性 */
-    // updateProps(dom, props);
-    return dom
+    updateProps(dom, props);
+    /* 
+        处理孩子
+        1. 如果孩子是string，或者 number 就直接把值赋值给dom的文本节点
+        2. 如果是单独的object，还要判断一下它是不是有type属性，如果有type属性就是vdom，否则可能就是用户随便传入的一个dom
+        3. 如果children是一个数组，需要把数组里面的每一项拿出来挂载到父节点上面
+        4. 兜底：剩下的都情况把他toString输出
+    */
+    if(typeof props.children === 'string' || props.children === 'number') {
+        dom.textContent = props.children;
+    } else if (typeof props.children === 'object' && props.children.type) {
+        render(props.children, dom)
+    } else if (Array.isArray(props.children)) {
+        reconclieChildren(props.children, dom);
+    } else {
+        document.textContent = props.children ? props.children.toString() : '';
+    }
+    return dom;
 }
 
-function updateProps(dom, props) {
-    
+/**
+ * @description 把真实dom挂载上属性值
+ * @param {element} dom 真实dom
+ * @param {object} newProps 属性
+ */
+function updateProps(dom, newProps) {
+    for(let key in newProps) {
+        if(key === 'children') continue; // 如果是children跳过，需要单独处理
+        if(key === 'style') {  // 如果是style，因为传入的是一个对象，所以需要循环处理在dom上循环挂载每一个属性
+            let styleObj = newProps.style;
+            for(let attr in styleObj) {
+                dom.style[attr] = styleObj[attr]
+            }
+        } else { // 否则就在dom上挂载其他属性，js中className编译后就是class了。
+            dom[key] = newProps[key];
+        }
+    }
+}
+
+/**
+ * 
+ * @param {object} childrenVdom 儿子的数组对象
+ * @param {element} parentDom 父亲的父节点
+ */
+function reconclieChildren(childrenVdom, parentDom) {
+    for(let i = 0; i <childrenVdom.length; i ++) {
+        let childVdom = childrenVdom[i];
+        render(childVdom, parentDom)
+    }
 }
 
 const ReactDOM = {
