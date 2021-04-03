@@ -192,6 +192,8 @@ export default React;
 ```
 
 ### 2. ReactDOM.render()
+#### 2.1 实现对原生的节点进行渲染
+
 1. 传入vdom，和挂载的root节点
 2. 把vdom进行真实dom的渲染
 3. 把虚拟dom的属性更新属性到真实dom的属性上
@@ -234,7 +236,7 @@ function creactDOM(vdom) {
         3. 如果children是一个数组，需要把数组里面的每一项拿出来挂载到父节点上面
         4. 兜底：剩下的都情况把他toString输出
     */
-    if(typeof props.children === 'string' || props.children === 'number') {
+    if(typeof props.children === 'string' || typeof props.children === 'number') {
         dom.textContent = props.children;
     } else if (typeof props.children === 'object' && props.children.type) {
         render(props.children, dom)
@@ -282,4 +284,216 @@ const ReactDOM = {
 }
 
 export default ReactDOM;
+```
+#### 2.2 实现对自定义函数组件的渲染
+- 自定义组件必须大写字母开头
+- 组件必须先定义
+- 组件需要返回并且只能返回一个根元素
+
+```jsx
+/**
+ * @description 根据不同情况创建真实的dom节点
+ * @param {object} vdom 虚拟dom
+ * @returns 真实的dom节点
+ */
+function creactDOM(vdom) {
+    /* 如果是字符串或者数字，直接返回文本节点 */
+    if(typeof vdom === 'string' || typeof vdom === 'number') {
+        return document.createTextNode(vdom);
+    }
+
+    /* 否则就是虚拟dom，把当前type，创建成新的真实节点 */
+    let { type, props } = vdom;
++   let dom;
++   if(typeof type === 'function') {
++       /* 通过递归直接返回一个真实的dom节点 */
++       return mountFunctionComponent(vdom);
++   } else {
++       dom = document.createElement(type);
++   }
+    /* 更新真实节点上面的属性 */
+    updateProps(dom, props);
+    /* 
+        处理孩子
+        1. 如果孩子是string，或者 number 就直接把值赋值给dom的文本节点
+        2. 如果是单独的object，还要判断一下它是不是有type属性，如果有type属性就是vdom，否则可能就是用户随便传入的一个dom
+        3. 如果children是一个数组，需要把数组里面的每一项拿出来挂载到父节点上面
+        4. 兜底：剩下的都情况把他toString输出
+    */
+    if(typeof props.children === 'string' || typeof props.children === 'number') {
+        dom.textContent = props.children;
+    } else if (typeof props.children === 'object' && props.children.type) {
+        render(props.children, dom)
+    } else if (Array.isArray(props.children)) {
+        reconclieChildren(props.children, dom);
+    } else {
+        document.textContent = props.children ? props.children.toString() : '';
+    }
+    return dom;
+}
+
++/**
++* @description 递归调用函数组件返回一个真是的dom
++* @param {object} vdom 虚拟dom
++*/
++ function mountFunctionComponent(vdom) {
++   let { type, props } = vdom;
++   let renderVdeom = type(props);  // 调用函数传入props参数，返回一个vdom
++   return creactDOM(renderVdeom); // 把vdom渲染成真实的dom返回
++}
+```
+
+#### 2.3 类组件和类组件的更新
+- 类之鞥你在构造函数里面给this.state赋值，其他地方使用this.setState()方法改变值。
+- 可以用state定义状态对象
+- 属性对象 父组件给的 不能改变，只能读
+
+##### 2.3.1 渲染类组件
+- 在reactDOM中添加渲染类组件的逻辑
+- 创建一个component.js文件，这个就是需要继承的类组件
+```jsx
+// ReactDOM
+/**
+ * @description 根据不同情况创建真实的dom节点
+ * @param {object} vdom 虚拟dom
+ * @returns 真实的dom节点
+ */
+function creactDOM(vdom) {
+    /* 如果是字符串或者数字，直接返回文本节点 */
+    if(typeof vdom === 'string' || typeof vdom === 'number') {
+        return document.createTextNode(vdom);
+    }
+
+    /* 否则就是虚拟dom，把当前type，创建成新的真实节点 */
+    let { type, props } = vdom;
+    let dom;
+    if(typeof type === 'function') {
++       /* 判断是否有是不是类组件这个属性，如果有这个属性就做类组件的处理，否则就是函数组件的处理 */
++       if(type.isReactComponent) { // 这个属性是写在类上面的静态属性，所以可以直接打点使用
++           return mountClassComponent(vdom);
++       } else {
++           return mountFunctionComponent(vdom);
++       }
+    } else {
+        dom = document.createElement(type);
+    }
+    /* 更新真实节点上面的属性 */
+    updateProps(dom, props);
+    /* 
+        处理孩子
+        1. 如果孩子是string，或者 number 就直接把值赋值给dom的文本节点
+        2. 如果是单独的object，还要判断一下它是不是有type属性，如果有type属性就是vdom，否则可能就是用户随便传入的一个dom
+        3. 如果children是一个数组，需要把数组里面的每一项拿出来挂载到父节点上面
+        4. 兜底：剩下的都情况把他toString输出
+    */
+    if(typeof props.children === 'string' || typeof props.children === 'number') {
+        dom.textContent = props.children;
+    } else if (typeof props.children === 'object' && props.children.type) {
+        render(props.children, dom)
+    } else if (Array.isArray(props.children)) {
+        reconclieChildren(props.children, dom);
+    } else {
+        document.textContent = props.children ? props.children.toString() : '';
+    }
+    return dom;
+}
+
++/**
++ * @description 用于渲染class组件
++ * @param {object} vdom 虚拟dom
++ * @returns 真实的dom节点用于渲染
++ */
++function mountClassComponent(vdom) {
++    let { type, props} = vdom;  // 结构虚拟dom中的参数
++    let calssinstence = new type(props); // 实例化类组件
++    let renderdom = calssinstence.render();  // 调用里面的render方法，拿出当前的原生的虚拟节点
++    let dom = creactDOM(renderdom)  // 通过creactDom进行递归渲染
++    calssinstence.dom = dom  // 再把真实的dom节点挂载到实例上，用于更新
++    return dom;
++}
+```
+
+
+```jsx
+// Component.js
+export default class Component {
+    /* 加一个静态属性在ReactDOM渲染时判断是否是类组件，进行对应的渲染 */
+    static isReactComponent = true;
+    constructor(props) {
+        // 接受super(props),中的props继承属性
+        this.props = props
+    }
+    render() {
+        // 抽象方法，父类只需要定义，然后子类必须实现才可以
+        throw new Error('抽象方法，需要子类实现')
+    }
+}
+```
+
+##### 2.3.2 类组件的更新（无diff）
+- 给真实的dom绑定事件
+- 通过setState方法，让组件更新
+```jsx
+// ReactDOM
+/**
+ * @description 把真实dom挂载上属性值
+ * @param {element} dom 真实dom
+ * @param {object} newProps 属性
+ */
+function updateProps(dom, newProps) {
+    for(let key in newProps) {
+        if(key === 'children') continue; // 如果是children跳过，需要单独处理
+        if(key === 'style') {  // 如果是style，因为传入的是一个对象，所以需要循环处理在dom上循环挂载每一个属性
+            let styleObj = newProps.style;
+            for(let attr in styleObj) {
+                dom.style[attr] = styleObj[attr]
+            }
++       } else if (key.startsWith('on')) {
++         // 给真实的dom添加事件
++           dom[key.toLocaleLowerCase()] = newProps[key]
++       } else { // 否则就在dom上挂载其他属性，js中className编译后就是class了。
+            dom[key] = newProps[key];
+        }
+    }
+}
+```
+
+```jsx
+// Component.js
+import { creactDOM } from './react-dom'
+
+export default class Component {
+    /* 加一个静态属性在ReactDOM渲染时判断是否是类组件，进行对应的渲染 */
+    static isReactComponent = true;
+    constructor(props) {
+        // 接受super(props),中的props继承属性
+        this.props = props;
+    }
+
++   setState(partialState) {
++       // 先存到一个新的位置
++       let state = this.state;
++       // 通过覆盖，设置最新的state
++       this.state = {...state, ...partialState};
++       let newVdom = this.render();  // 这个方法是儿子调用的，所以这里的this指向的是儿子，调用儿子的render方法，拿到最近的虚拟dom
++       updateClassComponent(this,newVdom);
++   }
+
+    render() {
+        // 抽象方法，父类只需要定义，然后子类必须实现才可以,js中没有明确的要求，ts中有可以使用的关键字
+        throw new Error('抽象方法，需要子类实现')
+    }
+}
+
++/**
++ * @description 用来更新当前的界面
++ * @param {new} classInstance 当前调用setState 子组件的实例
++ * @param {object} newVdom 拿到的最新的虚拟dom
++ */
++function updateClassComponent(classInstance, newVdom) {
++    let oldDom = classInstance.dom;  // 取出之前在渲染时存入的老的dom节点
++    let newDom = creactDOM(newVdom);  // 通过从creactDOM创建真实的dom节点
++    oldDom.parentNode.replaceChild(newDom, oldDom);  // 然后通过olddom找到父亲节点直接替换
++    classInstance.dom = newDom;  // 再把最新的节点赋值给实例节点上
++}
 ```
