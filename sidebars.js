@@ -69,7 +69,7 @@ module.exports = {
       items: [
         {
           type: "category",
-          label: "生态圈",
+          label: "使用",
           items: ["reactHook"], // redux，hook，
         },
         {
@@ -80,7 +80,7 @@ module.exports = {
         {
           type: "category",
           label: "原理", // 待学习
-          items: ["reactTheory_JSX"],
+          items: ["react_render","react_lifecycle"],
         },
       ],
     },

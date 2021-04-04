@@ -1,6 +1,6 @@
 ---
-id: reactTheory_JSX
-title: JSX
+id: react_render
+title: react渲染
 ---
 
 ## 一、JSX
@@ -167,7 +167,8 @@ element1.type = 'div'; // 错误操作，react17后会报错，17之前只是建
   + 不再使用React.createElement()方法进行虚拟dom的转换
   + 会自动引入jsx()进行虚拟dom的转换
 
-### 1. React.createElement();
+### 1. React.createElement()处理虚拟dom
+- bable会把jsx转换为createElement函数处理的样子，在通过调用这个函数，转换为虚拟dom
 - createElement，传入参数当前节点的类型，节点的属性，儿子和儿子们
 ```js
 function createElement(type, config, children) {
@@ -190,9 +191,7 @@ const React = {
 
 export default React;
 ```
-
-### 2. ReactDOM.render()
-#### 2.1 实现对原生的节点进行渲染
+### 2. 实现对原生的节点进行渲染
 
 1. 传入vdom，和挂载的root节点
 2. 把vdom进行真实dom的渲染
@@ -285,7 +284,7 @@ const ReactDOM = {
 
 export default ReactDOM;
 ```
-#### 2.2 实现对自定义函数组件的渲染
+### 3. 实现对自定义函数组件的渲染
 - 自定义组件必须大写字母开头
 - 组件必须先定义
 - 组件需要返回并且只能返回一个根元素
@@ -342,13 +341,11 @@ function creactDOM(vdom) {
 +   return creactDOM(renderVdeom); // 把vdom渲染成真实的dom返回
 +}
 ```
+### 4. 渲染类组件
+>  + 类能在构造函数里面给this.state赋值，其他地方使用this.setState()方法改变值。
+>  + 可以用state定义状态对象
+>  +  属性对象 父组件给的 不能改变，只能读
 
-#### 2.3 类组件和类组件的更新
-- 类之鞥你在构造函数里面给this.state赋值，其他地方使用this.setState()方法改变值。
-- 可以用state定义状态对象
-- 属性对象 父组件给的 不能改变，只能读
-
-##### 2.3.1 渲染类组件
 - 在reactDOM中添加渲染类组件的逻辑
 - 创建一个component.js文件，这个就是需要继承的类组件
 ```jsx
@@ -430,7 +427,7 @@ export default class Component {
 }
 ```
 
-##### 2.3.2 类组件的更新（无diff）
+### 5. 类组件的更新（无diff）
 - 给真实的dom绑定事件
 - 通过setState方法，让组件更新
 ```jsx
@@ -496,4 +493,260 @@ export default class Component {
 +    oldDom.parentNode.replaceChild(newDom, oldDom);  // 然后通过olddom找到父亲节点直接替换
 +    classInstance.dom = newDom;  // 再把最新的节点赋值给实例节点上
 +}
+```
+
+### 6. 类组件的批量更新
+- react中，事件更新是异步的，是批量的，在调用state之后状态并没有立刻更新，而是先缓存起来，等事件函数完成后，在进行批量更新，一次更新重新渲染。
+- 如果非react控制，比如说setTimeout，queueMicrotask，Promise，等回调函数中，就不是批量更新了。只有react的合成事件（事件处理函数和生命周期）中才会进行批量更新。
+```jsx
+/* 这样在事件函数中写多个state，每一个state，也都会生效, 但是也是批量更新异步 */
+this.setState((lastState) => ({number: lastState + 1}), () => {
+  /* 在state的回调函数中，也是批量更新，他会等所有的state都更新完成之后再执行回调函数，回调函数也依旧是批量更新 */
+  console.log(this.state.number) // 2
+})  //1
+console.log(this.state.number)  // 0
+this.setState((lastState) => ({number: lastState + 1}), () => {
+  console.log(this.state.number) // 2
+})  //2
+console.log(this.state.number)  // 0
+
+/* 非react控制，属于异步操作，这样会使当前状态脱离react批量更新的控制，每次打印都会输出最新的值 */
+Promise.resolve().then(() => {
+  this.setState((lastState) => ({number: lastState + 1}))  //3
+  console.log(this.state.number) // 3
+})
+```
+
+> 处理批量更新
+
+- 流程图
+![image](../static/img/setState2.jpg)
+
+- 一个`updater`类来处理状态的批量更新
+- 用一个`updateQueue`队列来存储批量更新的内容和是否需要批量更新
+
+```jsx
+// Component.js(处理非批量更新，批量更新需要再添加合成事件逻辑)
+import { creactDOM } from './react-dom'
+
+/* 更新队列 */
++export let updateQueue = {
++    isBatchingUpdate: false,  // 判断是否需要批量更新，默认false不需要批量更新
++    updaters: new Set()  // 更新队列，放入当前需要批量更新的内容
++}
++
++/* 创建一个更新类 */
++class Updater {
++    constructor(classInstance) {
++        this.classInstance = classInstance; // 这个是当前的子类实例
++        this.pendingState = [];  // setState传入的第一个参数，可能是对象或者函数
++        this.callbacks = []  // setState传入的callback
++    }
++
++    /* 添加新的state */
++    addState(partialState, callback){
++        this.pendingState.push(partialState);  // 把state放到队列存起来
++        if(typeof callback === 'function'){
++            this.callbacks.push(callback);  // 把回调放到队列中
++        }
++        if(updateQueue.isBatchingUpdate) {  // 如果需要批量更新
++            updateQueue.updaters.add(this)  // 就把当前的state放到队列中
++        } else { 
++            /* 否则就直接更新当前的实例 */
++            this.updateClassComponent(this.classInstance);
++        }
++    }
++
++    updateClassComponent() {
++        let { classInstance, pendingState, callbacks } = this;
++        // 如果当前队列中有状态
++        if( pendingState.length > 0 ) {
++            classInstance.state = this.getState();  // 更新实例的state
++            classInstance.forceUpdate()  // 暴力更新组件
++            callbacks.forEach(cb => cb()); // 调用callback
++            callbacks.length = 0; // callback清空
++        }
++    }
++
++    /* 获得当前最新的状态值 */
++    getState () {
++        let { classInstance, pendingState } = this;
++        let { state } = classInstance; // 从实例里面取出旧的状态
++        pendingState.forEach(nextState => { // 在所有的state中，取出用户传入的最新的状态
++            /* 如果用户传入的最新的状态是函数的话 */
++            if(typeof nextState === 'function') {
++                /* 调用函数，取出当前的最新值 */
++                nextState = nextState(state)
++            }
++            /* 把之前的状态和最新的状态合并 */
++            state = {...state, ...nextState};
++        })
++        pendingState.length = 0;  // 批量更新后把存入状态的数组清空
++        return state;
++    }
++}
+
+export default class Component {
+    /* 加一个静态属性在ReactDOM渲染时判断是否是类组件，进行对应的渲染 */
+    static isReactComponent = true;
+    constructor(props) {
+        // 接受super(props),中的props继承属性
+        this.props = props;
+        this.state = {};
++       this.updater = new Updater(this)
+    }
+
++   setState(partialState, callback) {
++       // 更新调用update实例上的方法
++       this.updater.addState(partialState, callback);
++   }
++   /* 暴力更新 */
++   forceUpdate() {
++       let newVdom = this.render();  // 拿到最新的虚拟dom
++       updateClassComponent(this, newVdom); // 替换更新
++   }
+
+    render() {
+         // 抽象方法，父类只需要定义，然后子类必须实现才可以,js中没有明确的要求，ts中有可以使用的关键字
+        throw new Error('抽象方法，需要子类实现')
+    }
+}
+
+/**
+ * @description 用来更新当前的界面
+ * @param {new} classInstance 当前调用setState 子组件的实例
+ * @param {object} newVdom 拿到的最新的虚拟dom
+ */
+function updateClassComponent(classInstance, newVdom) {
+    let oldDom = classInstance.dom;  // 取出之前在渲染时存入的老的dom节点
+    let newDom = creactDOM(newVdom);  // 通过从creactDOM创建真实的dom节点
+    oldDom.parentNode.replaceChild(newDom, oldDom);  // 然后通过olddom找到父亲节点直接替换
+    classInstance.dom = newDom;  // 再把最新的节点赋值给实例节点上
+}
+```
+
+### 7. 合成事件处理
+
+- 在react中会把原生的事件进行处理
+- 为了统一做兼容性处理
+- 为了添加一些其他功能，批量处理，事件冒泡， aop切片编程
+```jsx
+// react-dom.js
+// 在渲染函数处理事件的位置，调用react处理过的函数
+/**
+ * @description 把真实dom挂载上属性值
+ * @param {element} dom 真实dom
+ * @param {object} newProps 属性
+ */
+function updateProps(dom, newProps) {
+    for(let key in newProps) {
+        if(key === 'children') continue; // 如果是children跳过，需要单独处理
+        if(key === 'style') {  // 如果是style，因为传入的是一个对象，所以需要循环处理在dom上循环挂载每一个属性
+            let styleObj = newProps.style;
+            for(let attr in styleObj) {
+                dom.style[attr] = styleObj[attr]
+            }
+        } else if (key.startsWith('on')) {
+            // 给真实的dom添加事件
+            // dom[key.toLocaleLowerCase()] = newProps[key]
++           addEvent(dom, key.toLocaleLowerCase(), newProps[key])
+        } else { // 否则就在dom上挂载其他属性，js中className编译后就是class了。
+            dom[key] = newProps[key];
+        }
+    }
+}
+```
+- 是否开启批量更新
+```jsx
+// Compnent.js
+// 添加批量更新的逻辑处理
+/* 更新队列 */
+export let updateQueue = {
+    isBatchingUpdate: false,  // 判断是否需要批量更新，默认false不需要批量更新
+    updaters: new Set(),  // 更新队列，放入当前需要批量更新的内容
++   batchUpdate(){ // 批量更新
++       // 拿出当前批量更新的每一项，进行统一更新
++       for(let updater of this.updaters) {
++           updater.updateClassComponent()
++       }
++       this.isBatchingUpdate = false; // 重置回非批量更新模式
++   }
+}
+```
+- 处理事件
+
+```jsx
+// event.js
+import { updateQueue } from './Component'
+
+/**
+ * @description 合成事件， 对原生事件进行包裹
+ * 1. 处理兼容性，将event事件对象，对不同浏览器进行处理
+ * 2. 可以在函数处理之前和之后做一些事情，可以统一管理事件，添加批量处理，事件冒泡aop切片编程等等
+ * @param {element} dom 真实dom
+ * @param {string} eventType 当前是什么事件onclick...
+ * @param {function} listener 事件的回调函数
+ */
+export function addEvent(dom, eventType, listener) {
+    /* 在真实的dom元素上添加store属性，如果有就不在重新添加了 */
+    let store = dom.store || (dom.store = {});
+    /* 让当前的事件名字和方法做一个关联 */
+    store[eventType] = listener; // store.onClick = handleClick
+    if(!document[eventType]) {
+        /* 事件委托。如果在document上，有这个元素，不管是那个事件上绑定的，都代理到document上 */
+        document[eventType] = dispatchEvent;
+    }
+}
+
+/**
+ * @description 通过document.onclick = function(e){} 这种方式拿到原生的event对象， 在这个函数中做对应处理
+ * @param {object} event 原生的事件对象
+ */
+let syntheticEvent = { // 这个对象就是react合成事件的event
+    stopping: false,
+    stop() {  // 用户手动调用stop方法阻止冒泡
+        this.stopping = true,
+        console.log('阻止冒泡');
+    }
+};  // 合成事件是单例对象
+function dispatchEvent(event) {
+    /* target是原生dom，绑定在什么上面就是按个dom元素
+       type是当前绑定的是那个时间方法的名字，例如：click
+    */
+    let { target, type } = event;
+    let eventType = `on${type}`;
+
+    updateQueue.isBatchingUpdate = true;  // 把队列设置为批量更新模式
+    createSyntheticEvent(event);
+    /* 处理事件冒泡 */
+    console.dir(target);
+    while(target) {
+        let {store} = target;  // 把刚才存入真实dom的事件函数拿出来
+        /* 如果dom上有存入这个sotre的话，而且store里面有当前存入的这个事件的话，就取出来给listener赋值 */
+        let listener = store && store[eventType];
+        /* 这是判断是否有这个函数，如果有就把用当前的这个事件做点击处理，把事件参数都传过去给当前的button的事件函数 */
+        listener && listener.call(target, syntheticEvent);
+        /* 如果用户手动调用了阻止冒泡的方法，直接停止循环向上查找 */
+        if(syntheticEvent.stopping) {
+            break; 
+        }
+        // 如果有target的话，让target等于自己的父亲，这样会一直递归向上找到document节点，这个时候他的父亲是null，跳出循环
+        target = target.parentNode; 
+    }
+    for(let key in syntheticEvent) {
+        /* 使用完成之后，在将当前的事件对象全部清除，复用当前这一个对象 */
+        syntheticEvent[key] = null;
+    }
+    updateQueue.batchUpdate();
+}
+
+/**
+ * @description 将原生的事件克隆一份到react自己的事件对象上
+ * @param {object} nativeEvent 原生事件对象
+ */
+function createSyntheticEvent(nativeEvent) {
+    for(let key in nativeEvent) {
+        syntheticEvent[key] = nativeEvent[key]
+    }
+}
 ```
