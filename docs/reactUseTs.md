@@ -123,4 +123,14 @@ Change事件 | ChangeEvent | <T = Element> | `input:React.ChangeEvent<HTMLInputE
 
 ### 5. 引入包的时候报错
 - 不一定是因为路径错误，可能是因为包里面没有export导出，或者文件中没有任何内容。ts识别不到当前的文件，进行报错，所以如果真的确定路径是没有任何问题的话。去看看tsconfig的配置，或者看看自己有没有export当前的模块吧
+
+### 6. ts中引入png, svg等来源报错
+
+- 在index.d.ts文件中添加`delcare`
+```tsx
+declare module '*.svg'{
+  const content: string;
+  export default content;
+}
+```
 ### 不定时更新...

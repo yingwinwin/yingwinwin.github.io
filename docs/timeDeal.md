@@ -1,4 +1,4 @@
 ---
 id: timeDeal
-title: 时间处理
+title: 时间
 ---

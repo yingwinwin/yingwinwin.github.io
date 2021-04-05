@@ -7,7 +7,7 @@ module.exports = {
   someError: [
     {
       type: "category", // 类别
-      label: "javaScript基础", // 一级标题
+      label: "javaScript", // 一级标题
       items: [
         "RegExp", // md文件中设置的id ，这里找的是当前id是webpack文件的那篇文章
         {
@@ -40,6 +40,7 @@ module.exports = {
           */
           items: ["call"],
         },
+        "timeDeal"
       ],
     },
     {
@@ -49,19 +50,8 @@ module.exports = {
     },
     {
       type: "category", // 类别
-      label: "CSS相关", // 一级标题
-      items: ["remFit"], // 盒模型，float布局，定位，felx，glad一些小技巧
-    },
-    {
-      type: "category", // 类别
-      label: "CS基础", // 一级标题
-      items: [
-        {
-          type: "category", // 类别
-          label: "算法", // 一级标题
-          items: [], // 刷一刷算法题
-        }
-      ], // HTTP协议，数据结构，算法等等
+      label: "CSS", // 一级标题
+      items: ["remFit", "cssDeal"] // 盒模型，float布局，定位，felx，glad一些小技巧
     },
     {
       type: "category", // 类别
@@ -70,7 +60,7 @@ module.exports = {
         {
           type: "category",
           label: "使用",
-          items: ["reactHook"], // redux，hook，
+          items: ["reactHook", "reactUseTs"], // redux，hook，
         },
         {
           type: "category",
@@ -86,15 +76,14 @@ module.exports = {
     },
     {
       type: "category",
-      label: "问题解决",
-      items: ['reactUseTs', 'timeDeal', "cssDeal"],
+      label: "问题",
+      items: ["view", "errors"],
     },
     {
-      type: "category",
-      label: "花里胡哨的面试题",
-      items: ["view"],
+      type: "category", // 类别
+      label: "CS基础", // 一级标题
+      items: [], // HTTP协议，数据结构，算法等等
     },
-    
     {
       type: "category", // 类别
       label: "More", // 一级标题
