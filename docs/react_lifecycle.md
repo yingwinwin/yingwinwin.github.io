@@ -361,7 +361,6 @@ export default class Component {
 
 ```jsx
 // react-dom.js
-
 /**
  * @description 根据不同情况创建真实的dom节点
  * @param {object} vdom 虚拟dom

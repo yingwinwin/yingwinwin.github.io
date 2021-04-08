@@ -348,6 +348,8 @@ function creactDOM(vdom) {
 
 - 在reactDOM中添加渲染类组件的逻辑
 - 创建一个component.js文件，这个就是需要继承的类组件
+- 类组件的渲染流程：`虚拟dom是一个类 —通过new—> 获得一个实例 —通过调用类组件上的render方法—> 获得原生的虚拟dom节点 —creactDOM—> 递归获取真实dom`
+- 会在类组件上挂载原生vdom 和 自己的实例，放在自己的属性上。在原生上vdom上挂载 真实dom，用于diff更新
 ```jsx
 // ReactDOM
 /**
