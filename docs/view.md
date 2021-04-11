@@ -75,3 +75,9 @@ Promise.resolve().then(() => {
 ```
 
 - 评论里面的大佬说：Js引擎为了让microtask尽快的输出，做了一些优化，连续的多个then(3个)如果没有reject或者resolve会交替执行then而不至于让一个堵太久完成用户无响应，不单单v8这样其他引擎也是这样，因为其实promuse内部状态已经结束了。这块在v8源码里有完整的体现
+
+### 3. 前端的通讯(待整理)
+- axios(优点)
+- ajax(手写)
+- fetch(同源，.then取值的问题)
+- websocket(应用场景和常用api)

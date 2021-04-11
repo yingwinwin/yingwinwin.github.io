@@ -40,7 +40,7 @@ module.exports = {
           */
           items: ["call"],
         },
-        "timeDeal"
+        "utilsFunction"
       ],
     },
     {

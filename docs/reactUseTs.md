@@ -43,11 +43,13 @@ Color[Color['Blue'] = 2] = 'Blue';
 - 问题:  前端需要处理一些逻辑，动态取值,这个时候只能设置state的值为`[key:string]:any`不然就会报错。
 
 - 如果确定要取的值的话可以定义type来专门放当前可能取到的字符串
-
+- [ts文档](https://www.tslang.cn/docs/handbook/advanced-types.html)中也描述了动态取值的问题
 ```tsx
 /* state需要这样处理 */
 interface IState {
-    [key:string]: any
+    value1: string;
+    value2: string;
+    [key:string]: any;
 }
 type valueType = 'value1' | 'value2';
 
@@ -61,7 +63,7 @@ class App extends Component<{},IState> {
     }
 
     /* 同时改变两个input的方法 */
-    handleChange = (e:React.ChangeEvent<HTMLInputElement>, setValue:valueType) => {
+    handleChange = (e:React.ChangeEvent<HTMLInputElement>, setValue:<K extends keyof IState>) => {
         this.setState({
             [setValue]: e.target.value;
         })
@@ -133,4 +135,11 @@ declare module '*.svg'{
   export default content;
 }
 ```
+
+
+### 7. ts中extends 和 js中的 extends
+- ts中的extends继承interface
+- ts中的类有一些私有公有只读属性的区分，在继承中可能会有不一样的表现
+- ts中的继承在类型中和keyof关键字一起使用，可以动态取类中的类型值，用于取动态值的类型
+- js中的extends继承class
 ### 不定时更新...
