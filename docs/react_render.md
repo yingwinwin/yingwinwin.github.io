@@ -534,7 +534,14 @@ import { creactDOM } from './react-dom'
 /* 更新队列 */
 +export let updateQueue = {
 +    isBatchingUpdate: false,  // 判断是否需要批量更新，默认false不需要批量更新
-+    updaters: new Set()  // 更新队列，放入当前需要批量更新的内容
++    updaters: []  // 更新队列，放入当前需要批量更新的内容
++    batchUpdate() {
++        for(let updater of updateQueue.updaters) {
++            updater.updateCompnent()  // 循环更新组件视图
++        }
++        updateQueue.isBatchingUpdate = false;  // 之后置回最初的状态
++        updateQueue.updaters.length = 0;  // 把当前批量更新的队列清空
++    }
 +}
 +
 +/* 创建一个更新类 */
@@ -552,7 +559,7 @@ import { creactDOM } from './react-dom'
 +            this.callbacks.push(callback);  // 把回调放到队列中
 +        }
 +        if(updateQueue.isBatchingUpdate) {  // 如果需要批量更新
-+            updateQueue.updaters.add(this)  // 就把当前的state放到队列中
++            updateQueue.updaters.push(this)  // 就把当前的state放到队列中
 +        } else { 
 +            /* 否则就直接更新当前的实例 */
 +            this.updateClassComponent(this.classInstance);

@@ -179,7 +179,6 @@ export default class Component {
 ```
 
 ### 2. 父子组件更新
-- 使用
 - `setState`在哪里使用不会出现死循环：`didMount`, 事件处理函数, 推荐只在这两个地方写setState，其他都不要写，因为其他可能会反复调用，以前`willMount`中是可以使用`setState`的，后来`react`改成`fiber`后，会反复调用`willMount`，所以不推荐使用。也不推荐在`update`中使用，会反复调用，造成死循环;
 - 比较(`DOMdiff`)
     1. 如果老节点是null，新节点也是null  ->  不做处理，返回null;
@@ -190,6 +189,7 @@ export default class Component {
          + 如果是文本内容替换的话，直接替换文本内容，然后修改props属性即可
          + 如果是原生dom的话，更新自己的属性，然后递归比较儿子们。
          + 如果是类组件或者函数组件的话。类组件要拿到新的vdom，然后拿到新的原生vdom节点，在和旧的vdom进行递归diff比较（类组件如果props有更新的话，需要调用willReceiveProps）。函数组件，也要先拿到自己的新的vdom，然后拿到自己根节点的vdom进行递归比较
+- `react`挂载：父组件`render`的时候挂载子组件，这个时候子组件内部开始挂载，然后父组件挂载完成。更新：然后父亲开始`willUpdate`,父组件再次`render`，这个时候子组件开始更新，更新完成后父亲`didupdate`。
 ```jsx
 /* 父组件 */
 class Counter extends React.Component {
@@ -328,3 +328,18 @@ ChildCounter  7. componentDidUpdate  组件更新完成
 Counter  7. componentDidUpdate  组件更新完成
 */
 ```
+
+## 新生命周期 > 16.3
+![image](../static/img/reactcyclenew.jpg)
+- 变化：删除关于`will`的生命周期,新增`static getDerivedStateFromProps`和`getSnapshotBeforeUpdate`
+### 1. getDerivedStateFromProps
+- 为什么是静态方法，因为`componentWillReceiveProps`之前是可以调用`this.setState`的。这样会引起父组件的更新，父组件里面又会调用`this.setState`就造成了死循环。react为了不这样，所以把这个方法改成了静态方法
+- `getDerivedStateFromProps`这个方法会在组件初始化的时候调用一次，然后在组件改变状态和属性的时候调用，这个时候还会调用`shouldComponentUpdate`，如果没有属性和状态的改变，直接调用`forceUpdate()`,强行更新进行`render`,这个时候不会走`shouldComponentUpdate`
+
+```jsx
+static getDerivedStateFromProps(nextProps, prevState){
+    return null;
+}
+```
+
+### 2. getSnapshotBeforeUpdate
