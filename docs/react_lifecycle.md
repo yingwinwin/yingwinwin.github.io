@@ -35,7 +35,7 @@ class Counter extends React.Component {
   componentWillUpdate(){
     console.log('Counter  6.componentWillUpdate  组件将要更新', );
   }
-  componentDidUpdate(){
+  componentDidUpdate(prevProps, prveState, dom){
     console.log('Counter  7. componentDidUpdate  组件更新完成', );
   }
 
@@ -343,3 +343,59 @@ static getDerivedStateFromProps(nextProps, prevState){
 ```
 
 ### 2. getSnapshotBeforeUpdate
+- 实例方法，在组件更改真实dom之前，拿到dom上面的值。进行更改。返回值在didupdate的第三个参数拿到，进行更新。
+- `React.creactRef()`就是一个对象返回一个`{current:null}`
+
+```js
+let inputRef = React.creactRef()  // 获取元素的真实dom
+<input ref ={inputRef}/>
+// react.js
+function createElement(type,config,children){
+    let ref;
+    let key;
+    if(config){
+        delete config.__source;
+        delete config.__self;
+        ref = config.ref;  // 拿出属性
+        delete config.ref; // 然后在config中删除该属性
+        key = config.key;
+        delete config.key;
+    }
+   let props = {...config};
+   if(arguments.length>3){
+       props.children=Array.prototype.slice.call(arguments,2).map(wrapToVdom);
+   }else{
+        props.children=wrapToVdom(children);
+   }
+   return {
+       type,
+       ref,  // 导出，这个属性不是react中的，是属于原生的属性
+       key,
+       props
+   }
+}
+// 创建一个ref对象
+function createRef(){
+    return {current:null};
+}
+// react-dom.js createDOM函数中
+// vdom创建真实dom之后,从vdom中取出ref。判断如果用户传入了ref，就给ref.current赋值真实的dom
+let { props, type, ref } = vdom;
+if(ref){
+  ref.current = dom
+}
+// Components.js
+// 在做domDiff之前，调用getSnapshotBeforeUpdate，取出返回值，传给更新之后update的第三个返回值
+updateComponent(){
+    let newRenderVdom = this.render();//重新调用render方法，得到新的虚拟DOM div#counter
+    let oldRenderVdom=this.oldRenderVdom;//div#counter
+    let oldDOM = findDOM(oldRenderVdom);//div#counter
+    let extraArgs = this.getSnapshotBeforeUpdate&&this.getSnapshotBeforeUpdate(); // 这里拿到最新的修改过的dom的属性
+    //深度比较新旧两个虚拟DOM
+    compareTwoVdom(oldDOM.parentNode,oldRenderVdom,newRenderVdom);
+    this.oldRenderVdom=newRenderVdom;
+    if(this.componentDidUpdate){
+        this.componentDidUpdate(this.props,this.state,extraArgs);  // 作为update的第三个参数
+    }
+}
+```
