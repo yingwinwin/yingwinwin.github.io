@@ -70,7 +70,7 @@ module.exports = {
         {
           type: "category",
           label: "原理", // 待学习
-          items: ["react_render","react_lifecycle"],
+          items: ["react_render","react_lifecycle", "react_advance"],
         },
       ],
     },
