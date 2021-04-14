@@ -81,3 +81,27 @@ Promise.resolve().then(() => {
 - ajax(手写)
 - fetch(同源，.then取值的问题)
 - websocket(应用场景和常用api)
+
+### 4. Symbol.hasInstance
+- `Symbol.hasInstance`用于判断某对象是否为某构造器的实例。因此你可以用它自定义 `instanceof` 操作符在某个类上的行为。
+```js
+class Array1 {
+  static [Symbol.hasInstance](instance) {
+    return Array.isArray(instance);
+  }
+}
+
+console.log([] instanceof Array1);
+// expected output: true
+```
+- 可用于把`instanceof`比较字符串类型
+```js
+class String1 {
+  static [Symbol.hasInstance](str) {
+    return typeof str === 'string';
+  }
+}
+
+console.log('hello' instanceof String1);
+// expected output: true
+```
