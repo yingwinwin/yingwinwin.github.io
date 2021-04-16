@@ -87,7 +87,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "More", // 一级标题
-      items: [], // Electron， Chrome插件，java，Vue，Angular
+      items: [], // Electron， Chrome插件，vscode插件，前端性能优化，java，Vue，Angular
     },
     {
       type: "category", // 类别

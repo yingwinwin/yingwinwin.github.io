@@ -100,3 +100,57 @@ function mountClassComponent(vdom){
 ```
 
 ## 高阶组件
+
+### 1. 属性代理（给组件添加新功能）
+
+```jsx
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+
+/* 
+  属性代理
+*/
+
+// 一个函数，传入参数，返回一个函数，函数里面返回一个类组件
+let withLoading = loadMessage => OldLoading => {
+  return class newHelloLoad extends Component {
+    show = () => {
+      let div = document.createElement('div');
+      let p = document.createElement('p');
+      p.id = 'loading';
+      p.style.color='red';
+      p.innerText= loadMessage
+      div.appendChild(p)
+      document.body.appendChild(div)
+    }
+    hide = () => {
+      document.getElementById('loading').remove()
+    }
+    render(){
+      let extraProps = {
+        show: this.show,  // 提取出公共的方法
+        hide: this.hide
+      }
+      return <OldLoading {...this.props} {...extraProps} />
+    }
+  }
+}
+
+class SayHellow extends Component {
+  render() {
+    /* 通过props使用show和hide */
+    return (
+      <div>
+        SayHellow
+        <button onClick={this.props.show}>显示</button>
+        <button onClick={this.props.hide}>隐藏</button>
+      </div>
+    )
+  }
+}
+let Newhello = withLoading('加载中...')(SayHellow);
+ReactDOM.render(<Newhello />, document.getElementById("root"));
+```
+![image](../static/resource/hocex.png)
+
+### 2. 反向继承
