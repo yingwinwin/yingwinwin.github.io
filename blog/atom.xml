@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://yingwinwin.github.io/blog</id>
+    <title>yingwinwin的前端之路 Blog</title>
+    <updated>2021-03-30T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://yingwinwin.github.io/blog"/>
+    <subtitle>yingwinwin的前端之路 Blog</subtitle>
+    <icon>https://yingwinwin.github.io/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[echarts桑基图的使用和总结]]></title>
+        <id>echarts桑基图的使用和总结</id>
+        <link href="https://yingwinwin.github.io/blog/echarts桑基图的使用和总结"/>
+        <updated>2021-03-30T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[因为公司需要使用用流程图，来表示不同客户来源的走向和数据，用到了桑基图来表示。最近echarts刚出了5版本。对比了antV 和 echarts ，处理这种情况echarts要做的好些，但是在应用过程中还是遇到了不少坑，记录一下。]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[css3打造loading效果]]></title>
+        <id>使用css3做一个loading效果</id>
+        <link href="https://yingwinwin.github.io/blog/使用css3做一个loading效果"/>
+        <updated>2021-03-26T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[最近在写公司一个react + hook + typeScript的前端pc项目，组件都是自己一步一步搭起来的，记录一下。loading组件相对简单，下次把form组件，还有自己写的picker组件整理一下。逻辑不多，就直接粘贴代码了。]]></summary>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[docusaurus部署]]></title>
+        <id>使用docusaurus搭建博客，并部署到github pages</id>
+        <link href="https://yingwinwin.github.io/blog/使用docusaurus搭建博客，并部署到github pages"/>
+        <updated>2021-03-17T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[因为公司一直用react，看了一下vuepress不太会，然后查了一下react用这个docusaurus很友好，就选择了这个，部署到Github pages遇到了一些问题，记录分享一下。]]></summary>
+    </entry>
+</feed>
