@@ -63,7 +63,7 @@ export function render(vdom,container){
 }
 ```
 
-### 2. useMomo useCallback
+### 2. useMemo useCallback
 - react性能优化，最重要的一点就是减少渲染次数，不然函数每一个都会渲染；child没有props改变的时候，依旧会渲染，用了memo就不会了
 - 这两个api就是用于节约react渲染的次数的
 ```jsx
