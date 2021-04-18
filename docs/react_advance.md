@@ -416,3 +416,16 @@ function shallowEqual(obj1,obj2){
     return true;
 }
 ```
+
+### 3. React.memo
+- 用于函数组件减少渲染次数，做浅比较，属性变化就更新，否则就不更新
+```js
+// React.memo
+function memo(FunctionComponent){
+  return class extends PureComponent{
+      render(){
+          return FunctionComponent(this.props);
+      }
+  }
+}
+```
