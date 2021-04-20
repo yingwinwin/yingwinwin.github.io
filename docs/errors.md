@@ -26,6 +26,7 @@ Expected an assignment or function call and instead saw an expression  no-unused
 - **异步**：添加异步操作，以前都是用`setTimeout`,现在推荐使用`requestAnimationFrame`也是异步操作，很多动画库都会用到，是浏览器渲染的一帧，所以应该也不会出现掉帧的问题。一般是16ms触发一次。
 - 添加异步操作后，浏览器会在当前css类名加载完成之后，执行`setTimeout`中的函数，这时，同步设置的css属性已经生效了，再执行异步操作中的代码，就会有一个属性的转变了，就会出现过渡的效果了。
 - 看了大佬的[视频](https://www.bilibili.com/video/BV1TA411T7ne)，通过`void div.offsetWidth`可以重新触发浏览器的渲染。（但是还是要具体问题具体问题）
+- 浏览器时间环：微任务 -> 渲染 -> 宏任务，所以加了定时器之后在更改状态是已经在浏览器渲染过后了，然后在进行更新，就可以有一个变化
 
 ### 4. 让div盒子达到失焦效果
 - tabindex属性表示元素是否可以聚焦的一个属性，也可以用tab键来访问下一个。

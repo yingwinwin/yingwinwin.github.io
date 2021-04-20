@@ -265,3 +265,182 @@ function useContext(context){
  return context._currentValue;
 }
 ```
+
+### 5. useEffect
+- 用于解决react函数的副作用问题（修改全局变量，开启定时器，调用数据库，调用接口等）
+> 什么是副作用（概念相对于纯函数）？
+>   1. 相同的输入会产生相同的输出
+>   2. 不能修改本函数作用域之外的变量
+```js
+// 副作用举例
+let obj = {age: 10};
+function sum (a, b) {
+  obj.age = 100;  // 在函数调用完成之后，改变了函数外部变量的值，这个函数就不是纯函数，而产生了副作用；
+  return a + b + Math.random();
+}
+let r1 = sum(1,2);
+let r2 = sum(1,2);
+console.log(r1, r2); // 两个函数不一定有同样的输出（副作用的原因，没有副作用应该会有一样的输出）
+```
+- 两个参数，第一个参数是一个函数（第一个函数的返回值，是一个销毁函数），第二个参数是一个依赖数组。
+```js
+// 定时器（不添加依赖数组，和函数返回值）
+function App() {
+  const [count, setCount] = useState(0)
+  // 这样会造成开启多个定时器，一直在累加定时器，数量急剧增加的问题
+  useEffect(() => {
+    console.log('开启定时器');
+    const timer = setInterval(() => {
+      setCount(count => count + 1)
+    }, 1000)
+  });
+  return <div>{count}</div>
+}
+```
+- 添加返回值
+```js
+function App() {
+  const [count, setCount] = useState(0)
+  // 这样每次执行，会开始一个定时器，然后结束一个定时器。很多个定时器一开一关
+  useEffect(() => {
+    console.log('开启定时器');
+    const timer = setInterval(() => {
+      setCount(count => count + 1)
+    }, 1000)
+    return () => {
+      console.log('关闭定时器');
+      clearInterval(timer)
+    }
+  });
+  return <div>{count}</div>
+}
+// 调用的时候先开启一次，然后就先关闭，在开启，关闭先执行，然后在执行开启
+// 开启定时器
+// 关闭定时器
+// 开启定时器
+// 关闭定时器
+// 开启定时器
+```
+- 添加第二个参数，依赖数组
+```js
+function App() {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    console.log('开启定时器');
+    const timer = setInterval(() => {
+      setCount(count => count + 1)  // 这里注意，定时器计时，要使用函数，那count最新的值
+    }, 1000)
+    return () => {
+      console.log('关闭定时器');  // 添加依赖项为[]，就不会执行return了，因为没有第二次更新。第二次更新前会走return的函数
+      clearInterval(timer)
+    }
+  }, [])  // 添加依赖项，如果是空数组，那么就只运行一次
+  return <div>{count}</div>
+}
+// 这里只走一次开启定时器，为啥呢，因为没有第二次调用，第二次调用的时候，才会先运行return里面的函数，在调用启动定时器
+// 开启定时器
+```
+
+**实现**
+```js
+/**
+ * 为了保证此回调函数不是同步执行，而是在页面渲染后执行
+ * @param {*} callback 回调函数 页面渲染完成后
+ * @param {*} dependencies 依赖数组
+ */
+export function useEffect(callback,dependencies){
+  if(hookStates[hookIndex]){
+    /* 第二次执行的时候，才会去调用销毁函数和判断依赖数组中的内容 */
+    let [destroyFunction,lastDependencies] = hookStates[hookIndex];
+    let allTheSame = dependencies&&dependencies.every((item,index)=>item===lastDependencies[index]);
+    if(allTheSame){
+        hookIndex++;  // 如果一样的就下一个hook，不进行更新
+    }else{
+        // 1、先调用销毁函数
+        destroyFunction&&destroyFunction();
+        // 2. 再开启
+        // 把回调放在了宏任务队列中
+        setTimeout(()=>{
+            let destroyFunction = callback();   // 函数的返回值，没有调用，而是存了起来
+            hookStates[hookIndex++] = [destroyFunction,dependencies];
+        });
+    }
+  }else{//说明是第一次渲染
+    setTimeout(()=>{
+        let destroyFunction = callback(); // 函数的返回值，没有调用，而是存了起来
+        hookStates[hookIndex++] = [destroyFunction,dependencies]; 
+    });
+  }
+}
+```
+### 6. useLayoutEffect
+- 浏览器时间环（微任务 —> 渲染 —> 宏任务）
+- `useLayoutEffect`会DOM更新后，浏览器绘制前执行(绘制的时候，浏览器已经更新了，动画有过渡效果了)，使用方法和`useEffect`类似，只是执行时间不同，`useEffect`在渲染后执行（这个时候如果用动画，是有效果的。因为浏览器这个时候渲染过了，在设置动画，才会有改变）
+- `useEffect`不会阻塞浏览器的渲染,`useLayoutEffect`会阻塞浏览器的渲染
+![image](../static/img/useLayoutEffect.jpg)
+```jsx
+import React, { useEffect, useRef, useLayoutEffect } from "react";
+import ReactDOM from "react-dom";
+function App() {
+  const ref = useRef();
+  useEffect(() => {  // 浏览器已经渲染完了，这个时候在重新触发重绘，会引发动画效果
+    ref.current.style.WebkitTransform = 'translate(500px)';
+    ref.current.style.transition = 'all 3000ms'
+  })
+  useLayoutEffect(() => {  // 浏览器还没有开始渲染，设置属性，在渲染的时候一步到位了，不会有动态的改变
+    ref.current.style.WebkitTransform = 'translate(500px)';
+    ref.current.style.transition = 'all 3000ms'
+  })
+
+  let style = {
+    width: '100px',
+    height: '100px',
+    backgroundColor: 'red'
+  }
+  return <div ref={ref} style={style}></div>
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+- 实现
+```js
+// 和useEffect类似，放在了微任务中，在渲染前执行
+export function useLayoutEffect(callback,dependencies){
+  if(hookStates[hookIndex]){
+      let [destroyFunction,lastDependencies] = hookStates[hookIndex];
+      let allTheSame = dependencies&&dependencies.every((item,index)=>item===lastDependencies[index]);
+      if(allTheSame){
+          hookIndex++;
+      }else{
+          destroyFunction&&destroyFunction();
+          //把函数放在了微任务队列中
+          queueMicrotask(()=>{  // 只有这里放在了微任务中
+              let destroyFunction = callback();
+              hookStates[hookIndex++] = [destroyFunction,dependencies];
+          });
+      }
+    }else{//说明是第一次渲染
+      Promise.resolve().then(()=>{
+          let destroyFunction = callback();
+          hookStates[hookIndex++] = [destroyFunction,dependencies];
+      });
+    }
+}
+```
+
+### 7. useRef
+- 获取真实dom
+```jsx
+export function useRef(initialState){
+    hookStates[hookIndex]= hookStates[hookIndex]||
+    {current:initialState};
+    return hookStates[hookIndex++];
+}
+// 在createDOM中就把dom指向给了ref.current
+export function createDOM(vdom){
+    if(ref)//通过虚拟DOM创建真实DOM之后，虚拟DOM的ref属性的current属性等于真实DOM
+       ref.current = dom;
+    return dom;
+}
+```
