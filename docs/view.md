@@ -105,3 +105,28 @@ class String1 {
 console.log('hello' instanceof String1);
 // expected output: true
 ```
+### 5. event loop
+```js
+// 7, 4, 5, 6 1, 2 ,3
+a()
+setTimeout(() => {
+    console.log(1);
+    new Promise((res, rej) => {
+        console.log(2);  // await就相当于这里
+        res()
+    }).then(() => {
+        console.log(3);
+    })
+}, 2000)
+setTimeout(() => {
+    console.log(6);
+},1000)
+function b() {
+    console.log(7);
+}
+async function a() {
+    await b();  // await 就是 promise的同步 后面是.then的内容
+    console.log(5);
+}
+console.log(4);
+```

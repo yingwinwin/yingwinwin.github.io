@@ -444,3 +444,96 @@ export function createDOM(vdom){
     return dom;
 }
 ```
+
+### 8. forwardRef 和 useImperativeHandle
+- forwardRef
+```jsx
+import React, { useState, forwardRef } from "react";
+import ReactDOM from "react-dom";
+
+const Child = (props, ref) => {
+  return <input ref={ref} type="text"/>
+}
+// 类组件是有实例的，所以可以给类组件添加ref，ref.current指向实例
+// 函数组件是没有实例的，需要用 forwardRef 包裹，改变成class组件
+const ForwardRefChild = forwardRef(Child)
+const Parent = () => {
+  let inputRef = React.createRef();
+  const [count, setCount] = useState(0);
+  const getFocus = () => {
+    inputRef.current.focus()  // 获取子组件的焦点
+  }
+  return (
+    <div>
+      <ForwardRefChild ref={inputRef} />
+      {/* 点击父组件的 */}
+      <button onClick={getFocus}>获取焦点</button>
+    </div>
+  )
+}
+
+ReactDOM.render(<Parent />, document.getElementById("root"));
+```
+
+```js
+function mountClassComponent(vdom){
+    //解构类的定义和类的属性对象
+    let {type,props,ref}= vdom;
+    if(ref)
+        classInstance.ref = ref;//如果虚拟dom身上有ref属性，那么就赋给类的实例
+    // ....
+}
+
+function forwardRef(FunctionComponent){
+    return class extends Component{
+        render(){//this是类的实例，在组件刚渲染的时候挂载ref属性在this实例上
+            return FunctionComponent(this.props,this.ref);
+        }
+    }
+}
+```
+
+- useImperativeHandle
+```jsx
+import React, { useState, forwardRef, useImperativeHandle } from "react";
+import ReactDOM from "react-dom";
+
+// useImperativeHandle 用来限制ref的使用范围，让封装更安全
+const Child = (props, childRef) => {
+  let inputRef = React.createRef();
+  useImperativeHandle(childRef, () => ({
+    focus(){
+      inputRef.current.focus();
+    }
+  }))
+  return <input ref={inputRef} type="text"/>
+}
+// 类组件是有实例的，所以可以给类组件添加ref，ref.current指向实例
+// 函数组件是没有实例的，需要用 forwardRef 包裹，改变成class组件
+const ForwardRefChild = forwardRef(Child)
+const Parent = () => {
+  let inputRef = React.createRef();
+  const [count, setCount] = useState(0);
+  const getFocus = () => {
+    inputRef.current.focus()  // 获取子组件的焦点
+    // inputRef.current.remove()  // 当用useImperativeHandle限制之后，无法使用remove方法，只能调用focus
+  }
+  return (
+    <div>
+      <ForwardRefChild ref={inputRef} />
+      {/* 点击父组件的 */}
+      <button onClick={getFocus}>获取焦点</button>
+      <p>{count}</p>
+      <button onClick={() => setCount(count + 1)}>点击+1</button>
+    </div>
+  )
+}
+
+ReactDOM.render(<Parent />, document.getElementById("root"));
+```
+
+```jsx
+function useImperativeHandle(ref,factory){
+    ref.current = factory();
+}
+```
