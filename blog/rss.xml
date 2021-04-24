@@ -4,9 +4,16 @@
         <title>yingwinwin的前端之路 Blog</title>
         <link>https://yingwinwin.github.io/blog</link>
         <description>yingwinwin的前端之路 Blog</description>
-        <lastBuildDate>Tue, 30 Mar 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 24 Apr 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[history API 总结]]></title>
+            <link>https://yingwinwin.github.io/blog/history API 总结</link>
+            <guid>history API 总结</guid>
+            <pubDate>Sat, 24 Apr 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[History API]]></description>
+        </item>
         <item>
             <title><![CDATA[echarts桑基图的使用和总结]]></title>
             <link>https://yingwinwin.github.io/blog/echarts桑基图的使用和总结</link>
