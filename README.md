@@ -1,7 +1,3 @@
-
-### 注意：
-> **yaml文件自动部署现在有点问题，准备这周末或者五一的时候解决，最近在赶项目没有时间，哭唧唧!o(╥﹏╥)o**
-
 ### 利用Docusaurus 2搭建的博客，具体可以看官方API
 [Docusaurus 2](https://v2.docusaurus.io/)
 
@@ -9,13 +5,32 @@
 - 记录自己在工作中遇到的问题
     - 2021年全年目标：
     1. 写过的项目都有可以总结记录的点
-    2. 努力码好每一块砖，写出可维护性高，可扩展性强的代码，不要因为自己之前代码写的差，而做了很多维护性的工作。             
+    2. 努力码好每一块砖，写出可维护性高，可扩展性强的代码，不要因为自己之前代码写的差，而做了很多维护性的工作。
+    3. 遇到不会的问题，记下来，现在如果解决不了，总有一天会解决的。有问题说明遇到了自己的知识盲目。只要不断的学习，就会遇到那个知识。         
 - 记录自己在学习之后的总结
     - 2021年上半年目标：
-    1. 读书: js忍者秘籍、你不知道的js中（6月末前）
+    1. 读书: js忍者秘籍、你不知道的js中、css世界（6月末前）
     2. 学习react相关源码部分，完成公司的hook分享打下基础
-    3. 封装自己的组件库table、datePicker、form
+    3. 封装自己的组件库--搭好环境(react + hook + ts + webpack + jest + storybook)
     4. vscode插件制作学习（公司需要出一个代码检视的IDE工具）
+
+### 博客
+- [基于的Docusaurus博客部署](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8docusaurus%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%8C%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%88%B0github%20pages)
+- [css loading效果](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8css3%E5%81%9A%E4%B8%80%E4%B8%AAloading%E6%95%88%E6%9E%9C)
+- [echarts桑基图使用](https://yingwinwin.github.io/blog/echarts%E6%A1%91%E5%9F%BA%E5%9B%BE%E7%9A%84%E4%BD%BF%E7%94%A8%E5%92%8C%E6%80%BB%E7%BB%93)
+
+### 已经整理好的笔记
+- [正则](https://yingwinwin.github.io/docs/)
+- [react hook使用](https://yingwinwin.github.io/docs/reactHook)
+- [简单版的react_1渲染](https://yingwinwin.github.io/docs/react_render)
+- [简单版的react_2生命周期](https://yingwinwin.github.io/docs/react_lifecycle)
+- [简单版的react_3其他特性和方法](https://yingwinwin.github.io/docs/react_advance)
+- [简单版的react_4hook](https://yingwinwin.github.io/docs/react_hooks)
+
+### 在更新的内容
+- [react中使用ts遇到的问题总结](https://yingwinwin.github.io/docs/reactUseTs)
+- [开发时遇到的问题总结](https://yingwinwin.github.io/docs/errors)
+### 其他
 
 - 愿望：希望自己可以少加班，多学习。
 - 我会努力更新的...天分不够，只能靠努力了，加油！
