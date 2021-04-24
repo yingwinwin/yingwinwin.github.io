@@ -283,6 +283,7 @@ let r2 = sum(1,2);
 console.log(r1, r2); // 两个函数不一定有同样的输出（副作用的原因，没有副作用应该会有一样的输出）
 ```
 - 两个参数，第一个参数是一个函数（第一个函数的返回值，是一个销毁函数），第二个参数是一个依赖数组。
+- 销毁函数，在组件销毁的时候，会调用，相当于ComponentWillUnmount
 ```js
 // 定时器（不添加依赖数组，和函数返回值）
 function App() {
@@ -536,4 +537,122 @@ ReactDOM.render(<Parent />, document.getElementById("root"));
 function useImperativeHandle(ref,factory){
     ref.current = factory();
 }
+```
+
+### 9. 自定义hooks
+- 函数以use开头，里面调用了别的hooks。
+- 每次函数执行都是一个闭包，所以定时器的count，拿到的是函数当前执行时的闭包的值，而不是最新的值。异步代码的话，只会拿到当前函数执行时的闭包值，而不是最新值
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log(count);
+    }, 3000);
+  })
+
+  return <div>
+    <p>{count}</p>
+    <button onClick={() => setCount(count + 1)}>+</button>
+  </div>
+}
+// 0  3秒后输出0
+// 1  每次点击函数刷新会输出1
+// 2  再次点击输出2
+// 此时count每次渲染都是输出独立的值,因为函数是一个独立的闭包,只指向当时的count
+// 但是如果想获得最新的count值,就需要用ref了
+```
+- 使用ref，脱离闭包环境，获取最新的全局变量
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+  const lastCount = useRef(count);
+
+  useEffect(() => {
+    lastCount.current = count
+    setTimeout(() => {
+      console.log(lastCount.current);  // 这里只会获取最新的全局变量
+    }, 3000);
+  })
+
+  return <div>
+    <p>{count}</p>
+    <button onClick={() => setCount(count + 1)}>+</button>
+  </div>
+}
+// 点击3下之后，会全部输出3，这是因为ref是一个全局变量，而不在是在函数的闭包中了，为什么是4个，因为 useEffect 会一开始就执行一次
+// 3
+// 3
+// 3
+// 3
+```
+### 自定义hooks实现分页
+- 前端react代码
+```jsx
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+
+function useRequest(url) {
+  let limit = 5;  // 每页的条数
+  const [offset, setOffset] = useState(0); // 偏移量
+  const [data, setData] = useState([]);  // 列表
+
+  function loadMore() {
+    setData(null);  // 这里就是让当前的setData为null去有一个loading的效果
+    fetch(`${url}?offset=${offset}&limit=${limit}`)
+      .then(res => res.json())
+      .then(pageData => {
+        setData([...data, ...pageData]);
+        setOffset(offset + pageData.length);
+      })
+  }
+
+  // 先渲染第一页
+  useEffect(loadMore, [])
+
+  return [data, loadMore]
+}
+
+function App() {
+  const [users, loadMore] = useRequest('http://localhost:8000/api/users');
+  if(users === null) {
+    return <div>加载中...</div>
+  }
+
+  return <div>
+    <ul>
+      { users.map(user => <li key={user.id}>{user.id}:{user.name}</li>) }
+    </ul>
+    <button onClick={loadMore}>加载更多</button>
+  </div>
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+- node server 代码
+
+```js
+let express = require('express');
+
+let app = express();
+
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next()
+})
+
+app.get('/api/users', (req, res) => {
+    let offset = parseInt(req.query.offset)
+    let limit = parseInt(req.query.limit)
+    let result = [];
+    for(let i = offset; i < offset + limit; i ++) {
+        result.push({
+            id:i + 1,
+            name: 'name' + (i + 1)
+        })
+    }
+    res.json(result)
+})
+app.listen(8000)
 ```
