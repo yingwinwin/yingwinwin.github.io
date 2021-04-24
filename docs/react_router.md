@@ -41,7 +41,7 @@ ReactDOM.render(<HashRouter>
 ```
 
 ### 2. browser history
-[history API 总结](../blog/2021-04-24-historyAPI总结.md)
+[history API 总结](https://yingwinwin.github.io/blog/history%20API%20总结)
 ```js
 // 实现一个pushstate方法
 var globalHistory = window.history;
