@@ -4,7 +4,10 @@ title: 正则表达式基本使用
 sidebar_label: 正则
 slug: /
 ---
-
+## 推荐网址
+- [正则可视化](https://jex.im/regulex/)
+- [正则可视化](https://regexper.com/)
+- [正则101](https://regex101.com/)
 ## 正则表达式 regular expression RegExp
 > 用来处理字符串的规则
 - 只能处理字符串
@@ -19,7 +22,7 @@ reg.test(str);  // => false
 str = '2019-08-12';
 reg.exec(str); //=>['2019', index:0, inputs:'原始字符串']
 ```
-### **编写正则表达式**
+## **编写正则表达式**
 创建方式有两种
 ```js
 // => 字面量创建方式(两个斜杠包起来的,都是用来描述规则的元字符)
@@ -29,7 +32,7 @@ let reg1 = /\d+/;
 let reg2 = new RegExp("\\d+");
 ```
 
-#### 正则表达式由两部分组成
+### 1. 正则表达式由两部分组成
 - 元字符
 - 修饰符
 ```js
@@ -76,9 +79,63 @@ m => multiline  可以进行多行匹配
 g => global     全局匹配
 ```
 
-### **元字符详细解析**
+### 2. 正则捕获属性
+```js
+let reg = /([a-z])([0-9])([A-Z])/;
+let result = '@#a1B888'.match(reg);
+console.log(result);
+/**
+ * 1.匹配到的字符串部分a1B
+ * 后面的就是分组 3个分组，值 分别是 a  1 B
+ * 最后结果 数组中的元素有4个,其他是正则的属性
+ */
+console.log(result.length);  // 4 
 
-`^ $`
+let arr = ['a1B','a','1','B'];
+arr.index = '@#a1B888'.indexOf('a1B');
+arr.input = '@#a1B888';
+console.log(arr);
+//[ 'a1B', 'a', '1', 'B', index: 2, input: '@#a1B888' ]
+```
+### 3. groups属性
+```js
+console.log(/(?<x>\d{2})-(?<y>\d{2})/.exec('11-22'));
+console.log('11-22'.match(/(?<x>\d{2})-(?<y>\d{2})/));
+console.log('11-11'.match(/(?<x>\d{2})-\k<x>/));
+console.log('11-22'.replace(/(?<x>\d{2})-(?<y>\d{2})/, "$<y>-$<x>"));
+// 给分组起一个名字，你可通过分组名字引用这个分组的值
+
+/* 
+[
+  '11-22',
+  '11',
+  '22',
+  index: 0,
+  input: '11-22',
+  groups: [Object: null prototype] { x: '11', y: '22' }
+]
+[
+  '11-22',
+  '11',
+  '22',
+  index: 0,
+  input: '11-22',
+  groups: [Object: null prototype] { x: '11', y: '22' }
+]
+[
+  '11-11',
+  '11',
+  index: 0,
+  input: '11-11',
+  groups: [Object: null prototype] { x: '11' }
+]
+22-11
+ */
+```
+
+## **元字符详细解析**
+
+### 1. `^ $`
 
 ```js
 let reg = /^\d/
@@ -104,7 +161,7 @@ let reg2 = /^\d+$/
 let reg = /^1\d{10}$/
 ```
 
-`\`
+### 2. `\`
 
 ```js
 // => 点不是小数点,是除\n以外的任意字符
@@ -126,7 +183,7 @@ reg.test(str);   //true
 ```
 
 
-`x|y`
+### 3. `x|y`
 
 ```js
 let reg = /^18|29$/;
@@ -147,7 +204,7 @@ reg.test('189') // false
 // 只能是x|y中的一个了
 ```
 
-`[]`
+### 4. `[]`
 
 ```js
 // 1.中括号中出现的字符一般都代表本身的含义
@@ -176,9 +233,9 @@ reg.test('2')  // true
 reg.test('10')   //false
 ```
 
-### **常用的正则表达式**
+## **常用的正则表达式**
 
-1. 验证是否式有效数字
+### 1. 验证是否式有效数字
 
    ```js
    /*
@@ -192,7 +249,7 @@ reg.test('10')   //false
    /^$/  // 只能是啥啥啥，以什么开头，以什么结尾
    ```
 
-2. 验证密码
+### 2. 验证密码
 
    ```js
    // => 数字、字母、下划线
@@ -200,7 +257,7 @@ reg.test('10')   //false
    let reg = /^\w{6,16}$/
    ```
 
-3. 验证真实姓名
+### 3. 验证真实姓名
 
    ```js
    /*
@@ -211,7 +268,7 @@ reg.test('10')   //false
    let reg = /^[\u4E00-\u9FA5]{2,10}(·[\u4E00-\u9FA5]{2,10}){0,2}$/
    ```
 
-4. 验证邮箱
+### 4. 验证邮箱
 
    ```js
    let reg = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/
@@ -234,7 +291,7 @@ reg.test('10')   //false
    
    ```
 
-5. 身份证号码
+### 5. 身份证号码
 
    ```js
    /*
@@ -257,7 +314,7 @@ reg.test('10')   //false
    //["130828199012040617", "130828", "1990", "12", "04", "1", "7", index: 0, input: "130828199012040617", groups: undefined]  捕获结果是一个数组,包含每一个小分组单独获取的内容
    ```
 
-### **正则两种创建方式的区别**
+## **正则两种创建方式的区别**
 
 ```js
 // => 构造函数因为传递的是字符串,\需要写两个才代表斜杠
@@ -277,7 +334,7 @@ console.log(reg.test("@zhufeng@"))   //true
 
 ----
 
-### **正则的捕获**
+## **正则的捕获**
 
 > 实现正则捕获的方法
 >
@@ -316,7 +373,7 @@ console.log(reg.exec(str)); // null
 */
 ```
 
-### **正则的懒惰性**
+## **正则的懒惰性**
 
 ```js
 let str = "www2019yyy2020zzz2021";
@@ -379,7 +436,7 @@ let str = "www2019yyy2020zzz2021";
   console.log(str.match(reg));
 ```
 
-### **正则的分组捕获**
+## **正则的分组捕获**
 ```js
 let str = "130828199012040112"
 let reg = /^(\d{6})(\d{4})(\d{2})(\d{2})\d{2}(\d)(?:\d|X)$/
@@ -431,7 +488,7 @@ console.log(reg.test('deep'))  //true
 console.log(reg.test('some'))  //false
 ```
 
-### **正则捕获的贪婪性**
+## **正则捕获的贪婪性**
 
 ```js
 let str = 'aaa2019@2020bbb';
@@ -443,17 +500,39 @@ console.log(str.match(reg)); // => ['2019','2020'];
 reg = /\d+?/g;
 console.log(str.match(reg)); // ["2", "0", "1", "9", "2", "0", "2", "0"]
 ```
-### **问号在正则的五大作用**
+## **问号在正则的五大作用**
 - 问号左边是非量词元字符:本身代表量词元字符,出现零到一次;
 - 问号左边是量词元字符: 取消捕获时候的贪婪性
 - (?:) 只匹配不捕获
 - (?=) 正向预查
 - (?!) 负向预查
+```js
+//匹配分组捕获
+console.log('1ab'.match(/1([a-z])([a-z])/));
+//非捕获分组
+console.log('1ab'.match(/1(?:[a-z])([a-z])/));
+//正向肯定前瞻 并不消耗掉字符
+console.log('1a'.match(/\d(?=[a-z])[a-z]/));
+//正向否定前瞻
+console.log('1a'.match(/\d(?![A-Z])[a-z]/));
+//反向肯定后瞻
+//反向否定后瞻
+console.log('b1a'.match(/(?<=[a-z])\d[a-z]/));
+console.log('A1a'.match(/(?<![a-z])\d[a-z]/));
+
+/* 
+[ '1ab', 'a', 'b', index: 0, input: '1ab', groups: undefined ]
+[ '1ab', 'b', index: 0, input: '1ab', groups: undefined ]
+[ '1a', index: 0, input: '1a', groups: undefined ]
+[ '1a', index: 0, input: '1a', groups: undefined ]
+[ '1a', index: 1, input: 'b1a', groups: undefined ]
+[ '1a', index: 1, input: 'A1a', groups: undefined ]
+ */
+```
 
 
-
-### **其他正则捕获的方法**
-1. test也能捕获(本意是匹配)
+## **其他正则捕获的方法**
+### 1. test也能捕获(本意是匹配)
 ```js
 let str = "{0}年{1}月{2}日"
 let reg = /\{(\d+)\}/g;
@@ -471,7 +550,7 @@ console.log(RegExp.$1); // => "2" 储存的是上次捕获的结果
 
 // => RegExp.$1~RegExp.$9 获取当次本次正则匹配后,第一个到第九个分组信息
 ```
-2. replace字符串中实现替换的方法(一般都是伴随正则一起使用的)
+### 2. replace字符串中实现替换的方法(一般都是伴随正则一起使用的)
 ```js
 let str = "zzz@2019|zzz@2020";
 // => 把 zzz 换成 "中"
@@ -511,7 +590,7 @@ time = time.replace(reg, (big, (...arg))=>{
 })
 ```
 
-单词首字母大写
+### 3. 单词首字母大写
 ```js
 let str = "good good study, day day up!";
 let reg = /\b([a-zA-Z])[a-zA-Z]*\b/g;
@@ -528,7 +607,7 @@ str = str.replace(reg, (...arg) => {
 console.log(str) "Good Good Study, Day Day Up!"
 ```
 
-验证一个字符串中，哪个字母出现的次数最多，多少次？
+### 4. 验证一个字符串中，哪个字母出现的次数最多，多少次？
 ```js
 /* ======去重方法===== */
 let str = "zhufengpeixunzhoulaoshi";
@@ -600,7 +679,7 @@ for (let i = str.length ; i > 0 ; i --) {
 console.log(`出现次数最多的字符:${res},出现了${max}次`)
 ```
 
-常用方法
+### 5. 常用方法
 ```js
 ~function () {
   /**
