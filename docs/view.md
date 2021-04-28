@@ -78,7 +78,7 @@ Promise.resolve().then(() => {
 
 ### 3. 前端的通讯(待整理)
 - axios(优点)
-- ajax(手写)
+- ajax
 - fetch(同源，.then取值的问题)
 - websocket(应用场景和常用api)
 
@@ -130,3 +130,14 @@ async function a() {
 }
 console.log(4);
 ```
+
+## 2021年4月28日面试复盘
+- 阿里外包，菜鸟（电话一面）
+
+1. vdom是什么？解决了什么问题？
+2. 浏览器缓存？协商缓存？
+3. react hook钩子 useMemo useCallback 划重点：前端性能优化（可以展开说其他用性能优化处理的函数和钩子）
+4. 跨域 jsonP cors 代理跨域 nginx
+5. hoc的使用场景：属性代理和反向继承
+
+- 总结：需要背诵专业名词，单词。

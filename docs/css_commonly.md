@@ -36,3 +36,7 @@ footer {
 ```
 
 ### 2. 锚点
+[scrollIntoView](https://developer.mozilla.org/zh-CN/docs/web/api/element/scrollintoview)
+```
+
+```
