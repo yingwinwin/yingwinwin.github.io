@@ -131,13 +131,15 @@ async function a() {
 console.log(4);
 ```
 
-## 2021年4月28日面试复盘
-- 阿里外包，菜鸟（电话一面）
+## 面试复盘
+### 1. 阿里外包，菜鸟（电话一面）
 
 1. vdom是什么？解决了什么问题？
 2. 浏览器缓存？协商缓存？
 3. react hook钩子 useMemo useCallback 划重点：前端性能优化（可以展开说其他用性能优化处理的函数和钩子）
 4. 跨域 jsonP cors 代理跨域 nginx
 5. hoc的使用场景：属性代理和反向继承
+6. 1px问题，0.5px的实现
+7. H5移动端适配问题
 
-- 总结：需要背诵专业名词，单词。
+- 总结：需要背诵专业名词，单词。[发音参考](https://github.com/shimohq/chinese-programmer-wrong-pronunciation)

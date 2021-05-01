@@ -50,7 +50,7 @@ history2.pop(c);
 - `pushState` 和 `replaceState` 的关系
     + 相同
         + 两者的使用方式基本一直，都是在`history.state`中添加内容
-        + 第一个参数是`state`，第二个参数是`title`，第三个参数`url`
+        + 第一个参数是`state`，第二个参数是`title`，第三个参数`url`，第二个参数没有浏览器实现，所以一般写null或者''就可以。
     + 区别
         + `pushState`会在浏览器加入一条记录，改变`history.length`属性。`replaceState`是重写浏览器当前的记录，不会增加`history.length`的长度
 - `popState`事件，在浏览器返回和前进时会触发，也就是说栈结构有`pop`操作的时候才会触发的事件

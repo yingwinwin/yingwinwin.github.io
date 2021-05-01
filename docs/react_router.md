@@ -124,6 +124,28 @@ class HashRouter extends React.Component{
 export default HashRouter;
 ```
 
+### 3. Link
+- a标签，用于页面跳转
+```js
+import React from 'react';
+import {__RouterContext as RouterContext} from '../react-router';
+function Link(props){
+    return (
+        <RouterContext.Consumer>
+            {
+                ({history})=>(
+                    <a {...props} onClick={(event)=>{
+                        event.preventDefault();//阻止默认事件
+                        history.push(props.to);
+                    }}>{props.children}</a>
+                )
+            }
+        </RouterContext.Consumer>
+    )
+}
+export default Link;
+```
+
 ## react-router
 
 ### 1. context对象
@@ -172,6 +194,70 @@ class Router extends React.Component{
     }
 }
 export default Router;
+```
+
+### 3. Switch
+- 如果匹配到了，就不会在向下匹配了
+```js
+import React from 'react';
+import RouterContext from './RouterContext';
+import matchPath from './matchPath';
+class Switch extends React.Component{
+    static contextType = RouterContext
+    render(){
+        const {location} = this.context;
+        let element,match;
+        //this.props.children可以是undefined可以是对象，也可能是数组，也可能是字符串或者 数字，
+        React.Children.forEach(this.props.children,child=>{
+            if(!match&&React.isValidElement(child)){//如何还没有任何一个元素匹配上
+                element=child;
+                match = matchPath(location.pathname,child.props);
+            }//如果但凡一有个匹配上的，后面都不走都跳过，只要匹配上的第1个儿子就可以了
+        });
+        // 添加一个属性进行缓存
+        return match?React.cloneElement(element,{computedMatch:match}):null;
+    }
+}
+
+export default Switch;
+```
+
+### 4. Redirect
+- 重定向，如果写在路由中，必须和Switch搭配使用，不然会一直重定向，还是要看需求
+```js
+import React from 'react';
+class  LifeCycle extends React.Component{
+    componentDidMount(){
+        // 直接调用
+        this.props.onMount&&this.props.onMount(this);
+    }
+    componentWillUnmount(){
+        console.log('LifeCycle componentWillUnmount');
+        this.props.onUnmount&&this.props.onUnmount(this);
+    }
+    render(){
+        return null;
+    }
+}
+export default LifeCycle;
+```
+
+```js
+import React from 'react';
+import LifeCycle from './Lifecycle';
+import RouterContext from './RouterContext';
+function Redirect({to}){
+    return (
+        <RouterContext.Consumer>
+            {
+                value=>(
+                    <LifeCycle onMount={()=>value.history.push(to)}/>
+                )
+            }
+        </RouterContext.Consumer>
+    )
+}
+export default Redirect;
 ```
 
 ## history对象
@@ -352,3 +438,4 @@ function createBrowserHistory(){
 
 export default createBrowserHistory;
 ```
+
