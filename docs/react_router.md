@@ -146,6 +146,74 @@ function Link(props){
 export default Link;
 ```
 
+### 4. NavLink
+```jsx
+import React from 'react';
+import {Link} from './';
+import {__RouterContext as RouterContext,Route} from '../react-router';
+import {matchPath} from '../react-router';
+function NavLink(props){
+    const {
+        to,//匹配的路径
+        className:classNameProp='',//原生类名
+        style:styleProp={},//原始的行内样式对象
+        activeClassName='',
+        activeStyle={},
+        children,
+        exact
+    } = props;
+    // 用 route 的 children 属性 实现属性获取
+   return (
+    <Route path={to} exact={exact} children={
+         (routeProps) =>{
+            let match = routeProps.match;
+            let className =match?joinClassnames(classNameProp,activeClassName):classNameProp;
+            let style = match?{...styleProp,...activeStyle}:styleProp;
+            let linkProps = {
+                className,
+                style,
+                to,
+                children
+            }
+            return <Link {...linkProps}/>;
+        }
+    }/>
+   )
+
+}
+//源码如何实现的  并没有用到children
+function NavLink2(props){
+    let context = React.useContext(RouterContext);
+    let {pathname}= context.location;
+    const {
+        to,//匹配的路径
+        className:classNameProp='',//原生类名
+        style:styleProp={},//原始的行内样式对象
+        activeClassName='',
+        activeStyle={},
+        children,
+        exact
+    } = props;
+    //匹配当前的路径和自己to路径 是否匹配
+    let isActive = matchPath(pathname,{path:to,exact});
+    let className =isActive?joinClassnames(classNameProp,activeClassName):classNameProp;
+    let style = isActive?{...styleProp,...activeStyle}:styleProp;
+    let linkProps = {
+        className,
+        style,
+        to,
+        children
+    }
+    return <Link {...linkProps}/>;
+
+}
+function joinClassnames(...classNames){
+    //把空的类名过滤掉
+    return classNames.filter(c=>c).join(' ');
+}
+export default NavLink;
+```
+
 ## react-router
 
 ### 1. context对象
@@ -155,12 +223,51 @@ const RouterContext = React.createContext();;
 export default RouterContext;
 ```
 
-### 2. Router
+### 2. Route
+```jsx
+import React from 'react';
+import RouterContext from './RouterContext';
+import matchPath from './matchPath';
+/**
+ * 1.获取到context中的值
+ * 2.匹配路由规则 里的path 是否和当前地址中的url地址是否相等
+ * 如果相等，就渲染component,如果不相等，就不渲染任何东西
+ */
+class Route extends React.Component{
+    static contextType = RouterContext
+    render(){
+       const {history,location} = this.context;
+       const {component:RouteComponent,computedMatch,render,children} = this.props;
+       const match = computedMatch?computedMatch:matchPath(location.pathname,this.props);
+       let renderElement = null;
+       let routeProps = {history,location};
+       if(match){//如果路径匹配才会进来 ，读这二个属性
+         //路由属性 如果一个组件是Route或者说路由组件渲染的，它们routeProps={}
+         routeProps.match = match;
+         if(RouteComponent){
+          renderElement = <RouteComponent {...routeProps}/>;
+         }else if(render){
+          renderElement=render(routeProps);//返回一个React元素,或者说虚拟DOM， render props做属性代理，传给使用render方法的儿子
+         }else if(children){
+          renderElement=children(routeProps);
+         }
+       }else{
+         if(children){
+          renderElement=children(routeProps);
+         }
+       }
+       return renderElement;
+    }
+}
+export default Route;
+```
+
+### 3. Router
 ```jsx
 import React from 'react';
 import RouterContext from './RouterContext';
 class Router extends React.Component{
-    // TODO: 暂时不知道是干嘛的
+    // 初始值
     static computeRootMatch(pathname){
         return {path:'/',url:'/',params:{},isExact:pathname == '/'};
     }
@@ -196,7 +303,7 @@ class Router extends React.Component{
 export default Router;
 ```
 
-### 3. Switch
+### 4. Switch
 - 如果匹配到了，就不会在向下匹配了
 ```js
 import React from 'react';
@@ -222,7 +329,7 @@ class Switch extends React.Component{
 export default Switch;
 ```
 
-### 4. Redirect
+### 5. Redirect
 - 重定向，如果写在路由中，必须和Switch搭配使用，不然会一直重定向，还是要看需求
 ```js
 import React from 'react';
@@ -258,6 +365,54 @@ function Redirect({to}){
     )
 }
 export default Redirect;
+```
+
+### 6. withRouter
+- hoc，组件如果需要使用history属性，需要用withRouter包裹，做属性代理
+```jsx
+import React from 'react';
+import RouterContext from './RouterContext';
+function withRouter(OldComponent){
+  return props=>{
+      return (
+        <RouterContext.Consumer>
+          {
+              value=>{//{history,location,match}
+                  return <OldComponent {...props} {...value}/>
+              }
+          }
+        </RouterContext.Consumer>
+      )
+  }
+}
+export default withRouter;
+```
+
+### 7. hook
+```js
+import React, { useContext } from 'react';
+import RouterContext from './RouterContext';
+import matchPath from './matchPath';
+// 在函数组件中获取history对象
+export function useHistory(){
+    return useContext(RouterContext).history;
+}
+// 在函数组件中获取location对象
+export function useLocation(){
+    return useContext(RouterContext).location;
+}
+// 在函数组件中获取参数
+export function useParams(){
+    let match = useContext(RouterContext).match;
+    return match?match.params:{};
+}
+// 获取匹配到的路径
+// context value {history,location,match}
+export function useRouteMatch(path){
+  let location = useLocation();//获取当前的路径对象 {pathname}
+  let match = useContext(RouterContext).match;//当前的match 来自于Provider
+  return path?matchPath(location.pathname,path):match;
+}
 ```
 
 ## history对象
@@ -439,3 +594,110 @@ function createBrowserHistory(){
 export default createBrowserHistory;
 ```
 
+
+
+## 使用
+### 1. 嵌套路由
+
+```js
+import UserAdd from './UserAdd';
+import UserList from './UserList';
+import UserDetail from './UserDetail';
+import {Route,Link} from '../react-router-dom';
+const User = (props)=>{
+    return (
+        <div>
+            <ul>
+                <li><Link to="/user/list">用户列表</Link></li>
+                <li><Link to="/user/add">添加用户</Link></li>
+            </ul>
+            <Route  path={`/user/list`} component={UserList}/>
+            <Route  path="/user/add" component={UserAdd}/>
+            <Route  path="/user/detail/:id" component={UserDetail}/>
+        </div>
+    )
+}
+export default User;
+```
+### 2. render方法(受保护路由)
+```js
+// 如果用户要进入到个人中心页面，需要先登录，所以要在个人中心页面判断，用户是否已经登录，如果没有登录，要跳到登录页面
+ReactDOM.render(
+  <BrowserRouter>
+    <Route path="/Login" component={Login}/>
+    {/* 受保护的路由profile，要在Protected中使用render方法，多做一层逻辑 */}
+    <Protected path={'/profile'} component={Profile} />
+  </BrowserRouter>,document.getElementById('root')
+);
+```
+
+```jsx
+// 组件内部,在路由中当前这个组件，传来path 和 要渲染的组件，然后进行处理
+// 通过renderporps，获取属性，给当前需要传入的组件进行处理
+import {Route,Redirect} from '../react-router-dom';
+const Protected = (props)=>{
+    //path是要匹配的路径 RouteComponent 本来要渲染的组件
+    let {path,component:RouteComponent}= props;
+    return (
+        <Route path={path} render={
+            (routeProps)=>(//路由属性{history,location,match}
+                localStorage.getItem('login')?
+                <RouteComponent {...routeProps}/>:
+                <Redirect to={{pathname:'/login',state:{from:path}}}/>
+            )
+        }/>
+    )
+}
+export default Protected;
+```
+
+### 3. render children
+- 相同点
+1. children和render都是函数
+2. 他们都会接收路由属性对象，返回一个虚拟DOM进行渲染
+3. 都可以写一些逻辑判断
+- 不同点
+1. render是匹配才渲染，不匹配不渲染
+2. children管你匹配不匹配，都会渲染返回值，如果匹配有match属性，如果不匹配没有match属性
+
+### 4. hook使用
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {BrowserRouter,Route,Link,
+useParams,useLocation,useHistory,useRouteMatch} from './react-router-dom';
+const Home = ()=><div>Home</div>;
+function UserDetail(){
+  let params = useParams();//{id:1}  获取 路径参数
+  console.log('params',params);
+  let location = useLocation();//{pathname,state} 获取路径对象 
+  console.log('location',location);
+  let history = useHistory();//{pathname,state} 获取历史对象
+  console.log('history',history);
+  return (
+    <div>id:{params.id} name:{location.state.name}</div>
+  )
+}
+function Post(props){
+  console.log(props);
+    // 传参看是否需要匹配
+  let match = useRouteMatch({
+    path:'/post/:id',//匹配的路径
+    strict:true,//是否严格匹配
+    sensitive:true//是否匹配的时候大小写敏感
+  });
+   return match?<div>id:{match.params.id}</div>:<div>Not Found</div>
+}
+ReactDOM.render(
+  <BrowserRouter>
+    <ul>
+      <li><Link to="/">首页</Link></li>
+      <li><Link to={{pathname:`/user/detail/1`,state:{id:1,name:"张三"}}}>用户详情</Link></li>
+      <li><Link to="/post/1">帖子</Link></li>
+    </ul>
+    <Route path="/" component={Home}/>
+    <Route path="/user/detail/:id" component={UserDetail}/>
+    <Route path="/post/:id" component={Post}/>
+  </BrowserRouter>,document.getElementById('root')
+);
+```
