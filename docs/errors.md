@@ -48,3 +48,33 @@ Expected an assignment or function call and instead saw an expression  no-unused
 
 ### 6. useState同时设置两个值，一个有值，一个为null
 - 待解决
+
+### 7. 一行div能展示多少就展示多少
+- 业务需求，一开始看到这个需求的时候，脑子里想的都是用js解决，想先dom获取手机一行的长度，然后判断div长度，然后对比去看渲染多少个div。
+- 但是后来突然幡然醒悟，需求既然是纯展示，那就用css的方法解决啊！为什么要用js，立刻改成了用flex解决。
+```html
+<div class="box">
+    <span>标签标签标签</span>
+    <span>标签标签标签</span>
+    <span>标签标签标签</span>
+    <span>标签标签标签</span>
+    <span>标签标签标签</span>
+</div>
+```
+
+```css
+<style>
+    .box {
+        height: 24px;
+        display: flex;
+        /* 核心代码，让元素自动换行，然后把换行的元素直接hideen掉不展示 */
+        flex-wrap: wrap;
+        overflow: hidden;
+    }
+    .box > span {
+        margin-right: 5px;
+        border: 1px solid #000;
+    }
+</style>
+```
+![image](../static/resource/label.png)

@@ -141,5 +141,6 @@ console.log(4);
 5. hoc的使用场景：属性代理和反向继承
 6. 1px问题，0.5px的实现
 7. H5移动端适配问题
+8. 关注的公众号，社区，有哪些？
 
 - 总结：需要背诵专业名词，单词。[发音参考](https://github.com/shimohq/chinese-programmer-wrong-pronunciation)
