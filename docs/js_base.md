@@ -291,3 +291,159 @@ animateIt('box')
 - 函数声明提升，箭头函数和变量命名的函数都不会有声明提升
 - var变量存在变量提升，let 和 const没有，所以会出现暂时性死区
 - const不能声明的变量不可以重新复制 let可以
+
+### 12. 模块化
+- AMD
+- CMD
+- CommonJS
+- ES Module
+1. CommonJS支持动态导入；ES Module不支持
+2. CommonJS是同步导入，用于服务端；ES Module异步导入，用于浏览器，不会阻碍进程
+3. CommonJS是值拷贝，要更新要重新导入；ES Module引用拷贝，同步更新值
+
+### 13. Proxy
+- TODO: 暂时看不懂，没有在项目中用过
+```js
+  // 数据响应
+  let onWatch = (obj, setBind, getLogger) => {
+    let handler = {
+      get(target, property, receiver) {
+        getLogger(target, property)
+        return Reflect.get(target, property, receiver)
+      },
+      set(target, property, value, receiver) {
+        setBind(value, property)
+        return Reflect.set(target, property, value)
+      },
+    }
+
+    return new Proxy(obj, handler);
+  }
+
+  let obj = { a : 1};
+  let p = onWatch(
+    obj,
+    (v, property) => {
+      console.log(property, v, 'set');
+    },
+    (target, property) => {
+      console.log(target[property], target,'get');
+    },
+  )
+  p.a = 2;  // set
+  p.a  // get
+```
+
+### 14. filter, map, reduce
+- filter
+```js
+Array.prototype.myFilter = function (fn) {
+  let arr = [];
+  for (let i = 0; i < this.length; i++) {
+    if(fn(this[i], i, this)) {
+      arr.push(this[i]);
+    }     
+  }
+  return arr;
+}
+let arr = [0, 1, 2, 3, undefined, null, false, ''].myFilter(item => item)  // [1,2,3] 过滤假值
+```
+- map
+```js
+Array.prototype.myMap = function (fn) {
+  let arr = [];
+  for (let i = 0; i < this.length; i++) {
+    arr.push(fn(this[i], i, this))
+  }
+  return arr;
+}
+let arr = [0, 1, 2, 3].myMap(item => item * 2)  // [0, 2, 4, 6]
+```
+- reduce
+```js
+Array.prototype.myRudece = function (fn, prev) {
+  for (let i = 0; i < this.length; i++) {
+    // 如果没有传入初始值的话，返回值就是数组的第一项
+    if(prev === undefined) {
+      prev = fn(this[i], this[i + 1], i + 1, this);
+      ++i; // 让下标移动一项
+    } else {
+      // 第二次就有返回值了，正常返回
+      prev = fn(prev, this[i], i, this);
+    }
+  }
+
+  return prev;
+}
+let result = [1, 2, 3].myRudece((prev, next, index, ary) => {
+  return prev + next;
+},0)
+
+console.log(result)
+```
+
+- 根据数组对象中某个key的分类 
+```js
+let people = [
+  { name: 'Alice', age: 21 },
+  { name: 'Max', age: 20 },
+  { name: 'Jane', age: 20 }
+];
+
+function groupBy(objectArray, property) {
+  return objectArray.reduce((prev, cur, index, ary) => {
+    // 如果返回值里面没有当前的key，就创建数组，有就push
+    if(!prev[cur[property]]) {
+      prev[cur[property]] = [];
+    }
+    prev[cur[property]].push(cur)
+    return prev
+  }, {})
+}groupBy(people, 'age')
+/* 
+{
+  "20": [
+    {
+      "name": "Max",
+      "age": 20
+    },
+    {
+      "name": "Jane",
+      "age": 20
+    }
+  ],
+  "21": [
+    {
+      "name": "Alice",
+      "age": 21
+    }
+  ]
+} */
+```
+
+- 二维数组变成一维数组
+```js
+let arr = [[0, 1], [2, 3], [4, 5]]
+let rusult = arr.reduce((prev, cur, index, ary) => {
+  return [...prev, ...cur]
+}, [])
+console.log(rusult);  // [0, 1, 2, 3, 4, 5]
+```
+
+- 计算数组里面的每一项有多少个
+```js
+var names = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'];
+
+let name = names.reduce((prev, cur) => {
+  if(prev[cur]) {
+    prev[cur] ++;
+  } else {
+    prev[cur] = 1;
+  }
+  return prev
+}, {})
+
+console.log(name);  // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
+```
+
+### 15. Event Loop

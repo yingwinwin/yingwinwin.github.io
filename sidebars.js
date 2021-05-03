@@ -18,18 +18,13 @@ module.exports = {
         },
         {
           type: "category",
-          label: "类", // 二级标题
-          items: [], // 继承和原型
-        },
-        {
-          type: "category",
           label: "设计模式",
           items: ["onEmit", "obverse"],
         },
         {
           type: "category",
           label: "异步",
-          items: ["promise"],
+          items: ["asyn_base", "promise"],
         },
         {
           type: "category",
