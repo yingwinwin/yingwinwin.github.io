@@ -193,7 +193,7 @@ let p = new Person();  // 实例对象
 // Person.prototype.constructor 原型对象
 console.log(Person.prototype.constructor === p.constructor);  // true
 ```
-- 继承 ES5
+- 继承 ES5 （寄生组合继承）
 ```js
   function Person(name) {
     this.name = name;
@@ -201,7 +201,9 @@ console.log(Person.prototype.constructor === p.constructor);  // true
   Person.prototype.dance = function () {
     return this.name + '会跳舞'
   }
-  function Chilren() {};
+  function Chilren(name) {
+    Person.call(this, name)  // 获得属性
+  };
 
   // 孩子的原型指向父亲的实例，这个时候孩子的costructor会失去，通过原型链查找会找到父亲的
   Chilren.prototype = new Person();
@@ -219,7 +221,7 @@ console.log(Person.prototype.constructor === p.constructor);  // true
   console.log(Person.prototype.constructor);  // 父亲的函数
   console.log(child.__proto__.constructor === child.constructor);  // true
 ```
-- 继承ES6
+- 继承ES6，class是语法糖，本质就是函数
 ```js
 class Person{
     constructor(name) {
@@ -242,3 +244,50 @@ class Person{
   let c = new Chilren(20);
   console.log(c.__proto__.constructor === c.constructor);  // true
 ```
+
+### 10. 闭包
+- 当作用域消失之后，依旧可以使用变量，闭包使函数更搞笑，但是会消耗一定的内存成本
+- 私有变量
+```js
+function Add() {
+  let count = 0;
+  // 函数在创建的时候，有一个作用域，可以获取当前作用域里面的变量
+  // 在执行的时候使用
+  this.getCount = function () {
+    return count;
+  }
+
+  this.count = function () {
+    return count ++;  // 可以是其他业务代码，更复杂的逻辑
+  }
+}
+let add = new Add()
+console.log(add.getCount());  // 0
+console.log(add.count());  // 0
+console.log(add.count()); // 1
+```
+- 回调函数
+```js
+function animateIt(elementId) {
+  // elem tick timer都是内部变量
+  // 定时器的回调函数中，每一次调用都可以拿到当前闭包中的内部变量
+  // 当再次复用这个逻辑的时候，这三个变量就是另一个空间的了，达到了一个逻辑复用
+  // 每一个函数和变量都是独立的
+  let elem = document.getElementById(elementId);
+  let tick = 0;
+  let timer = setInterval(function () {
+    if(tick < 100) {
+      elem.style.left = elem.style.top = tick + 'px';
+      tick ++;
+    } else {
+      clearInterval(timer);
+    }
+  }, 10)
+}
+animateIt('box')
+```
+
+### 11. 变量 和 变量提升
+- 函数声明提升，箭头函数和变量命名的函数都不会有声明提升
+- var变量存在变量提升，let 和 const没有，所以会出现暂时性死区
+- const不能声明的变量不可以重新复制 let可以
