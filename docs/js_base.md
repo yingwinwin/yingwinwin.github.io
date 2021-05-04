@@ -246,7 +246,7 @@ class Person{
 ```
 
 ### 10. 闭包
-- 当作用域消失之后，依旧可以使用变量，闭包使函数更搞笑，但是会消耗一定的内存成本
+- 当作用域消失之后，依旧可以使用变量，闭包使函数更高效，但是会消耗一定的内存成本
 - 私有变量
 ```js
 function Add() {
@@ -301,37 +301,155 @@ animateIt('box')
 2. CommonJS是同步导入，用于服务端；ES Module异步导入，用于浏览器，不会阻碍进程
 3. CommonJS是值拷贝，要更新要重新导入；ES Module引用拷贝，同步更新值
 
-### 13. Proxy
-- TODO: 暂时看不懂，没有在项目中用过
+### 13. getter setter Proxy
+- 创建getter setter的方式 字面量，class，defineProperty
+- 用处: 处理记录日志，数据验证，属性值变化检测
 ```js
-  // 数据响应
-  let onWatch = (obj, setBind, getLogger) => {
-    let handler = {
-      get(target, property, receiver) {
-        getLogger(target, property)
-        return Reflect.get(target, property, receiver)
-      },
-      set(target, property, value, receiver) {
-        setBind(value, property)
-        return Reflect.set(target, property, value)
-      },
-    }
+// 通过字面量创建 getter  setter
+let obj = {
+  name: ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice'],
+  set fitstName(value) {
+    this.name[0] = value;
+  },
+  get fitstName() {
+    return this.name[0]
+  }
+}
+obj.fitstName = 'yingwinwin' 
+console.log(obj.name);  // ["yingwinwin", "Bob", "Tiff", "Bruce", "Alice"]
 
-    return new Proxy(obj, handler);
+
+// 通过class类来创建 getter  setter
+class Name {
+  constructor(){
+    this.name = ['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice']
   }
 
-  let obj = { a : 1};
-  let p = onWatch(
-    obj,
-    (v, property) => {
-      console.log(property, v, 'set');
+  get fitstName() {
+    return this.name[0]
+  }
+
+  set fitstName(value) {
+    this.name[0] = value;
+  }
+}
+
+let names = new Name();
+names.fitstName = 'yingwinwin'
+console.log(names.name); // ["yingwinwin", "Bob", "Tiff", "Bruce", "Alice"]
+
+// 使用Object.defineProperty()
+function Add() {
+  let _count = 0;  // 内部变量,外面只能获取count
+  Object.defineProperty(this, 'count', {
+    get: () => {
+      return _count ++
     },
-    (target, property) => {
-      console.log(target[property], target,'get');
+    set: (value) => {
+      _count = value
+    }
+  })
+}
+let add = new Add()
+console.log(add._count);  // undefined
+console.log(add.count);  // 1
+console.log(add.count);  // 2
+console.log(add.count = 2);  // 2
+```
+
+- Proxy
+```js
+// 基本使用
+const emperor = {name: 'yingwinwin'};
+let proxy = new Proxy(emperor, {
+  // 参数1是当前传入的对象，参数2是当前获取的key
+  get: (target, key) => {
+    return key in target ? target[key] : '不存在该属性';
+  },
+  // 参数1是当前传入的对象，参数2是当前获取的key，参数3是当前设置的值
+  set: (target, key, value) => {
+    target[key] = value
+  }
+});
+emperor.name = 'zy'
+console.log(proxy.name);  // zy
+```
+- 记录代理日志
+```js
+function makeLoggable(target) {
+  return new Proxy(target, {
+    get: (target, property) => {
+      console.log('记录得到数值的日志');
+      return target[property]
     },
-  )
-  p.a = 2;  // set
-  p.a  // get
+    set: (target, property, value) => {
+      console.log('记录设置数值的日志');
+      target[property] = value;
+    }
+  })
+}
+
+let names = {name: 'yinwinwin'};
+names = makeLoggable(names);
+names.name  // 走get方法，输出：记录得到数值的日志
+```
+- 用Proxy包裹进行函数性能测试
+```js
+isPrime = new Proxy (isPrime, {
+  // 当前传入的函数，this，和参数
+  apply: (target, thisArg, args) => {
+    console.time('isPrime');
+    const result = target.apply(thisArg, args);
+    console.timeEnd('isPrime');
+
+    return result;
+  }
+})
+
+console.log(isPrime(1299827));  // true isPrime: 5.341064453125 ms
+```
+
+- 使用代理属性自动填充
+```js
+function Folder() {
+  return new Proxy({}, {
+    get: (target, property) => {
+      if(!(property in target)) {
+        target[property] = new Folder();
+      }
+
+      return target[property]
+    }
+  })
+}
+
+const rootFolder = new Folder()
+
+rootFolder.a.b.c = '123'
+
+console.log(rootFolder.a.b.c);  //123
+```
+
+- 给数组添加负数取值
+```js
+function creatNegativeArrayProxy(array) {
+  if(!Array.isArray(array)) {
+    throw new TypeError('类型错误，非array')
+  }
+
+  return new Proxy(array, {
+    get: (target, index) => {
+      index = +index;
+      return target[index < 0 ? target.length + index : index];
+    },
+    set: (target, index, val) => {
+      index = +index;
+      return target[index < 0 ? target.length + index : index] = val;
+    }
+  })
+}
+let arr = creatNegativeArrayProxy([1,2,3,4]);
+console.log(arr[-1]);  // 4
 ```
 
 ### 14. filter, map, reduce
@@ -447,3 +565,4 @@ console.log(name);  // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
 ```
 
 ### 15. Event Loop
+

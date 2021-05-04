@@ -42,12 +42,12 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "高阶函数",
-              to: "docs/highFc",
+              label: "JS基础",
+              to: "docs/js_base",
             },
             {
-              label: "设计模式",
-              to: "docs/onEmit",
+              label: "问题总结",
+              to: "docs/errors",
             },
           ],
         },
