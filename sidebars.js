@@ -26,16 +26,6 @@ module.exports = {
           label: "异步",
           items: ["asyn_base", "promise"],
         },
-        {
-          type: "category",
-          label: "API实现",
-          /* 
-            1.函数：bind，call，apply
-            2.数组：forEach，map，filter，some，every，reduce
-            3.类：create
-          */
-          items: ["call"],
-        },
         "utilsFunction"
       ],
     },
@@ -88,7 +78,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "看书总结", // 一级标题
-      items: [], // js忍者秘籍， 你不知道的js123， js高级程序设计3， 犀牛书, css3解密
+      items: [], // js忍者秘籍， 你不知道的js123， js高级程序设计3
     },
   ],
 };

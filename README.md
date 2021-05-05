@@ -9,10 +9,15 @@
     3. 遇到不会的问题，记下来，现在如果解决不了，总有一天会解决的。有问题说明遇到了自己的知识盲目。只要不断的学习，就会遇到那个知识。         
 - 记录自己在学习之后的总结
     - 2021年上半年目标：
-    1. 读书: js忍者秘籍、你不知道的js中、css世界（6月末前）
-    2. 学习react相关源码部分，完成公司的hook分享打下基础
-    3. 封装自己的组件库--搭好环境(react + hook + ts + webpack + jest + storybook)
-    4. vscode插件制作学习（公司需要出一个代码检视的IDE工具）
+    1. 读书: 
+        - [x] ~~js忍者秘籍~~--待整理
+        - [ ] css世界
+    2. 学习部分react源码
+       - [ ] 合成事件
+       - [ ] setState
+       - [ ] Virtual DOM
+    3. - [ ] 封装自己的组件库--搭好环境(react + hook + ts + webpack + jest + storybook)
+    4. - [ ] vscode插件制作学习（公司需要出一个代码检视的IDE工具）
 
 ### 博客
 - [基于的Docusaurus博客部署](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8docusaurus%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%8C%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%88%B0github%20pages)
@@ -30,9 +35,10 @@
 ### 在更新的内容
 - [react中使用ts遇到的问题总结](https://yingwinwin.github.io/docs/reactUseTs)
 - [开发时遇到的问题总结](https://yingwinwin.github.io/docs/errors)
+- [js基础](http://localhost:3000/docs/js_base)
 ### 其他
 
 - 愿望：希望自己可以少加班，多学习。
-- 我会努力更新的...天分不够，只能靠努力了，加油！
+- You're never wrong to do the right thing.
 ### 具体内容看博客地址
 - [yingwinwin的博客](https://yingwinwin.github.io/)

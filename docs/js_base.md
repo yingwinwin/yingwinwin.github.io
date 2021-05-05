@@ -34,6 +34,7 @@ console.log(p2); // {name: "yyy", age: 30}
 - typeof可以判断除了null的值类型
 - 所以用instanceof判断是比较好的选择（instanceof内部机制是通过`原型链`来判断的）
 - 用instancheof判断原始类型
+- Object.prototype.toString.call()
 ```js
 class String1 {
 // 用Symbol.hasInstance来自定义当前的instanceof的行为
@@ -293,9 +294,18 @@ animateIt('box')
 - const不能声明的变量不可以重新复制 let可以
 
 ### 12. 模块化
+- IIFE
+  1. 用闭包环境创建私有变量
+  2. 如果包扩展了之后，导致几个闭包环境的，私有变量不能共享，就会有引入先后的问题
 - AMD
-- CMD
+  1. 主要提供给浏览器端使用，解决包模块的顺序调用
+  2. 异步加载模块，避免阻塞
+  3. 在同一个文件中可以定义多个模块
+- UMD (可以同时支持AMD 和 commonJs)
 - CommonJS
+  1. 主要提供给Js宿主环境，node
+  2. 直接引入文件，不用做异步处理，比较受服务端node的环境
+  3. 语法module.exports 导出 require 导入，使用较为简单
 - ES Module
 1. CommonJS支持动态导入；ES Module不支持
 2. CommonJS是同步导入，用于服务端；ES Module异步导入，用于浏览器，不会阻碍进程
@@ -565,4 +575,155 @@ console.log(name);  // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
 ```
 
 ### 15. Event Loop
+**事件循环的两个基本原则**
+- 一次处理一个任务
+- 一个任务开始后直到运行完成，不会被其他任务中断
 
+**微任务和宏任务**
+- 单次循环迭代中，最多处理一个宏任务（其余的在队列中等待）
+- 微任务在一次循环内都会被处理掉
+- 单次循环的微任务处理完成之后，会检查是否需要更新UI渲染。如果需要就更新。
+- 此时第一次循环结束，开启第二次循环。
+
+**注意**
+- 两个任务队列是独立于事件循环的，事件的监听和添加任务是独立于事件循环的，保证了在循环过程中是可以添加时间到循环中的，不然在循环的时候用户如果触发了动作，就会被忽略，从而加不到队列当中。
+- 在执行任务的时候，就不可能中断了
+- 微任务在渲染前完成
+- 浏览器每秒尝试渲染60次，所以一帧大概是16ms，如果是几百ms都是察觉不到的，但是如果任务的执行时间过长，浏览器可能会终止任务。
+
+```js
+// 使用宏任务来分割一个过于庞大的UI渲染
+```
+
+### 16. 事件委托
+**事件冒泡**
+- 点击的元素会从小到大，依次触发
+
+**事件捕获**
+- 点击的元素会从大到小，依次触发
+
+**事件执行的过程**
+- 如果设置了捕获会先捕获 -> 到达冒泡元素 -> 开始向上进行冒泡
+- 浏览器的默认执行冒泡的
+```html
+<body>
+  <div id="outer">
+    <div id="inner"></div>
+  </div>
+</body>
+<!-- 点击inner -->
+<script>
+  const innerElement = document.querySelector("#inner")
+  const outerElement = document.querySelector("#outer")
+  const bodyElement = document.querySelector("body")
+
+  innerElement.addEventListener('click', function () {
+    console.log('inner');
+  })
+  outerElement.addEventListener('click', function () {
+    console.log('outer');
+  }, true)  // 捕获
+  innerElement.addEventListener('click', function () {
+    console.log('body');
+  })
+  // outer inner  body
+</script>
+```
+**事件委托**
+- 点击子元素，冒泡到父元素。通过拿到子元素的事件对象，触发动作
+- 当父元素作为事件处理器的注册元素的时候，这个时候this指向的是父元素。点击父亲中的一个子元素，这个时候父亲事件对象event.target，不是指向父元素的，也就是说和this并不是同一个对象，而是指向当前点击的子元素。就是这样完成了事件代理。
+
+
+### 17. call,apply,bind
+**call**
+```js
+/* 
+    call的特点
+    1. 可以改变我们当前函数的this指向，call的第一个参数，后面的参数会当做参数传到函数中
+    2. 还会让当前call前面的这个函数执行
+*/
+
+// this 是fn2,执行还是fn1
+function fn1(a, b) {
+  console.log(this); // 会执行这里
+  return a + b;
+}
+
+function fn2() {
+  console.log(2); // 这里不会执行
+}
+
+Function.prototype.myCall = function (context) {
+  if(typeof this !== 'function') {
+    throw new Error('is not funciton');
+  }
+  context = context ||window;
+  context.fn = this;  // 考虑到对象的指向问题，所以要复制到一个空属性上一份
+  let args = [...arguments].slice(1);  // 拿第一项的后面参数
+  let result = context.fn(...args);  // 调用取返回值
+  delete context.fn;  // 删掉无用的属性
+  return result; // 返回返回值
+};
+
+console.log(fn1.myCall(fn2, 1, 2)); // 打印fn1函数，this是fn2  3
+```
+
+**apply**
+```js
+  // this 是fn2,执行还是fn1
+function fn1(a, b) {
+  console.log(this); // 会执行这里
+  return a + b;
+}
+
+function fn2() {
+  console.log(2); // 这里不会执行
+}
+
+Function.prototype.myApply = function (context) {
+  if(typeof this !== 'function') {
+    throw new Error('is not funciton');
+  }
+  context = context ||window;
+  context.fn = this;  // 考虑到对象的指向问题，所以要复制到一个空属性上一份
+  let result;
+  if (arguments[1].length) {
+    result = context.fn(...arguments[1]);  // 调用取返回值
+  } else {
+    result = context.fn();
+  }
+  delete context.fn;  // 删掉无用的属性
+  return result; // 返回返回值
+};
+
+console.log(fn1.myApply(fn2, [1, 2])); // 打印fn1函数，this是fn2  3
+```
+**bind**
+```js
+Function.prototype.MyBind = function (context) {
+  if (typeof this !== 'function') {
+    throw new Error('is not a function');
+  }
+  let _this = this;
+  let args = [...arguments].slice(1);
+  return function fn() {
+    // 如果是new的
+    if(this instanceof fn) {  // 如果是 new 忽略传入的this
+      return new _this(...args, ...arguments);
+    }
+    // 直接用apply，绑定，然后返回一个新的函数。
+    return _this.apply(context, args.concat(...arguments))
+  }
+}
+let moudle = {
+  x: 1,
+  getx: function () {
+    return this.x
+  }
+}
+
+let fn1 = moudle.getx;
+console.log(fn1());  // undefined
+let fn2 = fn1.MyBind(moudle);
+console.log(fn2());  // 1
+```
