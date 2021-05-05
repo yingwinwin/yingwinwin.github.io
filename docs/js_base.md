@@ -91,8 +91,8 @@ console.log('hello' instanceof String1);
 - 函数的调用方式有四种(对应四种this的取值)
 1. 直接调用foo() —> window
 2. 当做对象的方法调用obj.foo() -> 指向对象
-3. 构造函数调用new foo()  ->  指向当前实例
-4. call apply方法调用 -> this指向call 和 apply 的第一个参数，连续调用只认第一个方法
+3. 构造函数调用new foo()  ->  指向当前实例，就不会在改变了bind无效
+4. call apply方法调用 -> this指向 call 和 apply 的第一个参数，连续调用只认第一个
 
 ### 8. 拷贝
 - 浅拷贝
@@ -605,6 +605,7 @@ console.log(name);  // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
 **事件执行的过程**
 - 如果设置了捕获会先捕获 -> 到达冒泡元素 -> 开始向上进行冒泡
 - 浏览器的默认执行冒泡的
+- 如果给body身上绑定了两个时间，同时冒泡和捕获，会按照注册顺序执行，而不是先捕获在冒泡
 ```html
 <body>
   <div id="outer">
@@ -632,6 +633,7 @@ console.log(name);  // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
 **事件委托**
 - 点击子元素，冒泡到父元素。通过拿到子元素的事件对象，触发动作
 - 当父元素作为事件处理器的注册元素的时候，这个时候this指向的是父元素。点击父亲中的一个子元素，这个时候父亲事件对象event.target，不是指向父元素的，也就是说和this并不是同一个对象，而是指向当前点击的子元素。就是这样完成了事件代理。
+- 优点：节省内存
 
 
 ### 17. call,apply,bind
@@ -657,7 +659,7 @@ Function.prototype.myCall = function (context) {
   if(typeof this !== 'function') {
     throw new Error('is not funciton');
   }
-  context = context ||window;
+  context = context || window;
   context.fn = this;  // 考虑到对象的指向问题，所以要复制到一个空属性上一份
   let args = [...arguments].slice(1);  // 拿第一项的后面参数
   let result = context.fn(...args);  // 调用取返回值
@@ -727,3 +729,81 @@ console.log(fn1());  // undefined
 let fn2 = fn1.MyBind(moudle);
 console.log(fn2());  // 1
 ```
+
+### 18. 跨域
+> 浏览器协议、域名、端口有一个不同就是跨域，Ajax请求会失败，为了安全考虑
+> CSRF攻击：利用用户的登录状态发起恶意请求
+
+- JSONP
+1. 利用`<script>`标签没有跨域限制的漏洞
+2. 简单，兼容性好，但是只能用于get请求
+
+- CORS
+1. 需要浏览器和后端同时支持
+2. 需要服务端设置请求头：Access-Control-Allow-Origin
+
+- document.domain
+1. 只能用于二级域名相同的情况下，比如a.test.com, b.test.com
+2. 只需要给页面添加document.domain = test.com 表示二级域名都相同可以实现跨域。
+
+- postMessage(待补充)
+1. 用于获取嵌入页面的第三方页面数据
+
+### 19. 储存
+| 特性 | cookie | localStorage | sessionStorage | indexDB |
+| :-: | - | - | - | - |
+| 数据生命周期 | 一般由服务器生成，可以设置过期时间 | 除非被清理，否则一直存在 | 页面关闭就清理 | 除非被清理，否则一直存在 |
+| 数据储存大小 | 4k | 5M | 5M | 无限 |
+| 与服务端通信 | 每次都会携带在header中，对于请求性能有影响 | 不参与 | 不参与 | 不参与 |
+
+- service Worker
+1. 用来实现缓存功能
+2. 使用时保证传输必须是HTTPS
+3. 注册 -> 监听install事件 -> 判断缓存中是否存在，存在就取缓存中的，不存在就重新请求
+
+### 20. 浏览器缓存机制
+**存储位置**
+- Service Worker
+1. 可以自由控制缓存哪些文件，匹配缓存，读取缓存。
+2. 如果没有命中请求回来，浏览器依旧显示Service Worker
+
+- Memory Cache
+1. 内存缓存，高效，但持续时间短
+2. 页面关闭就会失效
+3. 一般不会存贮大文件 和 频繁读取的文件
+
+- Disk Cache
+1. 硬盘缓存，读取速度慢一些，但是可以存储的空间大
+2. 根据header请求头来判断那些资源需要缓存
+
+**缓存策略**
+
+- 强缓存
+1. Expries
+   + Http/1 根据绝对时间判断是否需要缓存
+   + 受限于本地时间，本地时间修改会影响该缓存
+2. Cache-control
+   + Http/1.1 优先级高于Expries，根据相对时间来判断是否需要缓存
+   + 可以设置多种指令`max-age=30`等
+
+- 协商缓存
+1. Last-Modified
+   + 协商缓存成功返回304状态码
+   + 表示当前的文件最新修改时间
+   + If-Modified-Since，通过对比请求头的时间，来判断是否需要进行请求
+   + 缺点：1. 时间过期文件没有修改依旧会请求 2. 以秒计时，如果当前文件更改在1秒内，服务器同样不会更新
+2. Etag
+   + 用算法计算当前文件是否有修改过，类似每一个文件有一个对应的id，修改过id会改变
+   + 通过If-None-Match对比后端存入的值，看是否需要请求操作
+   + 优先级高于Last-Modified
+
+- 启发式缓存：如果没有设置缓存策略，浏览器会自己在响应头中用Date - Last-Modified值的10%作为缓存时间
+
+- 往返缓存：浏览器为了在用户页面间执行前进后退操作时拥有更加流畅体验的一种策略。该策略具体表现为，当用户前往新页面时，将当前页面的浏览器DOM状态保存到`bfcache`中；当用户点击后退按钮的时候，将页面直接从`bfcache`中加载，节省了网络请求的时间。
+
+### TODO
+1. 性能优化
+2. 安全
+3. http
+4. 设计模式
+5. 数据结构与算法
