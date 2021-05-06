@@ -807,3 +807,8 @@ console.log(fn2());  // 1
 3. http
 4. 设计模式
 5. 数据结构与算法
+6. webpack vite
+7. ssr
+8. node
+9. git
+10. react源码fiber

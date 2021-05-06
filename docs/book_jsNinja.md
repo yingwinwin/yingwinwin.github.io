@@ -1,4 +1,4 @@
 ---
 id: jsNinja
-title: 《js忍者秘籍》笔记
+title: 《JavaScript忍者秘籍》第二版
 ---

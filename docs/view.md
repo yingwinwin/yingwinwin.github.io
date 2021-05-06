@@ -144,3 +144,20 @@ console.log(4);
 8. 关注的公众号，社区，有哪些？
 
 - 总结：需要背诵专业名词，单词。[发音参考](https://github.com/shimohq/chinese-programmer-wrong-pronunciation)
+
+### 2. 涂鸦智能（一面，二面）
+1. react fiber -- 为什么取消will那些生命周期
+2. 问了 http 和 webpack 都不会
+3. input下载文件
+4. 浏览器地址输入后都发生了什么
+5. 浏览器缓存
+6. hook的钩子 useCallback useMemo
+7. 函数组件怎么拿ref --- forwardRef
+8. setState的执行
+9. let const
+10. Module框实现有几种方法
+11. 微前端隔离用什么实现的？
+12. react-router的实现
+13. 跨域 -- iframe
+14. ssr -- 不会
+15. node -- 不会
