@@ -4,9 +4,16 @@
         <title>yingwinwin的前端之路 Blog</title>
         <link>https://yingwinwin.github.io/blog</link>
         <description>yingwinwin的前端之路 Blog</description>
-        <lastBuildDate>Sat, 24 Apr 2021 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 07 May 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[react项目搭建]]></title>
+            <link>https://yingwinwin.github.io/blog/react项目搭建</link>
+            <guid>react项目搭建</guid>
+            <pubDate>Fri, 07 May 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[webpack搭建react项目]]></description>
+        </item>
         <item>
             <title><![CDATA[history API 总结]]></title>
             <link>https://yingwinwin.github.io/blog/history API 总结</link>
