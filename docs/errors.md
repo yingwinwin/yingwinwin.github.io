@@ -78,3 +78,19 @@ Expected an assignment or function call and instead saw an expression  no-unused
 </style>
 ```
 ![image](../static/resource/label.png)
+
+
+### 8. sticky使用问题
+```css
+position: sticky;
+```
+- sticky使用时，因为缩放比例不是100%，导致浏览器中页面抖动，修改为100%就好了
+- 如果出现空白。大佬说：translateZ(0px) 启动一下硬件加速（还不懂什么意思）
+- 如果要获取offsetTop，js中fixed是获取不到高度的，但是sticky可以。
+
+### 9. 滚动穿透
+```css
+overflow: hidden;
+/* 或者 */
+pointer-events none
+```

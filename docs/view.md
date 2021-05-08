@@ -131,6 +131,22 @@ async function a() {
 console.log(4);
 ```
 
+### 6. promise
+```js
+new Promise (function (resolve, reject) {
+    reject(resolve(1) || 0);
+  }).then((x) => {
+    return Promise.reject(x)
+  }, (x) =>{
+    return Promise.reject(x + 2)
+  }).then((x) => {
+    console.log(x);
+  }, (x) =>{
+    console.log(x + 4);
+  })
+  // 5 promise状态更改之后，不会再更改了。在内部resolve先执行，状态先改掉了
+```
+
 ## 面试复盘
 ### 1. 阿里外包，菜鸟（电话一面）
 
