@@ -68,7 +68,13 @@ module.exports = {
     {
       type: "category", // 类别
       label: "CS基础", // 一级标题
-      items: [], // HTTP协议，数据结构，算法等等
+      items: [
+        {
+          type: "category",
+          label: "数据结构",
+          items: ["ds_list"], // 栈，队列，链表，树
+        },
+      ], // HTTP协议，数据结构，算法等等
     },
     {
       type: "category", // 类别
