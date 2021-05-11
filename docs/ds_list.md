@@ -88,14 +88,75 @@ title: 链表
       
       return current.data;
     }
+
+    ListLink.prototype.indexOf = function (data){
+      let current = this.head;
+      let index = 0;
+
+      while(current) {
+        if(current.data === data) {
+          return index
+        }
+        current = current.next;
+        index++;
+      }
+      return -1;
+    }
+
+    ListLink.prototype.update = function (position, newdata) {
+      if (position < 0 || position >= this.length) return false;
+      let current = this.head;
+      let index = 0;
+      while(index++ < position) {
+        current = current.next;
+      }
+      current.data = newdata;
+      return true;
+    }
+
+    ListLink.prototype.removeAt = function (position) {
+      if (position < 0 || position >= this.length) return null;
+      let current = this.head;
+      if(position === 0) {
+        this.head = this.head.next
+      } else {
+        let index = 0;
+        let previous = null;
+        while(index++ < position) {
+          previous = current;
+          current = current.next;
+        }
+
+        previous.next = current.next; // 上一个节点指向当前节点的下一个节点
+      }
+      this.length -=1
+      return current.data;
+    }
+
+    ListLink.prototype.remove = function (data) {
+      return this.removeAt(this.indexOf(data))
+    }
+
+    ListLink.prototype.isEmpty = function () {
+      return !this.length
+    }
+    ListLink.prototype.size = function () {
+      return this.length
+    }
 }
 
 let list = new ListLink();
+console.log(list.isEmpty()); //不包含任何元素返回true
 list.append('abc')
 list.append('cba')
 list.append('aaa')
 list.insert(2, 'ccc')
+list.update(3, 'bbb')
+console.log(list.indexOf('ccc'));  // 2
 console.log(list.get(2)); // ccc
-
-console.log(list.toString());  // abc cba ccc aaa
+console.log(list.removeAt(2));  // ccc
+console.log(list.remove('cba'));  // cba
+console.log(list.isEmpty());  // 包含元素返回true
+console.log(list.size());  // 2
+console.log(list.toString());  // abc bbb 
 ```
