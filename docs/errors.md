@@ -94,3 +94,26 @@ overflow: hidden;
 /* 或者 */
 pointer-events none
 ```
+
+### 10. react组件卸载后setState
+- 报错：`Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function.`
+- 问题是因为请求的时候，没有任何loading状态，这个时候用户点击其他操作，在页面已经卸载的时候，请求才刚刚完成，就会造成，在页面卸载之后进行setState的操作。出现报错信息。
+```js
+let [state, setState] = useState()
+useEffect(() => {
+    /* 
+        1.设置一个query变量
+        2.如果这个时候页面卸载了，query变成false，就不会进行state的设置
+        3.利用了闭包的原理，query的值不会丢
+    */
+    let query = true;
+    new Promise().then(res => {
+        if(query) setState(res);
+    }).catch((err) => err);
+
+    return () => {
+        // 组件卸载时置为false
+        query = false;
+    }
+}, [])
+```

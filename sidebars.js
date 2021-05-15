@@ -72,7 +72,7 @@ module.exports = {
         {
           type: "category",
           label: "数据结构",
-          items: ["ds_list"], // 栈，队列，链表，树
+          items: ["ds_list", "ds_doublyLinkedList"], // 栈，队列，链表，树
         },
       ], // HTTP协议，数据结构，算法等等
     },
