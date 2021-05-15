@@ -46,3 +46,40 @@ function regExpase(string) {
   return (string && regSource.test(string)) ? string.replace(reg, '\\$&') : (string || '');
 }
 ```
+
+### 常用正则
+```js
+
+```
+
+## 节流、防抖
+
+### 节流
+```js
+function throttle(fn, delay = 500) {
+  let run = true;
+
+  return function () {
+      if(!run) return;
+      run = false;
+      setTimeout(() => {
+          fn.apply(this, arguments);
+          run = true;
+      }, delay)
+  }
+}
+```
+
+### 防抖
+```js
+function debounce(fn, delay = 500) {
+  let timer = null;
+
+  return function () {
+    clearTimeout(timer);
+    let timer = setTimeout(() => {
+      fn.apply(this, arguments)
+    }, delay)
+  }
+}
+```
