@@ -9,7 +9,7 @@ title: 双向链表
 > 2. 占用的更多的内存空间
 
 ```js
-// 单独的节点
+  // 单独的节点
   class DoublyNode {
     constructor(data){
       this.next = null;
@@ -39,7 +39,7 @@ title: 双向链表
       this.length ++;  // 添加长度
     }
 
-    inset(position, data) {
+    insert(position, data) {
       if(position < 0 || position > this.length) return false;
       let newNode = new DoublyNode(data);
 
@@ -69,12 +69,41 @@ title: 双向链表
         return true;
       }
     }
+    removeAt(position) {
+      if(position < 0 || position > this.length - 1) return null;
+      if (position === 0) {
+        if(this.length === 1) {
+          this.head = null;
+          this.tail = null;
+        } else {
+          this.head = this.head.next;  // head指向head的下一个节点
+          this.head.prev = null;   // 然后上一个节点指向null;
+        }
+      } else if (position === this.length - 1) {
+        this.tail.prev.next = null;
+        this.tail = this.tail.prev;
+      } else {
+        let index = 0;
+        let current = this.head;
+        let previos = null;
+        while(index ++ < position) {
+          previos = current;  // 保持起来前一项
+          current = current.next;  // 往后挪一项
+        }
+
+        previos.next = current.next;
+        current.next.prev = previos;
+      }
+      this.length --;
+    }
   }
+
 
   let listLinked = new DoublyLinkList();
   listLinked.append('aaa')
   listLinked.append('bbb')
-  listLinked.inset(1, 'ccc')
-  listLinked.inset(3, 'ddd')
+  listLinked.insert(1, 'ccc')
+  listLinked.insert(3, 'ddd')
+  listLinked.removeAt(3)
   console.log(listLinked);
 ```
