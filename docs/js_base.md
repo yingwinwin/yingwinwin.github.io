@@ -181,7 +181,7 @@ newObj.b[0].a = 'c';
 console.log(newObj, obj);
 ```
 
-### 9. 原型 和 继承
+### 9. 原型 和 继承 new 操作符实现
 - 每一个对象身上都一个原型，原型上的`constructor`属性指向，当前的对象。
 - 该原型对象创建出来的，实例对象的`constructor`属性同样指向该原型对象
 - 一般不会改变`constructor`属性。instanceof 是通过原型链来判断是否是当前的引用。
@@ -244,6 +244,31 @@ class Person{
   let p = new Person('ZY');
   let c = new Chilren(20);
   console.log(c.__proto__.constructor === c.constructor);  // true
+```
+- new操作符
+```js
+  function Person(name) {
+    this.name = name;
+  }
+
+  Person.prototype.getName = function () {
+    return this.name;
+  }
+
+  let objectFactory = function () {
+    let obj = new Object();  // 创建一个新的对象
+    let Constructor = [].shift.call(arguments);  // 获取传入的构造器赋值给constructor
+    obj.__proto__ = Constructor.prototype; // 把对象的原型指向传入的构造器  也就是person
+    let ret = Constructor.apply(obj, arguments);  // 借用Person设置属性
+    // 确保返回一个对象，也就是如果person构造器写了return 而且是一个对象，就返回写了的return对象
+    return typeof ret === 'object' ? ret : obj;  
+  }
+
+  // 与new结果相同
+  let a = objectFactory(Person, 'new');
+  let b = new Person('new');
+  console.log(a.getName()); // new
+  console.log(b.getName());  // new
 ```
 
 ### 10. 闭包
