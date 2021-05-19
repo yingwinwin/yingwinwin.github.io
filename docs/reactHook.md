@@ -2,317 +2,841 @@
 id: reactHook
 title: Hook基本使用
 ---
+# hook原理浅析
+## 1. 介绍
 
-### Hello World! 
-```jsx
-import React from 'react';
+> react-hooks
+> 第一：解决函数组件状态不能保存的问题。
+> 第二：解决类组件逻辑复用难的问题。
 
-/* 定义传入的接口类型 */
-interface IHelloProps {
-    message?: string;
-}
+- 带着问题去进行学习。
+1. 函数组件不像`class`组件中有实例挂载属性，那么`hook`中的状态是怎么储存的？
+2. `react`官网中说，不能在`if`语句中声明`hook`的原因是什么？
+3. `useEffect` 和 `useLayoutEffect` 的区别是什么？
+4. `useCallback` 和 `useMemo` 的区别是什么？
 
-/* 泛型定义 */
-const Hello: React.FC<IHelloProps> = (props) =>  {
-    return <h2>{props.message}</h2>
-}
+- 预备知识：
+1. 最好使用过hook
+2. 有js基础，理解闭包和事件循环
 
-/* 设置传入的默认值 */
-Hello.defaultProps = {
-    message: 'Hello World!'
-}
+## 2. hook原理
 
-export default Hello;
-```
+- **说在前面**：原理不是源码，原理只是用更好理解的方法，体现出源码的思维，跟源码还是有一定区别的。原理学习过后，也会对自己书写的一些代码更加理解。
 
-### hooks
-- 组件很难复用状态逻辑，之前需要用HOC 和 render props
-- 复杂组件难以理解，尤其是生命周期函数
-
-
-### useState
-- const = [ like, setlike ] = useState(0) 设置初始值，是数字。解构数组，第一个参数是默认的state值，第二个参数是改变第一个参数的方法
-```jsx
-import React, { useState } from 'react'
-
-const LikeButton: React.FC = () => {
-    const [ Like, setLike ]  = useState(0);
-    const [ on, setOn ] = useState(true);
-    return <>
-    <button onClick={() => {setOn(!on)}}>
-        {on ? 'ON' : 'OFF'}
-    </button>
-    <button onClick={() => {setLike(Like + 1)}}>
-        {Like}
-    </button>
-    </>
-}
-
-export default LikeButton;
-```
-
-### useEffect(副作用)
-- useEffect，第一个参数是个函数，第一个是个数组。返回值是一个函数。
-> 不需要清除副作用
-```jsx
-import React, { useState, useEffect } from 'react'
-
-const LikeButton: React.FC = () => {
-    const [ Like, setLike ]  = useState(0);
-    const [ on, setOn ] = useState(true);
-    /* 不需要清除副作用时 */
-    useEffect(() => {
-        document.title = `点击了${Like}次`
-        /* 只有在like改变的时候才触发，否则不触发 */
-    }, [Like])
-    return <>
-    <button onClick={() => {setOn(!on)}}>
-        {on ? 'ON' : 'OFF'}
-    </button>
-    <button onClick={() => {setLike(Like + 1)}}>
-        {Like}
-    </button>
-    </>
-}
-
-export default LikeButton;
-```
-
-> return 中写清除副作用的逻辑，在useEffect第二个参数中当谁改变的时候触发副作用
-
-```jsx
-import React, { useState, useEffect} from 'react';
-
-const MouseTracker: React.FC = () => {
-    const [ positions, setPosition ] = useState({ x: 0, y: 0 })
-    useEffect(() => {
-        const changePosition = (e: MouseEvent) => {
-            setPosition({x : e.clientX, y: e.clientY})
+### 2.1 useState
+- 先写一个useState方法
+```js
+import React from "react";
+import ReactDOM from "react-dom";
+function hooks() {
+    let lastState;  // 定义一个变量, 记录状态值
+    function useState(initValue) {
+        // 如果有上一个就用上一个没有就用初始值
+        lastState = lastState || initValue;
+        const setState = (newState) => {  // 定义一个方法
+            lastState = newState;  // 把最新值赋值
+            render()  // 渲染组件
         }
-        /* 添加这个状态 */
-        document.addEventListener('click', changePosition);
-        return () => {
-            /* 卸载某个状态的时候 */
-            console.log('remove', positions.x)
-            document.removeEventListener('click', changePosition)
-        }
-        /* []所有改变的时候都触发 */
-    }, [])
-    console.log('render', positions.x)
-    return (
-        <p>{'X : ' + positions.x +', Y : ' + positions.y }</p>
-    )
+        /* 返回最新值和设置函数 */
+        return [lastState, setState]
+    }
+    return {
+       useState // 返回方法
+    }
 }
+let { useState } = hooks();
 
-export default MouseTracker;
-```
+const App = () => {
+    const [number, setNumber] = useState(0)
 
-### hook简单的逻辑复用
-- 需要复用的组件（注意命名规范）
-```jsx
-import { useState, useEffect} from 'react';
-
-const useMoustTracker = () => {
-    const [position, setPosition] = useState({x: 0, y: 0});
-    useEffect(() => {
-        console.log('add', position.x)
-        const changeMouse = (e: MouseEvent) => {
-            setPosition({
-                x: e.clientX,
-                y: e.clientY
-            })
-        }
-        document.addEventListener('mousemove', changeMouse);
-        return () => {
-            console.log('remove', position.x)
-            document.removeEventListener('mousemove', changeMouse);
-        }
-    }, [])
-    // 直接return 当前的变化值
-    return position;
-}
-
-export default useMoustTracker;
-```
-- 复用组件的使用
-```jsx
-import React, { useState } from 'react';
-import useMouseTracker from './useMouseTracker';
-
-const App: React.FC = () => {
- // 调用函数，获取return出来的值
-  const position = useMouseTracker();
-  return (
-    <p>{position.x}{position.y}</p>
-  );
-}
-
-export default App;
-```
-
-### hook的复用(获取逻辑)
-- 复用的逻辑
-```jsx
-import { useState, useEffect} from 'react';
-import axios from 'axios';
-
-/* deps的默认值是一个[] */
-const useURLLoader = (url: string, deps: any[] = []) => {
-    const [data, setData] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        setLoading(true)
-        axios.get(url).then(reselt => {
-            setData(reselt.data);
-            setLoading(false)
-        })
-    }, deps)
-    // 导出获取的数据，和当前的loading的参数
-    return [data, loading]
-}
-
-export default useURLLoader;
-```
-- 使用
-```jsx
-import React, { useState } from 'react';
-import useURLLoader from './hook/useURLLoader'
-
-interface IShowRuslt  {
-  message: string;
-  status: string;
-}
-const App: React.FC = () => {
-  const [show, setShow] = useState(true)
-  /* 传入两个参数，一个url，获取数据，一个effect什么时候出发更新的值，show改变的时候更新值 */
-  const [data, loading] = useURLLoader('url', [show])
-  // 把 data 的数据模式改成 IShowRuslt类型
-  const dogResult = data as IShowRuslt;
-  
-  return (
-    <div className="App">
-      {/* 如果在获取中，就是现实加载中，否则就是显示图片 */}
-      {loading ? <p>加载中...</p> : <img src={dogResult && dogResult.message}/> }
-      <button onClick={()=> {setShow(!show)}}>show</button>
-    </div>
-  );
-}
-
-export default App;
-```
-### useRef()
-- 当this用，改变不会重新使组件渲染
-- 模拟生命周期didmount
-- 获取dom节点
-```jsx
-import React, { useState, useEffect, useRef } from 'react';
-
-const LikeButton: React.FC = () => {
-    const [ Like, setLike ]  = useState(0);
-    /* 相当于类组件的this，不会引起函数的闭包，可以获取到最新的变更值 */
-    const likeRef = useRef(0);
-    useEffect(() => {
-        document.title = `点击了${Like}次`
-    }, [Like])
-    
-    /* 模拟didMountUpdate! */
-    useEffect(() => {
-        if(didMountRef.current) {
-            console.log('this is update!');
-        } else {
-            didMountRef.current = true;
-        }
-    })
-    
-    useEffect(() => {
-        // 获取dom节点
-        if(domRef && domRef.current) {
-            domRef.current.focus();
-        }
-    })
-    
-    function handleAlertClick() {
-        setTimeout(() => {
-            alert('you clicked on' + likeRef.current)
-        }, 3000)
+    const handleClick = () => {
+        setNumber(number + 1)
     }
 
-    return <>
-        <input type="text" ref={domRef} />
-        <button onClick={handleAlertClick}>
-            {'Alert!'}
-        </button>
-        <button onClick={() => {setLike(Like + 1); likeRef.current ++}}>
-            {Like}
-        </button>
-    </>
+    return <div>
+        <p>{number}</p>
+        <button onClick={handleClick}>+</button>
+    </div>
 }
+render()
 
-export default LikeButton;
+function render() {
+    ReactDOM.render(<App />, document.getElementById("root"));
+}
 ```
 
-### useContext
-- 父组件
-```jsx
-import React from 'react';
-import LikeButton from './components/LikeButton';
+- 这里要说一下，`react`中`class`组件使用实例储存状态，那函数组件的状态是存在哪里的呢？答案是：函数组件对应的`fiber`中 有个`memoizedState`是一个链表结构，专门用来存贮`hook`的状态数据。这次我们只是讲原理，对源码不做过多讨论，有兴趣可以看卡颂大佬写的[React技术揭秘](https://react.iamkasong.com/)。
 
-interface IThemeProps {
-  [key: string]: {
-    color: string,
-    background: string
+- 这样看`setState`是不是觉得很简单呢。现在又有一个问题产生了。如果我在代码中同时调用两个`useState`怎么办呢，这样不是都覆盖掉了。现在让我们来改造一下我们的`useState`方法。
+
+```js
+import React from "react";
+import ReactDOM from "react-dom";
+function hooks() {
+  let hookStates = []; // 保存所有状态的数组
+  let hookIndex = 0;  // 索引
+  function useState(initValue) {
+    // 把每一个状态存入当前的状态数组里面
+    hookStates[hookIndex] = hookStates[hookIndex] || initValue;
+    let currentIndex = hookIndex;  // 备份一些当前的索引值
+    const setState = (newState) => {
+      // 在闭包函数中使用，每次setState都是当前闭包环境下的值
+      hookStates[currentIndex] = newState;
+      render(); // 重新渲染组件
+    }
+    /* 返回方法数组，索引 + 1 */
+    return [hookStates[hookIndex++], setState];
   }
-}
-/* 创建传递的值 */
-const themes:IThemeProps = {
-  'light': {
-    color: '#000',
-    background: '#eee'
-  },
-  'dark': {
-    color: '#fff',
-    background: '#222'
+
+  // 函数每次渲染之后，重新设置索引为1。
+  function setHookIndex() {
+    hookIndex = 0;
   }
+
+  return {
+    setHookIndex,
+    useState, // 返回方法
+  };
 }
-/* 导出组件 */
-export const ThemeContext = React.createContext(themes.light);
-const App: React.FC = () => {
+let { useState, setHookIndex } = hooks();
+
+const App = () => {
+  const [number, setNumber] = useState(0);
+  const [number1, setNumber1] = useState(0);
+
   return (
     <div>
-      {/* 用provider包裹需要用值得组件 */}
-      <ThemeContext.Provider value={themes.dark}>
-        <LikeButton />
-      </ThemeContext.Provider>
+      <p>{number}</p>
+      <button onClick={() => setNumber(number + 1)}> + </button>
+      <p>{number1}</p>
+      <button onClick={() => setNumber1(number1 + 2)}> + </button>
     </div>
   );
+};
+render();
+
+function render() {
+  setHookIndex(); // 每次渲染重新设置索引为0
+  ReactDOM.render(<App />, document.getElementById("root"));
 }
-
-export default App;
 ```
-- 使用的子组件
-```jsx
-import React, { useState, useContext } from 'react'
-/* 引入context组件 */
-import { ThemeContext } from '../App'
 
-const LikeButton: React.FC = () => {
-    const [ Like, setLike ]  = useState(0);
-    /* 使用context组件 */
-    const theme = useContext(ThemeContext)
-    const style = {
-        color: theme.color,
-        background: theme.background
+- 这次的改造，去掉了之前存一个变量值的`lastState`，改为了`hookStates`数组 和 `hookIndex`两个值。一个用来记录当前的状态，一个用来记录当前的下标值。源码中的实现使用链表进行`next`指向下一个，但是基本原理就差不多。这就是为什么，不可以在`if`语句中使用`hook`函数。接下来让我们来看一下在`hook`中处理副作用的钩子函数`useEffect`
+
+### 2.2 useEffect
+- 这个函数主要是为了处理函数中有一些副作用，在`class`组件的时候，我们都是用生命周期做处理的，比如说发送请求更改`dom`之类的处理，函数组件中`react`给我们提供了`useEffect`这个函数。让我们来看看他的原理是什么吧！
+```js
+import React from "react";
+import ReactDOM from "react-dom";
+function hooks() {
+  let hookStates = []; // 保存所有状态的数组
+  let hookIndex = 0;  // 索引
+  function useState(initValue) {
+    // 把每一个状态存入当前的状态数组里面
+    hookStates[hookIndex] = hookStates[hookIndex] || initValue;
+    let currentIndex = hookIndex;  // 备份一些当前的索引值
+    const setState = (newState) => {
+      // 在闭包函数中使用，每次setState都是当前闭包环境下的值
+      hookStates[currentIndex] = newState;
+      render(); // 重新渲染组件
     }
-    return <>
-        <button style={style}>
-            {Like}
-        </button>
-    </>
+    /* 返回方法数组，索引 + 1 */
+    return [hookStates[hookIndex++], setState];
+  }
+
+  function useEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if(hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if(same) {
+        hookIndex ++;  // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个宏任务 */
+        setTimeout(()=>{
+          let destroy = fn();  // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个宏任务 */
+      setTimeout(()=>{
+        let destroy = fn();  // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+
+  // 函数每次渲染之后，重新设置索引为1。
+  function setHookIndex() {
+    hookIndex = 0;
+  }
+
+  return {
+    setHookIndex,
+    useState, // 返回方法
+    useEffect,
+  };
 }
-export default LikeButton;
+let { useState, useEffect, setHookIndex } = hooks();
+
+const App = () => {
+  const [number, setNumber] = useState(0);
+
+  useEffect(() => {
+    document.title = number;
+    return () => {
+      console.log('销毁');
+    }
+  }, [number])
+
+  return (
+    <div>
+      <p>number: {number}</p>
+      <button onClick={() => setNumber(number + 1)}> + </button>
+    </div>
+  );
+};
+render();
+
+function render() {
+  setHookIndex(); // 渲染后重新设置索引为1
+  ReactDOM.render(<App />, document.getElementById("root"));
+}
+```
+- 上面的实现中我们可以看到useEffect的原理，他是开启了一个宏任务，那么就不得不提到跟这个函数很类似的一个函数`useLayoutEffect`。
+  
+### 2.3 useLayoutEffect
+- 来看看下面这个例子。
+```js
+import React, { useRef } from "react";
+import ReactDOM from "react-dom";
+function hooks() {
+  let hookStates = []; // 保存所有状态的数组
+  let hookIndex = 0; // 索引
+  function useState(initValue) {
+    // 把每一个状态存入当前的状态数组里面
+    hookStates[hookIndex] = hookStates[hookIndex] || initValue;
+    let currentIndex = hookIndex; // 备份一些当前的索引值
+    const setState = (newState) => {
+      // 在闭包函数中使用，每次setState都是当前闭包环境下的值
+      hookStates[currentIndex] = newState;
+      render(); // 重新渲染组件
+    };
+    /* 返回方法数组，索引 + 1 */
+    return [hookStates[hookIndex++], setState];
+  }
+
+  function useEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个宏任务 */
+        setTimeout(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个宏任务 */
+      setTimeout(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+  function useLayoutEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个微任务 */
+        queueMicrotask(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个微任务 */
+      queueMicrotask(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+
+  // 函数每次渲染之后，重新设置索引为1。
+  function setHookIndex() {
+    hookIndex = 0;
+  }
+
+  return {
+    setHookIndex,
+    useState, // 返回方法
+    useEffect,
+    useLayoutEffect
+  };
+}
+let { setHookIndex, useState, useEffect, useLayoutEffect } = hooks();
+
+const App = () => {
+  // useRef也是一个钩子，这个钩子是react在虚拟dom转换成真实dom的是挂载到react的ref属性上的对象
+  let greenRef = useRef();  // {current: null}
+  let redRef = useRef();
+
+  useEffect(() => {
+    greenRef.current.style.transform = 'translate(500px)'
+    greenRef.current.style.transition = 'all 500ms'
+  }, []);
+
+  useLayoutEffect(() => {
+    redRef.current.style.transform = 'translate(500px)'
+    redRef.current.style.transition = 'all 500ms'
+  }, [])
+
+  function style(color) {
+    return {
+      width: "200px",
+      height: "200px",
+      backgroundColor: color,
+    };
+  }
+
+  return (
+    <div>
+      <p ref={greenRef} style={style("green")}></p>
+      <p ref={redRef} style={style("red")}></p>
+    </div>
+  );
+};
+render();
+
+function render() {
+  setHookIndex(); // 渲染后重新设置索引为1
+  ReactDOM.render(<App />, document.getElementById("root"));
+}
+```
+- 这两个钩子原理基本差不多，只不过在执行时机有些不一样。这样使用起来是不是更加得心应手了呢？其实react-hook，常用的也就state 和 effect，下面我们来看几个优化渲染的钩子函数。
+
+### 2.4 useMemo 和 useCallback
+
+```js
+import React, { useRef } from "react";
+import ReactDOM from "react-dom";
+function hooks() {
+  let hookStates = []; // 保存所有状态的数组
+  let hookIndex = 0; // 索引
+  function useState(initValue) {
+    // 把每一个状态存入当前的状态数组里面
+    hookStates[hookIndex] = hookStates[hookIndex] || initValue;
+    let currentIndex = hookIndex; // 备份一些当前的索引值
+    const setState = (newState) => {
+      // 在闭包函数中使用，每次setState都是当前闭包环境下的值
+      hookStates[currentIndex] = newState;
+      render(); // 重新渲染组件
+    };
+    /* 返回方法数组，索引 + 1 */
+    return [hookStates[hookIndex++], setState];
+  }
+
+  function useEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个宏任务 */
+        setTimeout(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个宏任务 */
+      setTimeout(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+  function useLayoutEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个微任务 */
+        queueMicrotask(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个微任务 */
+      queueMicrotask(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+
+  function useMemo(fn, deps) {
+    if (hookStates[hookIndex]) {
+      let [oldMemo, lastDeps] = hookStates[hookIndex]
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if(same) {
+        hookIndex ++;
+        return oldMemo;  // 返回老的值
+      } else { 
+        let newMemo = fn()  // 计算新的值
+        hookStates[hookIndex++] = [newMemo, deps];
+        return newMemo;
+      }
+    } else {
+      let newMemo = fn()
+      hookStates[hookIndex++] = [newMemo, deps];
+      return newMemo;
+    }
+  }
+  function useCallback(fn, deps) {
+    if (hookStates[hookIndex]) {
+      let [oldfn, lastDeps] = hookStates[hookIndex]
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if(same) {
+        hookIndex ++;
+        return oldfn;  // 直接返回老的函数
+      } else {
+        hookStates[hookIndex++] = [fn, deps];
+        return fn;
+      }
+    } else {
+      hookStates[hookIndex++] = [fn, deps];
+      return fn;
+    }
+  }
+
+  function memo(OldFunctionComponent) {
+    return class extends React.PureComponent{
+      render() {
+        return <OldFunctionComponent  {...this.props}/>
+      }
+    }
+  }
+
+  // 函数每次渲染之后，重新设置索引为1。
+  function setHookIndex() {
+    hookIndex = 0;
+  }
+
+  return {
+    setHookIndex,
+    useState, // 返回方法
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useCallback,
+    memo
+  };
+}
+let { setHookIndex, useState, useEffect, useLayoutEffect, useMemo, useCallback, memo } = hooks();
+
+let Child = ({data, addNumber}) => {
+  console.log('child render');
+  return <button onClick={addNumber}>{data.number}</button>
+}
+
+Child = memo(Child);
+
+const App = () => {
+  const [value, setValue] = useState('');
+  const [number, setNumber] = useState(0);
+  let data = useMemo(() => ({number}), [number])
+  // let data = {number};
+  let addNumber = useCallback(() => setNumber(number + 1), [number])
+  // let addNumber = () => setNumber(number + 1)
+
+  // let lastData = data;
+  // console.log(data === lastData); // true
+
+  return <div>
+    <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
+    <Child data={data} addNumber={addNumber}/>
+  </div>
+};
+
+render();
+
+function render() {
+  setHookIndex(); // 渲染后重新设置索引为1
+  ReactDOM.render(<App />, document.getElementById("root"));
+}
+```
+- 这两个函数配合memo方法用来减少react组件的渲染次数，memo只会比较数据的引用地址，useCallback 和 uesMemo 如果数据没有变，就返回当前的引用地址的数据，这样使用可以让子组件减少渲染。单独使用的话，可以部分优化。
+
+### 2.5 useContext
+```js
+import React, { useRef } from "react";
+import ReactDOM from "react-dom";
+function hooks() {
+  let hookStates = []; // 保存所有状态的数组
+  let hookIndex = 0; // 索引
+  function useState(initValue) {
+    // 把每一个状态存入当前的状态数组里面
+    hookStates[hookIndex] = hookStates[hookIndex] || initValue;
+    let currentIndex = hookIndex; // 备份一些当前的索引值
+    const setState = (newState) => {
+      // 在闭包函数中使用，每次setState都是当前闭包环境下的值
+      hookStates[currentIndex] = newState;
+      render(); // 重新渲染组件
+    };
+    /* 返回方法数组，索引 + 1 */
+    return [hookStates[hookIndex++], setState];
+  }
+
+  function useEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个宏任务 */
+        setTimeout(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个宏任务 */
+      setTimeout(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+  function useLayoutEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个微任务 */
+        queueMicrotask(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个微任务 */
+      queueMicrotask(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+
+  function useMemo(fn, deps) {
+    if (hookStates[hookIndex]) {
+      let [oldMemo, lastDeps] = hookStates[hookIndex]
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if(same) {
+        hookIndex ++;
+        return oldMemo;  // 返回老的值
+      } else { 
+        let newMemo = fn()  // 计算新的值
+        hookStates[hookIndex++] = [newMemo, deps];
+        return newMemo;
+      }
+    } else {
+      let newMemo = fn()
+      hookStates[hookIndex++] = [newMemo, deps];
+      return newMemo;
+    }
+  }
+  function useCallback(fn, deps) {
+    if (hookStates[hookIndex]) {
+      let [oldfn, lastDeps] = hookStates[hookIndex]
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if(same) {
+        hookIndex ++;
+        return oldfn;  // 直接返回老的函数
+      } else {
+        hookStates[hookIndex++] = [fn, deps];
+        return fn;
+      }
+    } else {
+      hookStates[hookIndex++] = [fn, deps];
+      return fn;
+    }
+  }
+
+  function useContext(context) {
+    return context._currentValue;  // 在组件渲染的时候已经存好了，然后useContext直接取出返回就可以了。
+  }
+
+  function memo(OldFunctionComponent) {
+    return class extends React.PureComponent{
+      render() {
+        return <OldFunctionComponent  {...this.props}/>
+      }
+    }
+  }
+
+  // 函数每次渲染之后，重新设置索引为1。
+  function setHookIndex() {
+    hookIndex = 0;
+  }
+
+  return {
+    setHookIndex,
+    useState, // 返回方法
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useCallback,
+    useContext,
+    memo
+  };
+}
+let { setHookIndex, useState, useEffect, useLayoutEffect, useMemo, useCallback, memo, useContext } = hooks();
+
+
+let AppContext = React.createContext();
+
+const Child = () => {
+  const {state, setState} = useContext(AppContext);
+  return <div>
+    <p>{state}</p>
+    <button onClick={() => setState(state + 1)}>+</button>
+  </div>
+}
+
+const App = () => {
+  const [state, setState] = useState(0);
+  return <AppContext.Provider value={{state, setState}}>
+    <Child/>
+  </AppContext.Provider>
+};
+
+render();
+
+function render() {
+  setHookIndex(); // 渲染后重新设置索引为1
+  ReactDOM.render(<App />, document.getElementById("root"));
+}
 ```
 
-### useMemo
-### useCallback
-### useReducer
+- 可以看到context的原理非常简单，仅仅是取出react处理过程中存好的属性，直接返回。还想了解的话可以看一下 createContext、Provider、Consumer，useContext只是取出值而已，不做过多说明。下面看下useReduer
+  
+### 2.6 useReducer
+```js
+import React, { useRef } from "react";
+import ReactDOM from "react-dom";
+function hooks() {
+  let hookStates = []; // 保存所有状态的数组
+  let hookIndex = 0; // 索引
+  /* 改造useState使用 useReducer 实现，useState就是useReducer的语法糖 */
+  function useState(initValue) {
+    return useReducer(null, initValue);
+  }
+
+  function useReducer(reducer, initValue) {
+    hookStates[hookIndex] = hookStates[hookIndex] || initValue;
+    let currentIndex = hookIndex;
+    const dispatch = (action) => {
+      // 用传入的reducer函数取出最新的值
+      // 如果传入的是null，直接取出action的值即可
+      hookStates[currentIndex] = reducer ? reducer(hookStates[currentIndex], action) : action;
+      render();
+    }
+    return [hookStates[hookIndex++], dispatch];
+  }
+
+  function useEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个宏任务 */
+        setTimeout(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个宏任务 */
+      setTimeout(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+  function useLayoutEffect(fn, deps) {
+    /* 如果有上一次有存在useEffect，就从hookState里面取值 */
+    if (hookStates[hookIndex]) {
+      let [oldDestroy, lastDeps] = hookStates[hookIndex];
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if (same) {
+        hookIndex++; // 如果相同，只加索引，不进行其他操作
+      } else {
+        /* 如果不同，现执行上一次的返回值 */
+        oldDestroy();
+        /* 开启一个微任务 */
+        queueMicrotask(() => {
+          let destroy = fn(); // 执行取返回值
+          hookStates[hookIndex++] = [destroy, deps]; // 赋值
+        });
+      }
+    } else {
+      /* 开启一个微任务 */
+      queueMicrotask(() => {
+        let destroy = fn(); // 执行取返回值
+        hookStates[hookIndex++] = [destroy, deps]; // 赋值
+      });
+    }
+  }
+
+  function useMemo(fn, deps) {
+    if (hookStates[hookIndex]) {
+      let [oldMemo, lastDeps] = hookStates[hookIndex]
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if(same) {
+        hookIndex ++;
+        return oldMemo;  // 返回老的值
+      } else { 
+        let newMemo = fn()  // 计算新的值
+        hookStates[hookIndex++] = [newMemo, deps];
+        return newMemo;
+      }
+    } else {
+      let newMemo = fn()
+      hookStates[hookIndex++] = [newMemo, deps];
+      return newMemo;
+    }
+  }
+  function useCallback(fn, deps) {
+    if (hookStates[hookIndex]) {
+      let [oldfn, lastDeps] = hookStates[hookIndex]
+      /* 判断依赖项是否相同 */
+      let same = deps.every((item, index) => item === lastDeps[index]);
+      if(same) {
+        hookIndex ++;
+        return oldfn;  // 直接返回老的函数
+      } else {
+        hookStates[hookIndex++] = [fn, deps];
+        return fn;
+      }
+    } else {
+      hookStates[hookIndex++] = [fn, deps];
+      return fn;
+    }
+  }
+
+  function useContext(context) {
+    return context._currentValue
+  }
+
+  function memo(OldFunctionComponent) {
+    return class extends React.PureComponent{
+      render() {
+        return <OldFunctionComponent  {...this.props}/>
+      }
+    }
+  }
+
+  // 函数每次渲染之后，重新设置索引为1。
+  function setHookIndex() {
+    hookIndex = 0;
+  }
+
+  return {
+    setHookIndex,
+    useState, // 返回方法
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useCallback,
+    useContext,
+    useReducer,
+    memo
+  };
+}
+let { setHookIndex, useState, useEffect, useLayoutEffect, useMemo, useCallback, memo, useContext, useReducer } = hooks();
+
+function appReducer(state, action) {
+  switch (action.type) {
+    case 'ADD':
+      return state + 1;
+    case 'MINUS':
+      return state - 1;
+    default:
+      return state;
+  }
+}
+
+const App = () => {
+  const [number, dispach] = useReducer(appReducer, 0)
+  const [count, setCount] = useState(10)
+  return <div>
+    <p>{number}</p>
+    <button onClick={() => dispach({type: 'ADD'})}> + </button>
+    <button onClick={() => dispach({type: 'MINUS'})}> - </button>
+    <button onClick={() => setCount(count + 1)}>{count}</button>
+  </div>
+};
+
+render();
+
+function render() {
+  setHookIndex(); // 渲染后重新设置索引为1
+  ReactDOM.render(<App />, document.getElementById("root"));
+}
+```
+- 至此，基本上常用的hook原理都已经说过了，不知道大家有没有对之前写过的hook有更深刻的理解。
