@@ -149,6 +149,7 @@ new Promise (function (resolve, reject) {
 
 ## 面试复盘
 ### 1. 阿里外包，菜鸟（电话一面）
+- 这个面试官很垃圾，放人鸽子，也不准时。
 
 1. vdom是什么？解决了什么问题？
 2. 浏览器缓存？协商缓存？
@@ -161,13 +162,13 @@ new Promise (function (resolve, reject) {
 
 - 总结：需要背诵专业名词，单词。[发音参考](https://github.com/shimohq/chinese-programmer-wrong-pronunciation)
 
-### 2. 涂鸦智能（一面，二面）
+### 2. 涂鸦智能（现场一面、二面）
 1. react fiber -- 为什么取消will那些生命周期
 2. 问了 http 和 webpack 都不会
 3. input下载文件
 4. 浏览器地址输入后都发生了什么
 5. 浏览器缓存
-6. hook的钩子 useCallback useMemo
+6. hook的钩子 useCallback  useMemo
 7. 函数组件怎么拿ref --- forwardRef
 8. setState的执行
 9. let const
@@ -177,3 +178,17 @@ new Promise (function (resolve, reject) {
 13. 跨域 -- iframe
 14. ssr -- 不会
 15. node -- 不会
+
+- 总结：真的好菜，估计还要在准备很久才能去面稍微大一点的公司了。
+
+### 3.阿里直属外包（电话一面）
+- 先夸一下面试官，准时而且高效，问问题也很有调理，人很好。
+1. 自我介绍 -- 建议可以准备一下（突出自己的优势和特点）
+2. 跨域
+3. 浏览器缓存
+4. es6里面挑两个特性讲一下（let const、promise）--这个真的是给自己挖坑
+5. promise.catch之后还可以在.then吗？-- 真不知道
+6. 数组有哪些方法？数组reduce的方法都有哪些参数？-- 这个答完之后，面试官说了一句还不错呀。
+7. 用自定义hook实现一个定时器
+8. 如何实现一个左侧100px，右侧 4 ：1的自适应布局
+9. css有哪些隐藏元素的方式
