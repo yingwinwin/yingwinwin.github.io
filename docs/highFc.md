@@ -11,17 +11,21 @@ title: 高阶函数
 */
 
 /* 给业务代码扩展新功能 */
-function say(a, b) {
-  console.log("[ say ] >", a, b);
-}
+  function core(...args) {
+    console.log("core", ...args);
+  }
 
-Function.prototype.before = function beforeSay(cb) {
-  return (...args) => {
-    cb(); // console.log('before')
-    this(...args);
+  Function.prototype.before = function (cb) {
+    return (...args) => {
+      cb();
+      this(...args);
+    };
   };
-};
-say.before(() => console.log("before"))(1, 2);
+
+  let newCore = core.before(() => {
+    console.log("before");
+  });
+  newCore(1, 2);
 ```
 
 ```js
