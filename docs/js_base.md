@@ -46,6 +46,16 @@ class String1 {
 console.log('hello' instanceof String1);
 // 输出: true
 ```
+- 判断数据类型，用obj原型上的toString方法
+```js
+let Type = {};
+for(let i = 0,type; type = ['String', 'Number', 'Array'][i++];) {
+  Type['is' + type] = function (obj) {
+    return Object.prototype.toString.call(obj) === `[object ${type}]`
+  }
+}
+Type.isArray([]) // true
+```
 
 ### 3. 类型转换
 |        原始值         | 转换目标 |             结果             |
