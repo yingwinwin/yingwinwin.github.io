@@ -3,6 +3,7 @@ id: promise
 title: Promise
 ---
 
+## 1. 介绍
 - https://promisesaplus.com/ Promises/A+规范
 
 - **Promise 是一个类**
@@ -14,6 +15,9 @@ title: Promise
 5. 如果执行函数时发生了异常也会执行失败逻辑
 6. 如果 promise 一旦成功就不能失败了，反过来也是一样，也就是只有 pending 状态的时候，才可以改变状态
 
+## 2. 简版promise
+- 实现了基本的状态改变
+- 实现了异步操作(用发布订阅模式 --- 解决同步并发问题)
 ```js
 // promise 的特点以及概念
 // https://promisesaplus.com/  Promises/A+规范
@@ -108,3 +112,177 @@ promise.then(
   }
 );
 ```
+
+## 3. 符合A+规范
+- 链式调用
+- 穿透调用
+- 递归返回promise调用
+- 已通过测试
+```js
+/**
+ * @description 核心逻辑，用于处理返回值是promise还是一个普通值
+ * @param {*} promise2 返回的promise
+ * @param {*} x then的返回值
+ * @param {*} resolve 新的promise的resolve函数
+ * @param {*} reject 新的promise的reject函数
+ * @returns undefined
+ */
+function resolvePromise(promise2, x, resolve, reject) {
+  console.log(promise2, x, resolve, reject);
+  // 如果 x 是当前的promise2，就直接抛出类型错误
+  if (x === promise2) {
+    // 直接抛出错误
+    return reject(new TypeError("类型错误"));
+  };
+  // 如果是别人的promise可能成功后还会失败，为了确保状态只改变一次，所以要加一个锁，只能执行一次
+  let called = false;
+  // 如果是类promise，那么就执行返回结果
+  if ((typeof x === "object" && x !== null) || typeof x === "function") {
+    try {
+      let then = x.then; // 只取一次then
+      if (typeof then === "function") {
+        then.call(
+          x,
+          (y) => {
+            if (called) return;
+            called = true;
+            // 递归，来处理如果promise里面又返回一个promise的情况
+            resolvePromise(promise2, y, resolve, reject);
+          },
+          (r) => {
+            if (called) return;
+            called = true;
+            reject(r);
+          }
+        ); // 执行
+      } else {
+        // 可能是{ this: {}}
+        resolve(x);
+      }
+    } catch (error) {
+      if (called) return;
+      called = true;
+      reject(error);
+    }
+  } else {
+    // 如果返回值是普通值，直接返回x就可以
+    resolve(x);
+  }
+}
+
+// promise
+let PENDING = "PENDING";
+let FULFILLED = "FULFILLED";
+let REJECTED = "REJECTED";
+class Promise {
+  constructor(executor) {
+    this.state = PENDING;
+    this.result = undefined;
+    this.reason = undefined;
+    this.onFulfilledCallbacks = [];
+    this.onRejectedCallbacks = [];
+    let resolve = (result) => {
+      // 这里要用箭头函数，不然this，就不是当前的类了，会报错说拿不到state
+      if (this.state === PENDING) {
+        this.state = FULFILLED;
+        this.result = result;
+        this.onFulfilledCallbacks.forEach((fn) => fn());
+      }
+    };
+
+    let reject = (reason) => {
+      // 只有pending状态才可以转成其他状态
+      if (this.state === PENDING) {
+        this.state = REJECTED;
+        this.reason = reason;
+        this.onRejectedCallbacks.forEach((fn) => fn());
+      }
+    };
+
+    try {
+      executor(resolve, reject);
+    } catch (error) {
+      reject(error);
+    }
+  }
+
+  then(onFulfilled, onRejected) {
+    /* 处理穿透逻辑 */
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : v=>v;
+    onRejected = typeof onRejected === 'function' ? onRejected : e=>{throw e};
+    /* 
+        链式调用：调用.then之后返回一个新的promise
+        1. then里面是一个成功普通值，会直接返回为下一个promise的then的成功结果
+        2. 如果当前then失败，那么会走下一次的then的失败
+        3. 不管当前then是成功还是失败，只要返回的是普通值，都会走下一个
+    */
+    let promise2 = new Promise((resolve, reject) => {
+      if (this.state === FULFILLED) {
+        setTimeout(() => {
+          // 为了拿到promise2，用setTimeout异步获取promise2
+          try {
+            let x = onFulfilled(this.result); // 处理普通值。返回之后。走下一个then的成功
+            resolvePromise(promise2, x, resolve, reject);
+          } catch (e) {
+            // 如果异常就抛出
+            reject(e);
+          }
+        }, 0);
+      }
+
+      if (this.state === REJECTED) {
+        setTimeout(() => {
+          try {
+            let x = onRejected(this.reason);
+            resolvePromise(promise2, x, resolve, reject);
+          } catch (e) {
+            reject(e);
+          }
+        }, 0);
+      }
+
+      if (this.state === PENDING) {
+        this.onFulfilledCallbacks.push(() => {
+          setTimeout(() => {
+            try {
+              let x = onFulfilled(this.result);
+              resolvePromise(promise2, x, resolve, reject);
+            } catch (e) {
+              reject(e);
+            }
+          }, 0);
+        });
+        this.onRejectedCallbacks.push(() => {
+          setTimeout(() => {
+            try {
+              let x = onRejected(this.reason);
+              resolvePromise(promise2, x, resolve, reject);
+            } catch (e) {
+              reject(e);
+            }
+          }, 0);
+        });
+      }
+    });
+    return promise2;
+  }
+}
+
+Promise.deferred = function () {
+    let dfd = {};
+    dfd.promise = new Promise((resolve, reject) => {
+        dfd.resolve = resolve;
+        dfd.reject = reject;
+    })
+    return dfd;
+}
+
+module.exports = Promise;
+```
+
+## 4. 其他方法
+
+### 4.1 all
+### 4.2 catch
+### 4.3 race
+### 4.4 finally
