@@ -282,7 +282,134 @@ module.exports = Promise;
 
 ## 4. 其他方法
 
-### 4.1 all
-### 4.2 catch
-### 4.3 race
-### 4.4 finally
+### 4.1 延迟对象
+- 自己实现的promise支持，浏览器提供的promise并不支持
+```js
+Promise.deferred = function () {
+    let dfd = {};
+    dfd.promise = new Promise((resolve, reject) => {
+        dfd.resolve = resolve;
+        dfd.reject = reject;
+    })
+    return dfd;
+}
+```
+
+```js
+const fs = require('fs');
+const Promise = require('./1.js');
+
+// 利用延迟对象读取文件
+function readFile(filePath, encoding) {
+    let dfd = Promise.deferred();
+    fs.readFile(filePath, encoding, (err, data) => {
+        if(err) return dfd.reject(err);
+        dfd.resolve(data);
+    })
+    return dfd.promise
+}
+
+readFile('a.txt', 'utf8').then(data => {
+    console.log(data);
+})
+```
+
+### 4.2 resolve
+- 静态方法
+```js
+static resolve (data) {
+  return new Promise((resolve) => {
+    resolve(data)
+  })
+}
+```
+
+### 4.3 reject
+```js
+static reject (err) {
+  return new Promise((resolve, reject) => {
+    return reject(err);
+  })
+}
+```
+
+### 4.3 all
+- 记录下标
+```js
+ static all (promises) {
+    return new Promise((resolve, reject) => {
+      let result = [];
+      let time = 0;
+      const processSucess = (index, data) => {
+        result[index] = data; // 放到对应的下标中
+        if(++time === result.length) {  // 当循环的次数和结果的数组长度一致就抛出结果
+          resolve(result);
+        }
+      }
+      /* 对数组进行循环 */
+      for(let i = 0 ; i < promises.length; i++) {
+        let p = promises[i];
+        /* 判断是否是promise，如果是就取promise的结果 */
+        if( p.then && typeof p.then === 'function') {
+          p.then(data => {
+            processSucess(i, data);
+          }, reject)
+        } else {
+          // 如果不是直接抛出结果
+          processSucess(i, p);
+        }
+      }
+    })
+  }
+```
+### 4.4 race
+- 竞态
+```js
+static race (promises) {
+  return new Promise((resolve, reject) => {
+    for(let i = 0; i < promises.length; i++) {
+      let p = promises[i];
+      if( p && typeof p.then === 'function') {
+        p.then(resolve, reject)  // 有一个成功就成功，状态成功就不会再改变了
+      } else {
+        resolve(p);
+      }
+    }
+  })
+}
+```
+
+- race应用--超时
+```js
+let p1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('成功')
+    }, 3000);
+})
+function wrap(p1) {
+    let abort;
+    let p = new Promise((resolve, reject) => {
+        abort = reject
+    })
+    let p2 = Promise.race([p, p1]);
+    p2.abort = abort;
+    return p2;
+}
+
+let p2 = wrap(p1);
+
+p2.then(data => {
+    console.log(data);
+}, (err) => {
+    console.log(err);
+})
+
+setTimeout(() => {
+    p2.abort('超过2秒')
+}, 2000);
+```
+### 4.5 finally
+```js
+
+
+```
