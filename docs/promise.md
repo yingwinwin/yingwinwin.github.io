@@ -408,8 +408,67 @@ setTimeout(() => {
     p2.abort('超过2秒')
 }, 2000);
 ```
-### 4.5 finally
+### 4.5 catch
 ```js
+catch(errfn) {
+  return this.then(null, errfn);
+}
+```
 
+### 4.6 finally
+```js
+finally(cb) {
+  return this.then((data) => {
+    // 外面包一层Promise.resolve，里面返回一个pormise的话会进行等待
+    // 但是finally成功并不会记录里面的结果，只会记录上一个then的结果。
+    return Promise.resolve(cb()).then(() => data);
+  }, (err) => {
+    // 错误如果finally里面错误，外面catch会捕获到，会返回1000
+    // 如果finally里面是正确的，外面catch会捕获原始的‘失败’错误。
+    return Promise.resolve(cb()).then(() => {throw err});
+  })
+}
+```
 
+### 4.7
+### 4.8 
+
+### 4.9 promisify
+- node自带的方法
+```js
+const fs = require('fs');
+const util = require('util');
+let readFile = util.promisify(fs.readFile);
+readFile('./a.txt', 'utf8').then(data => {
+    console.log(data);
+})
+```
+- 实现`promisify`
+
+```js
+const fs = require('fs');
+function promisify(fn) {
+    /* 拿到函数返回值的参数 */
+    return function (...args) {
+        return new Promise((resolve, reject) => {
+            /* 传入参数 */
+            fn(...args, (err, data) => {
+                if(err) return reject(err);
+                resolve(data);
+            })
+        })
+    }
+}
+// 包装所有fs方法为promise
+function promisifyAll(obj) {
+    let o = {};
+    for(let key in obj) {
+        o[key + 'Promise'] = promisify(obj[key]);
+    }
+    return o;
+}
+let newFs = promisifyAll(fs);
+newFs.readFilePromise('./a.txt', 'utf8').then(data => {
+    console.log(data);
+})
 ```
