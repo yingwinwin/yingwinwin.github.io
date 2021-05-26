@@ -429,9 +429,9 @@ finally(cb) {
   })
 }
 ```
-
-### 4.7
-### 4.8 
+<!-- TODO: -->
+### 4.7 allSettled
+### 4.8 any
 
 ### 4.9 promisify
 - node自带的方法

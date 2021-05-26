@@ -15,3 +15,9 @@ title: Rem布局自适应
     window.addEventListener("resize", setRemUnit); // 屏幕大小改变时调用
 </script>
 ```
+- 代替上面的js操作的自适应方式
+```css
+html {
+    font-size: calc(100vw / 7.5);
+}
+```

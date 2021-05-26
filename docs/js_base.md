@@ -194,7 +194,7 @@ console.log(newObj, obj);
 ### 9. 原型 和 继承 new 操作符实现
 - 每一个对象身上都一个原型，原型上的`constructor`属性指向，当前的对象。
 - 该原型对象创建出来的，实例对象的`constructor`属性同样指向该原型对象
-- 一般不会改变`constructor`属性。instanceof 是通过原型链来判断是否是当前的引用。
+- 一般不会改变`constructor`属性。`instanceof` 是通过原型链来判断是否是当前的引用。
 ```js
 function Person() {
   this.name = 'zy'
@@ -280,6 +280,10 @@ class Person{
   console.log(a.getName()); // new
   console.log(b.getName());  // new
 ```
+- [若川大佬的文章](https://juejin.cn/post/6844903780035592205#heading-1)
+```js
+```
+
 
 ### 10. 闭包
 - 当作用域消失之后，依旧可以使用变量，闭包使函数更高效，但是会消耗一定的内存成本
