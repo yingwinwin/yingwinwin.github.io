@@ -267,9 +267,9 @@ class Person{
 
   let objectFactory = function () {
     let obj = new Object();  // 创建一个新的对象
-    let Constructor = [].shift.call(arguments);  // 获取传入的构造器赋值给constructor
-    obj.__proto__ = Constructor.prototype; // 把对象的原型指向传入的构造器  也就是person
-    let ret = Constructor.apply(obj, arguments);  // 借用Person设置属性
+    let Constructor = [].shift.call(arguments);  // 取出数组对象的第一项，就是函数
+    obj.__proto__ = Constructor.prototype; // 连接原型链
+    let ret = Constructor.apply(obj, arguments);  // 传参，因为刚才第一项已经被截取下去了，剩下的就是传的参数
     // 确保返回一个对象，也就是如果person构造器写了return 而且是一个对象，就返回写了的return对象
     return typeof ret === 'object' ? ret : obj;  
   }
@@ -281,9 +281,6 @@ class Person{
   console.log(b.getName());  // new
 ```
 - [若川大佬的文章](https://juejin.cn/post/6844903780035592205#heading-1)
-```js
-```
-
 
 ### 10. 闭包
 - 当作用域消失之后，依旧可以使用变量，闭包使函数更高效，但是会消耗一定的内存成本
