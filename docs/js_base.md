@@ -627,10 +627,96 @@ console.log(name);  // {Alice: 2, Bob: 1, Tiff: 1, Bruce: 1}
 - 微任务在渲染前完成
 - 浏览器每秒尝试渲染60次，所以一帧大概是16ms，如果是几百ms都是察觉不到的，但是如果任务的执行时间过长，浏览器可能会终止任务。
 
-```js
-// 使用宏任务来分割一个过于庞大的UI渲染
+**常见的eventLoop面试题**
+1. 下面内容如何输出，浏览器是否会进行变色？
+```html
+<script>
+  document.body.style.background = "red";
+  console.log(1);
+  Promise.resolve().then(() => {
+    console.log(2);
+    document.body.style.background = "yellow";
+  });
+  console.log(3);
+</script>
 ```
+- 输出：1,3,2 浏览器为黄色。因为promise.then是微任务在选渲染之前执行不会变色;
 
+2. 不点击按钮和点击按钮的执行循环有什么区别？
+```html
+<button id="button">按钮</button>
+<script>
+   button.addEventListener("click", () => {
+     console.log("listener1");
+     Promise.resolve().then(() => console.log("micro task1"));
+   });
+   button.addEventListener("click", () => {
+     console.log("listener2");
+     Promise.resolve().then(() => console.log("micro task2"));
+   });
+   button.click(); // click1() click2()
+</script>
+```
+- 不点击按钮的时候，相当于普通的函数调用。所以是按照微任务方式执行的和下面的代码是一个意思。
+```js
+function click1() {
+  console.log("listener1");
+  Promise.resolve().then(() => console.log("micro task1"));
+}
+function click2() {
+  console.log("listener2");
+  Promise.resolve().then(() => console.log("micro task2"));
+}
+click1();
+click2();
+// 执行顺序是listener1，listener2，micro task1， micro task2
+```
+- 当点击按钮的时候，click就是浏览器事件，事件是宏任务，所以每一个宏任务是分开执行的。在自己的宏任务中处理当前的微任务。所以输出结果是。`listener1 micro task1 listener2 micro task2`
+
+3. 下面代码的输出结果是什么？
+```html
+ <script>
+   Promise.resolve().then(() => {
+     console.log("Promise1");
+     setTimeout(() => {
+       console.log("setTimeout2");
+     }, 0);
+   });
+   setTimeout(() => {
+     console.log("setTimeout1");
+     Promise.resolve().then(() => {
+       console.log("Promise2");
+     });
+   }, 0);
+ </script>
+```
+- 第一次事件循环扫描所有代码，然后发现有微任务，和宏任务。把任务分别放到微任务【Promise1】，宏任务【setTimeout1】。
+- 第二次循环：微任务要在浏览器渲染之前执行，所以微任务先执行了。输出 Promise1，在微任务中发现了宏任务，把宏任务放到宏队列中 现在微任务【】，宏任务【setTimeout1，setTimeout2】，依次执行宏任务，输出setTimeout1，在宏任务中发现了微任务，把微任务加入微任务队列中。现在微任务【Promise2】，宏任务【setTimeout2】，在本次事件循环结束之前要清空所有微任务，所以微任务执行，输出Promise2。现在微任务【】，宏任务【setTimeout2】
+- 第三次循环：队列中只剩下一个宏任务了。输出setTimeout2
+- 最后结果输出 `Promise1 setTimeout1 Promise2 setTimeout2`
+
+4. 下面代码输出的结果是什么?
+```js
+console.log(1);
+async function async () {
+    console.log(2);
+    await console.log(3);
+    console.log(4)
+}
+setTimeout(() => {
+	console.log(5);
+}, 0);
+const promise = new Promise((resolve, reject) => {
+    console.log(6);
+    resolve(7)
+})
+promise.then(res => {
+	console.log(res)
+})
+async (); 
+console.log(8);
+```
+- 1 6 2 3 8 7 4 5
 ### 16. 事件委托
 **事件冒泡**
 - 点击的元素会从小到大，依次触发

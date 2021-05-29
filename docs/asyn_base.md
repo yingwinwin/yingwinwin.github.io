@@ -94,10 +94,90 @@ console.log(itor1, itor2, itor3);
 // {value: 6, done: false} {value: 8, done: false} {value: 42, done: true}
 ```
 
+```js
+// 用上一个的返回值，去请求下一个内容
+const fs = require('fs');
+const util = require('util')
+let readFile = util.promisify(fs.readFile);
+
+function* read() {
+    let data = yield readFile('./a.txt', 'utf8');
+    // 拿到 b.txt
+    data = yield readFile(data, 'utf8');
+    // 输出b
+    return data;
+}
+
+
+let it = read();
+let {value, done } = it.next();
+
+value.then(data =>{
+    let { value, done } = it.next(data);
+    value.then(data => {
+        console.log(data);
+    })
+})
+```
+
+- co
+```js
+const fs = require('fs');
+const util = require('util')
+let readFile = util.promisify(fs.readFile);
+
+function* read() {
+    let data = yield readFile('./a.txt', 'utf8');
+    // 拿到 b.txt
+    data = yield readFile(data, 'utf8');
+    // 输出b
+    return data;
+}
+
+function co(it) {
+    return new Promise((resolve, reject) => {
+        // 异步迭代用递归
+        function next(data) {
+            let {value, done} = it.next(data);
+            if(done) {
+                resolve(value);
+            }else {
+              // 如果没有结束递归取出结果
+                Promise.resolve(value).then(next, reject)
+            }
+        }
+        next();
+    })
+}
+
+co(read()).then(data => {
+    console.log(data);
+})
+```
+
 ### 4. Promise
 - [Promise](https://yingwinwin.github.io/docs/promise)
 
 ### 5. async await
+- co + genertor
+```js
+const fs = require('fs');
+const util = require('util')
+let readFile = util.promisify(fs.readFile);
+
+async function read() {
+    let data = await readFile('./a.txt', 'utf8');
+    // 拿到 b.txt
+    data = await readFile(data, 'utf8');
+    // 输出b
+    return data;
+}
+
+read().then(data => {
+    console.log(data);
+})
+```
+
 - 是Promise + genertor的语法糖
 ```js
 let a = 0;
