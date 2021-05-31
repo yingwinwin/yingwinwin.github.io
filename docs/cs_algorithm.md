@@ -28,3 +28,13 @@ var twoSum = function(nums, target) {
     }
 };
 ```
+
+### 2. 反转字符串中的单词 III
+- 输入："Let's take LeetCode contest"
+- 输出："s'teL ekat edoCteeL tsetnoc"
+
+```js
+var reverseWords = function(s) {
+  return s.split(' ').map(item => item.split('').reverse().join('')).join(' ')
+};
+```
