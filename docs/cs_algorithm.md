@@ -38,3 +38,34 @@ var reverseWords = function(s) {
   return s.split(' ').map(item => item.split('').reverse().join('')).join(' ')
 };
 ```
+
+### 3. 计数二进制子串
+- 输入: "00110011"
+- 输出: 6
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var countBinarySubstrings = function(s) {
+    let match = (str) => {
+        let j = str.match(/^(0+)|(1+)/)[0];  // 正则取反
+        let o = (j[0]^1).toString().repeat(j.length);
+        /* 这里如果用正则匹配会堆栈溢出 */
+        if(str.startsWith(`${j}${o}`)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    let count = 0;
+    for (let i = 0 ; i < s.length - 1; i++) {
+        let sub = match(s.slice(i));
+        if (sub) {
+            count ++;
+        }
+    }
+    return count;
+};
+```

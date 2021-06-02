@@ -19,7 +19,7 @@ module.exports = {
         {
           type: "category",
           label: "设计模式",
-          items: ["onEmit", "obverse"],
+          items: ["design_singe", "onEmit", "obverse"],
         },
         {
           type: "category",
