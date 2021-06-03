@@ -69,3 +69,42 @@ var countBinarySubstrings = function(s) {
     return count;
 };
 ```
+
+### 4. 电话号码字母组合
+- 输入：digits = "23"
+- 输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
+```js
+/**
+ * @param {string} digits
+ * @return {string[]}
+ */
+var letterCombinations = function(digits) {
+    if(digits === '') {
+        return []
+    }
+    //电话号码表
+    let arr = ['', 1, 'abc', 'def', 'ghi', 'jkl', 'mno', 'pqrs', 'tuv', 'wxyz'];
+    let num = digits.split('')  // 把字符串2，3变成数组[2, 3];
+    let code = num.map(item => arr[item]);  // 得到2,3对应的电话号码字母的数组['abc', 'def'];
+    if(code.length == 1) {
+        return code[0].split('')
+    }
+    let comb = arr => {
+        let tmp = [];
+        
+        for(let i = 0 ; i < arr[0].length; i ++) {
+            for(let j = 0; j < arr[1].length; j ++ ) {
+                tmp.push(arr[0][i] + arr[1][j]);
+            }
+        }
+        arr.splice(0, 2, tmp); // 把数组的前两项变为一个数组
+        if(arr.length > 1) {
+            comb(arr);
+        } else {
+            return tmp;
+        }
+        return arr[0];
+    }
+    return comb(code);
+};
+```
