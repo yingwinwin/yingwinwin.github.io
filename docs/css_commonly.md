@@ -40,3 +40,8 @@ footer {
 ```
 
 ```
+
+### 3. 兼容获取scrollTop
+```js
+var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+```
