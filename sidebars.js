@@ -62,6 +62,11 @@ module.exports = {
     },
     {
       type: "category",
+      label: "前端工程化",
+      items: ["webpack_use"],
+    },
+    {
+      type: "category",
       label: "问题/记录/总结",
       items: ["view", "errors"],
     },
