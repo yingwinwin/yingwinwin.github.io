@@ -457,3 +457,96 @@ module.exports = {
   ],
 };
 ```
+
+### js兼容
+- 把 es6 转换为 es5
+- 用babel-loader转义为js，@babel/core是编译的核心包
+- @babel/preset-env 是预设包。把很多插件放到里面
+```cmd
+npm i babel-loader @babel/core @babel/preset-env @babel/preset-react  -D
+npm i @babel/plugin-proposal-decorators @babel/plugin-proposal-class-properties -D  // 兼容装饰器
+```
+
+- webpack.config.js
+```js
+{
+  test: /\.js$/,
+  use: [
+    {
+      loader: 'babel-loader',
+      options: {
+        presets: [
+          "@babel/preset-env",
+          "@babel/preset-react"
+        ],
+        plugins: [
+          ["@babel/plugin-proposal-decorators", {legacy: true}],
+          ["@babel/plugin-proposal-class-properties", {loose: true}]
+        ]
+      }
+    }
+  ]
+},
+```
+
+### 代码校验
+- eslint-loader 会调用 babel-eslint 在调用 eslint 来进行一个代码检查
+```cmd
+npm install eslint eslint-loader babel-eslint --D
+```
+
+- webpack.config.js
+```js
+{
+  test: /\.js$/,
+  loader: 'eslint-loader',  // 进行代码检查
+  enforce: 'pre', // 给loader进行分类 pre -> normal -> inline -> post
+  options: { fix: true },  // 自动修复
+  exclude: /node_modules/  // 排除的文件
+},
+```
+- .eslintrc.js
+```js
+// 普通配置
+module.exports = {
+    root: true, // 根文件，因为eslint是可以继承的
+    parser: 'babel-eslint',
+    parserOptions: {
+        surceType: 'module',
+        ecmaVersion: 2015
+    },
+    //指定脚本的运行环境
+    env: {
+        browser: true
+    },
+    rules: {
+        indent: 'off',
+        quotes: 'off',
+        'no-console': 'error'
+    }
+}
+```
+- 使用被人的eslint规范
+```cmd
+npm install eslint-config-airbnb  -D
+```
+
+```js diff
+// 继承配置
+module.exports = {
++  extends: "airbnb",
+   parser: "babel-eslint",
+  // 指定脚本的运行环境
+   env: {
+    browser: true,
++   node: true,
+   },
++  /* 可以覆盖当前继承的配置 */
+   rules: {
+    indent: "off",
+    quotes: "off",
+    "no-console": "error",
+  },
+};
+```
+### sourcemap
