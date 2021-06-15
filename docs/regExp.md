@@ -1,6 +1,8 @@
 ---
 id: RegExp
 title: 正则表达式基本使用
+sidebar_label: 正则
+slug: /
 ---
 ## 推荐网址
 - [正则可视化](https://jex.im/regulex/)
