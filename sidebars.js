@@ -94,7 +94,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "看书总结", // 一级标题
-      items: [], // js忍者秘籍， 你不知道的js123， js高级程序设计3
+      items: ["js4"], // js忍者秘籍， 你不知道的js123， js高级程序设计3
     },
   ],
 };
