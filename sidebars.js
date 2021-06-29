@@ -68,7 +68,7 @@ module.exports = {
     {
       type: "category",
       label: "问题/记录/总结",
-      items: ["view", "errors"],
+      items: ["view", "errors", "sum_macUse"],
     },
     {
       type: "category", // 类别
