@@ -19,5 +19,5 @@ title: 《Js高级程序设计》第四版
 - [第四章 4.1、4.2、4.3（变量，作用域，垃圾回收）](https://www.yuque.com/zhouying-8riwx/oglrmb/tn9r9q)
 
 ### 第五章
-- [第五章 5.1,5.2（Date，正则）](https://www.yuque.com/zhouying-8riwx/oglrmb/gcqbx1)
+- [第五章 5.1、5.2（Date，正则）](https://www.yuque.com/zhouying-8riwx/oglrmb/gcqbx1)
 - [第五章 5.3、5.4（原始值包装和内置对象）](https://www.yuque.com/zhouying-8riwx/oglrmb/ws159g)

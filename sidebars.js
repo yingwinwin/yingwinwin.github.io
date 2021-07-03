@@ -7,7 +7,7 @@ module.exports = {
   someError: [
     {
       type: "category", // 类别
-      label: "javaScript", // 一级标题
+      label: "JavaScript", // 一级标题
       items: [
         "js_base",
         "RegExp", // md文件中设置的id ，这里找的是当前id是webpack文件的那篇文章

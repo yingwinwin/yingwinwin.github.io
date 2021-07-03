@@ -6,15 +6,20 @@
     - 2021年全年目标：
     1. 写过的项目都有可以总结记录的点
     2. 努力码好每一块砖，写出可维护性高，可扩展性强的代码，不要因为自己之前代码写的差，而做了很多维护性的工作。
-    3. 遇到不会的问题，记下来，现在如果解决不了，总有一天会解决的。有问题说明遇到了自己的知识盲目。只要不断的学习，就会遇到那个知识。         
+    3. 遇到不会的问题，记下来，现在如果解决不了，总有一天会解决的。有问题说明遇到了自己的知识盲目。只要不断的学习，就会遇到那个知识。
 - 记录自己在学习之后的总结
-    - 2021年上半年目标：
-    1. 读书: 
-       - [x] ~~js忍者秘籍~~--待整理
-       - [ ] 计算机网络
-    2. 学习部分react原理
-       - [x] hook
-
+    - 2021年三季度目标：
+    1. 输入: 
+       - [ ] javaScript高级程序设计4 -- 进行中 30% 大概要9月末完成
+       - [ ] 深入浅出搞定react -- 无他，为手熟尔。
+       - [ ] 计算机网络通关29讲 -- 无他，为手熟尔。
+       - [ ] 脚手架课程的学习 -- 3课时，预计1天完成
+       - [ ] node课程的学习 -- 66课时，5周左右完成，开始后不要停下来，保证没有别的事情处理
+       - [ ] CSS课程的学习 -- 13章。1章大概5课时。预计2周左右可以搞完。最好输出导图和知识体系
+    2. 输出:
+       - [ ] 三次握手和四次挥手 -- 预计7月11日完成
+       - [ ] css--BFC -- 预计7月25日完成
+       - [ ] 写一个react项目
 ### 博客
 - [基于的Docusaurus博客部署](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8docusaurus%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%8C%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%88%B0github%20pages)
 - [css loading效果](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8css3%E5%81%9A%E4%B8%80%E4%B8%AAloading%E6%95%88%E6%9E%9C)
@@ -32,7 +37,8 @@
 ### 在更新的内容
 - [react中使用ts遇到的问题总结](https://yingwinwin.github.io/docs/reactUseTs)
 - [开发时遇到的问题总结](https://yingwinwin.github.io/docs/errors)
-- [js基础](http://localhost:3000/docs/js_base)
+- [js基础](https://yingwinwin.github.io/docs/js_base)
+- [javaScript高级程序设计4](https://yingwinwin.github.io/docs/js4)
 ### 其他
 
 - 愿望：希望自己可以少加班，多学习。
