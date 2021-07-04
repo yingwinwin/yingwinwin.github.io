@@ -21,3 +21,6 @@ title: 《Js高级程序设计》第四版
 ### 第五章
 - [第五章 5.1、5.2（Date，正则）](https://www.yuque.com/zhouying-8riwx/oglrmb/gcqbx1)
 - [第五章 5.3、5.4（原始值包装和内置对象）](https://www.yuque.com/zhouying-8riwx/oglrmb/ws159g)
+
+### 第六章
+- [第六章 6.2、6.4、6.6 (Array, Set, Map)](https://www.yuque.com/zhouying-8riwx/oglrmb/gaxsp1)

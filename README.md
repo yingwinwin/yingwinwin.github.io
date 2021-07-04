@@ -19,7 +19,7 @@
     2. 输出:
        - [ ] 三次握手和四次挥手 -- 预计7月11日完成
        - [ ] css--BFC -- 预计7月25日完成
-       - [ ] 写一个react项目
+       - [ ] 写一个react项目 -- 12节，需要一个时间来写。
 ### 博客
 - [基于的Docusaurus博客部署](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8docusaurus%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%8C%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%88%B0github%20pages)
 - [css loading效果](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8css3%E5%81%9A%E4%B8%80%E4%B8%AAloading%E6%95%88%E6%9E%9C)
