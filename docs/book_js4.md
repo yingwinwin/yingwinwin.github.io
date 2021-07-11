@@ -24,3 +24,6 @@ title: 《Js高级程序设计》第四版
 
 ### 第六章
 - [第六章 6.2、6.4、6.6 (Array, Set, Map)](https://www.yuque.com/zhouying-8riwx/oglrmb/gaxsp1)
+
+### 第八章
+- [第八章  8.1、8.2(对象 ，原型)](https://www.yuque.com/zhouying-8riwx/oglrmb/gx6a4b)
