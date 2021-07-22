@@ -37,7 +37,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "CSS", // 一级标题
-      items: ["remFit"] // 盒模型，float布局，定位，felx，glad一些小技巧
+      items: ["remFit", "css_definition"] // 盒模型，float布局，定位，felx，glad一些小技巧
     },
     {
       type: "category", // 类别
