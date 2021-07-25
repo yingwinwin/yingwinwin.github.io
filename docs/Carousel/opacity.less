@@ -1,0 +1,33 @@
+*{
+    margin: 0;
+    padding: 0;
+  }
+  
+  .box-wrap {
+    height: 300px;
+    border: 1px solid #000;
+    display: flex;
+  
+    > main {
+      position: relative;
+      flex: 1;
+      border: 1px solid green;
+      
+      > img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        transition: opacity 2s;
+        opacity: 0;
+        &.cur{
+          opacity: 1;
+        }
+      }
+    }
+  
+    > aside {
+      flex-basis: 400px;
+      margin-left: 10px;
+      border: 1px solid red;
+    }
+  }
