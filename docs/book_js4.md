@@ -28,3 +28,4 @@ title: 《Js高级程序设计》第四版
 ### 第八章
 - [第八章  8.1、8.2(对象 ，原型)](https://www.yuque.com/zhouying-8riwx/oglrmb/gx6a4b)
 - [第八章  8.3(继承)](https://www.yuque.com/zhouying-8riwx/oglrmb/lq1d1r)
+- [第八章  8.4(类)](https://www.yuque.com/zhouying-8riwx/oglrmb/gtdwq8)
