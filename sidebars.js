@@ -14,7 +14,7 @@ module.exports = {
         {
           type: "category",
           label: "函数", // 二级标题
-          items: ["highFc"],
+          items: ["highFc", "utilsFunction"],
         },
         {
           type: "category",
@@ -26,7 +26,6 @@ module.exports = {
           label: "异步",
           items: ["asyn_base", "promise"],
         },
-        "utilsFunction"
       ],
     },
     {
@@ -82,7 +81,7 @@ module.exports = {
         {
           type: "category",
           label: "计算机网络",
-          items: ["cs_computerNetwork"],  // 浏览器输入后到底发生了什么？
+          items: [],  // 浏览器输入后到底发生了什么？
         },
       ], // HTTP协议，数据结构，算法等等
     },

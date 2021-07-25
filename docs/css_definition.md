@@ -9,6 +9,85 @@ title: CSS定义
 - `li`前面的小圆点 和 `display`： 如果设置`li`元素的display为除了list-item的其他属性，li前面的小圆点就会消失。
 - `position:absolute` 和`display:inline`：所有定位元素会自动变为`block`.
 
+## 文档流
+> 块级元素从上到下，内联元素从左到右。就是文档流。
+
+- 正常文档流的高度就是，所有内联盒子和块级元素盒子加在一起。
+
+### 块级盒子的宽高
+- 永远都不要给盒子高度，只有当需要全屏展示的时候 `height:100vh;`
+- div不给宽高是宽高是零
+- div的高度是由文档流中的内联元素和块级所有的高度决定的。
+#### 1. 如果div中有文字
+- `height = font-size + line-height`（文字的行高是由设计师在设计字体的时候确定的，不一样的字体行高不一样。）
+- div中文字的空格`&nbsp;`
+- 文字左右两端对齐`text-align-last: justify;`
+- 元素之前有空格用`float: left`不用`display: inline-block`，或者可以用flex布局
+- 很长的英文单词系统会识别为一个，导致不换行。使用`word-break: break-all`，使所有内容都换行
+#### 1.1 文字省略溢出(常用套路)
+- 单行溢出省略
+```css
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+```
+
+- 多行溢出省略
+```css
+dispaly: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient:vertical;
+overflow:hidden;
+```
+#### 1.2 文字居中
+- **垂直居中：**使用`line-height + padding-top + padding-bottom = height` 计算出来就可以，不要写死高
+```css
+/* 需求：高度40px的盒子中，文字垂直居中 */
+line-height: 24px;
+padding: 8px 0;
+```
+- **水平居中：** 使用`text-align: center;`
+```css
+text-align: center;
+```
+#### 2. 如果div中有div
+- 父盒子的高是由`子盒子 + padding + border` 决定的。
+- **margin的合并：**
+    + margin在父盒子没有padding和border的时候是不属于父亲的高的。
+    + 当父盒子有padding 或者 border的时候才会使margin生效。
+    + 有内联元素在的时候，也不会margin合并
+#### 2.1 div中的div居中
+```css
+dispaly: felx;
+justify-content: center;
+align-items: center;
+```
+
+```css
+position: absolute;
+left: 50%;
+top: 50%;
+transfrom: translate(-50%, -50%);
+```
+
+#### 2.2 实现一个一比一的div
+```css
+padding-top: 100%
+```
+
+### 内联盒子的宽高
+- 内联盒子的高度是由`line-height`确定的
+- 内联盒子的宽度是由`文字所占的宽度` + `padding` + `margin` 确定的
+### 脱离文档流
+- 脱离文档流就是：**当前文档流的高度不算这个盒子了**
+- position：relative 是不脱离文档流的，也就是高度是算在文档流里面的
+- 以下属性会导致当前盒子会脱离文档流
+```css
+position: absolute;
+position: fixed;
+float: left;
+```
+
 ## CSS堆叠上下文
 ### 堆叠上下文的顺序
 - 负的z-index
