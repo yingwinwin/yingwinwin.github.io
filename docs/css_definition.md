@@ -160,3 +160,153 @@ float: left;
 ```
 
 ## flex布局
+### 父属性
+```css
+flex-direction  方向
+flex-wrap 换行
+flex-flow 上面两个的简写
+justify-content 主轴方向对齐方式
+align-items 侧轴对齐方式
+align-content 多行/列内容对齐方式(用的较少)
+```
+
+### 子属性
+```css
+flex-grow 增长比例（空间过多时）
+flex-shrink 收缩比例 （空间不够时）
+flex-basis 默认大小（一般不用）100px
+flex 上面三个的缩写
+order 顺序 （代替双飞翼）
+align-self  自身对齐方式
+```
+
+## flex常用布局实现
+### 移动端布局
+- 上下固定，中间占满空白，自动滚动。
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .container > header {
+            height:  40px;
+        }
+
+        .container > main {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .container > footer {
+            height: 40px;
+        }
+        .container > footer > ul {
+            height: 100%;
+            display: flex;
+            border: 1px solid #000;
+        }
+        .container > footer > ul > li  {
+            border: 1px solid #000;
+            flex: 1;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>header</header>
+      <main>main</main>
+      <footer>
+          <ul>
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+              <li>4</li>
+          </ul>
+      </footer>
+    </div>
+  </body>
+</html>
+```
+
+### PC端布局
+- 左右固定，中间自适应
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            height: 40px;
+            border: 1px solid #000;
+        }
+        footer {
+            height: 40px;
+            background-color: #ccc;
+        }
+
+        .contant {
+            display: flex;
+            height: 480px;
+            border: 10px solid #000;
+        }
+        .contant > aside {
+            width: 120px;
+        }
+
+        .contant > nav {
+            width: 100px;
+        }
+        .contant > main {
+            flex: 1;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <header></header>
+    <div class="contant">
+        <aside></aside>
+        <main></main>
+        <nav></nav>
+    </div>
+    <footer></footer>
+</body>
+</html>
+```
+
+
+
+## IFC
+
+### 图片有缝隙
+```css
+vertical-align: middle;
+```
