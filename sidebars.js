@@ -26,6 +26,7 @@ module.exports = {
           label: "异步",
           items: ["asyn_base", "promise"],
         },
+        "business_scenario"
       ],
     },
     {
