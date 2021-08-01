@@ -15,10 +15,10 @@
        - [ ] 计算机网络通关29讲 -- 无他，为手熟尔。
        - [ ] 脚手架课程的学习 -- 3课时，预计1天完成
        - [ ] node课程的学习 -- 66课时，5周左右完成，开始后不要停下来，保证没有别的事情处理
-       - [ ] CSS课程的学习 -- 13章。1章大概5课时。预计2周左右可以搞完。最好输出导图和知识体系
+       - [x] CSS课程的学习 -- 13章。1章大概5课时。预计2周左右可以搞完。最好输出导图和知识体系
     2. 输出:
        - [ ] 三次握手和四次挥手 -- 预计7月11日完成
-       - [ ] css--BFC -- 预计7月25日完成
+       - [x] css--BFC -- 预计7月25日完成
        - [ ] 写一个react项目 -- 12节，需要一个时间来写。
 ### 博客
 - [基于的Docusaurus博客部署](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8docusaurus%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%8C%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%88%B0github%20pages)
@@ -33,6 +33,7 @@
 - [简单版的react_2生命周期](https://yingwinwin.github.io/docs/react_lifecycle)
 - [简单版的react_3其他特性和方法](https://yingwinwin.github.io/docs/react_advance)
 - [简单版的react_4hook](https://yingwinwin.github.io/docs/react_hooks)
+- [css](https://yingwinwin.github.io/docs/css_definition)
 
 ### 在更新的内容
 - [react中使用ts遇到的问题总结](https://yingwinwin.github.io/docs/reactUseTs)
