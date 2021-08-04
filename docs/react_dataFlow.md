@@ -89,7 +89,7 @@ ReactDOM.render(<Father />, document.getElementById("root"));
 
 ### 事件对象
 ```jsx
-class MyEventEmitter {
+class Event {
   constructor() {
     this.eventMap = {};
   }
@@ -126,50 +126,138 @@ class MyEventEmitter {
   }
 }
 
-export const myEvent = new MyEventEmitter();
+export const myEvent = new Event();
 ```
 
 ### 通过事件对象进行通信
-- AB为兄弟关系
-- A在初始化的时候订阅了setA事件
-- 在B想给A数据的时候，点击按钮，A就会拿到B发来的数据，通过event类做数据中转
+- Pub Sub为兄弟关系
+- Pub在初始化的时候订阅了setPub事件
+- 在Sub想给Pub数据的时候，点击按钮，Pub就会拿到Sub发来的数据，通过event类做数据中转
 - 在离开页面的时候要取消订阅
 ```jsx
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { myEvent } from "./event.js"; // 通过事件对象做中转
 
-const A = () => {
-  const [a, setA] = useState("");
+const Pub = () => {
+  const [pub, setPub] = useState("");
   useEffect(() => {
     const handler = (params) => {
-      setA(`A订阅函数拿到${params}的内容`);
+      setPub(`A订阅函数拿到${params}的内容`);
     };
-    myEvent.on("setA", handler);
+    myEvent.on("setPub", handler);
     return () => {
-      myEvent.off("setA", handler);
+      myEvent.off("setPub", handler);
     };
   }, []);
-  return <div>{a}</div>;
+  return <div>{pub}</div>;
 };
 
-const B = () => {
-  const handleB = () => {
-    myEvent.emit("setA", "来自B");
+const Sub = () => {
+  const handleSub = () => {
+    myEvent.emit("setPub", "来自B");
   };
-  return <button onClick={handleB}>点击B发送数据</button>;
+  return <button onClick={handleSub}>点击B发送数据</button>;
 };
 
 const Father = () => {
   return (
     <div>
-      <A />
-      <B />
+      <Pub />
+      <Sub />
     </div>
   );
 };
 
 ReactDOM.render(<Father />, document.getElementById("root"));
 ```
+## Context
+- Context 是 react 中内置解决多层传参问题的API
+- 新版 context 已经解决 shouldComponentUpdate 为 false 阻止的问题
 
-<!-- TODO  context  redux -->
+```jsx
+import React, { createContext, useContext } from "react";
+import ReactDOM from "react-dom";
+/**
+ * 通过creatContext创建一个context对象
+ * 父亲组件
+ *   - 通过Provider包裹子组件
+ *   - 传入一个value对象，内部所有的组件都可以通过context拿到value里面的值
+ * 儿子类组件：
+ *   - 先通过静态方法static contextType = AppContext; 给this.context赋值
+ *   - 类组件也可以通过Consumer的方式获取
+ * 儿子函数组件
+ *   - 通过Consumber的方式获取
+ *   - 通过useContext函数获取
+ */
+let AppContext = createContext();
+class App extends React.Component {
+  render() {
+    return (
+      <AppContext.Provider
+        value={{
+          text: "父亲传给儿子们的数据"
+        }}
+      >
+        <Child />
+      </AppContext.Provider>
+    );
+  }
+}
+
+// 类组件
+class Child extends React.Component {
+  static contextType = AppContext; // 类组件中使用context
+  render() {
+    return (
+      <div>
+        Child --- {this.context.text}
+        <Son />
+      </div>
+    );
+  }
+}
+// 函数组件
+const Son = () => {
+  return (
+    <AppContext.Consumer>
+      {({ text }) => {
+        return (
+          <div>
+            {`Son --- ${text}`}
+            <Hook />
+          </div>
+        );
+      }}
+    </AppContext.Consumer>
+  );
+};
+// hook
+const Hook = () => {
+  const { text } = useContext(AppContext);
+  return <div> hook --- {text}</div>;
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
+
+## Redux
+> 1. redux 是严格的单向数据流
+> 2. 三个概念， action -- 动作、 reducer -- 过滤器、 store--仓库 
+
+- `store` 单一数据流 只读。
+- `Action` 派发动作，只有派发可以修改动作
+- `Reducer` 过滤器，把最近的state给到view层
+<!-- TODO 图片最好换成自己的 -->
+- 图片来自修言大佬，深入浅出搞定React一课
+![image](../static/resource/redux.jpg)
+
+
+### 方法
+- bindActionCreators
+- combinReducers
+- compose
+- **createStore(reducer, initState, applyMiddleware()) -- 核心方法** 用于创建store对象
+- getState
+- subscribe
+- **dispatch -- 动作派发**
