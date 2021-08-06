@@ -68,7 +68,7 @@ module.exports = {
     {
       type: "category",
       label: "问题/记录/总结",
-      items: ["view", "errors", "sum_macUse", "everyDay"],
+      items: ["view", "errors", "sum_macUse"],
     },
     {
       type: "category", // 类别
@@ -95,6 +95,11 @@ module.exports = {
       type: "category", // 类别
       label: "看书总结", // 一级标题
       items: ["js4"], // js忍者秘籍， 你不知道的js123， js高级程序设计3
+    },
+    {
+      type: "category", // 类别
+      label: "个人生活", // 一级标题
+      items: ['life_musice'], 
     },
   ],
 };
