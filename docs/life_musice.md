@@ -50,3 +50,17 @@ title: 音乐理论基础
 - 音阶：一个调式里面，它所使用的这些音，按照从低到高的顺序排列起来，由主音开始，主音结束。（主音就是1=C，C就是主音）
 - 通过主音，使用当前的（自然）大调`全全半全全全半`，去寻找其他音阶
 - ![image](../static/resource/jump.jpeg)
+
+## 9. 黑键开始的（自然）大调
+- 依旧是按照`全全半全全全半`的规律去进行组合，划掉的部分，是因为不常用，而不是因为不存在
+![image](../static/resource/blackjump.jpeg)
+
+## 10. 1=C到底是那个C
+- 钢琴有8个部分，每一个部分用以下方式显示
+![image](../static/resource/Cgroup.jpeg)
+
+- 人的音域没有钢琴那么广，所以是从`C1`开始比较常用
+![image](../static/resource/person.jpeg)
+
+- `C1`也可以叫做`C4`，或者`中央C`
+![image](../static/resource/ccc.jpeg)
