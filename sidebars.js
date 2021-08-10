@@ -99,7 +99,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "个人生活", // 一级标题
-      items: ['life_musice'], 
+      items: ['life_musice', 'game'], 
     },
   ],
 };
