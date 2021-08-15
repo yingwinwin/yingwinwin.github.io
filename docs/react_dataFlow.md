@@ -240,24 +240,74 @@ const Hook = () => {
 
 ReactDOM.render(<App />, document.getElementById("root"));
 ```
+- 输出
+```shell
+Child --- 父亲传给儿子们的数据
+Son --- 父亲传给儿子们的数据
+hook --- 父亲传给儿子们的数据
+```
 
 ## Redux
 > 1. redux 是严格的单向数据流
 > 2. 三个概念， action -- 动作、 reducer -- 过滤器、 store--仓库 
 
+### 概念
 - `store` 单一数据流 只读。
 - `Action` 派发动作，只有派发可以修改动作
 - `Reducer` 过滤器，把最近的state给到view层
-<!-- TODO 图片最好换成自己的 -->
-- 图片来自修言大佬，深入浅出搞定React一课
-![image](../static/resource/redux.jpg)
-
 
 ### 方法
-- bindActionCreators
-- combinReducers
-- compose
+- bindActionCreators(fn, store.dispatch) -- 减去手动dispatch的麻烦，封装dispatch方法
+- combinReducers -- 多个reducer合并为一个，用于多个组件项目reduce单独管理，然后合并的情况
 - **createStore(reducer, initState, applyMiddleware()) -- 核心方法** 用于创建store对象
-- getState
-- subscribe
+- getState -- 获得最新的状态数据
+- subscribe -- 进行动作的监听，返回值是取消监听函数
 - **dispatch -- 动作派发**
+
+### 使用
+```js
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import { createStore } from "redux";
+
+const initState = { number: 0 };
+// 定义动作
+const reducer = (state = initState, action) => {
+  switch (action.type) {
+    case "ADD":
+      return { number: state.number + 1 };
+    case "MINUS":
+      return { number: state.number - 1 };
+    default:
+      return state;
+  }
+};
+
+const store = createStore(reducer);  // 创建仓库
+class App extends Component {
+    // 从仓库中获取状态
+  state = { number: store.getState().number };
+  componentDidMount() {
+    //  监听状态
+    this.unsubscribe = store.subscribe(() => {
+      this.setState({ number: store.getState().number });
+    });
+  }
+  componentWillUnmount() {
+    //   取消监听
+    this.unsubscribe();
+  }
+  render() {
+    return (
+      <div>
+        <p>{this.state.number}</p>
+        {/* 派发动作 */}
+        <button onClick={() => store.dispatch({ type: "ADD" })}> + </button>
+        <button onClick={() => store.dispatch({ type: "MINUS" })}> - </button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+```
