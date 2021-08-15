@@ -10,16 +10,16 @@
 - 记录自己在学习之后的总结
     - 2021年三季度目标：
     1. 输入: 
-       - [ ] javaScript高级程序设计4 -- 进行中 30% 大概要9月末完成
-       - [ ] 深入浅出搞定react -- 无他，为手熟尔。
-       - [ ] 计算机网络通关29讲 -- 无他，为手熟尔。
-       - [ ] 脚手架课程的学习 -- 3课时，预计1天完成
-       - [ ] node课程的学习 -- 66课时，5周左右完成，开始后不要停下来，保证没有别的事情处理
-       - [x] CSS课程的学习 -- 13章。1章大概5课时。预计2周左右可以搞完。最好输出导图和知识体系
+       - [ ] javaScript高级程序设计4
+       - [x] 深入浅出搞定react
+       - [x] 计算机网络通关29讲
+       - [ ] 慕课设计模式
+       - [ ] node课程的学习
+       - [x] CSS课程的学习
     2. 输出:
-       - [ ] 三次握手和四次挥手 -- 预计7月11日完成
-       - [x] css--BFC -- 预计7月25日完成
-       - [ ] 写一个react项目 -- 12节，需要一个时间来写。
+       - [ ] 三次握手和四次挥手
+       - [x] css--BFC
+       - [ ] 写一个react项目
 ### 博客
 - [基于的Docusaurus博客部署](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8docusaurus%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%EF%BC%8C%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%88%B0github%20pages)
 - [css loading效果](https://yingwinwin.github.io/blog/%E4%BD%BF%E7%94%A8css3%E5%81%9A%E4%B8%80%E4%B8%AAloading%E6%95%88%E6%9E%9C)
