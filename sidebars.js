@@ -51,7 +51,7 @@ module.exports = {
         {
           type: "category",
           label: "面试",
-          items: ["react_dataFlow"],
+          items: ["react_dataFlow", "react_vdom"],
         },
         {
           type: "category",
