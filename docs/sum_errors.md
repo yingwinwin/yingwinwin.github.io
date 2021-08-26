@@ -124,3 +124,23 @@ useEffect(() => {
 ### 12. position:sticky; 父级高度给100vh后失效
 - 解决：去掉父元素的height：100vh，没有固定的高度，这样元素的父盒子就会是整个元素的本身的高度，就不会出现失效的问题。
 - 如果当前元素有其他元素需要定位可以都是用stictky。
+
+### 13. 给html渲染目录
+```js
+// 获取所有的标题HTML
+function getHDom() {
+	const titles = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
+	let arr = [];
+	titles.forEach(title => {
+		const type = title.nodeName.replace('H', '');
+		arr.push({
+			title: title.textContent,
+			type,
+			id: title.id,
+		})
+	});
+	return arr;
+}
+```
+- 用 padding * 目录层级
+- 用a标签做锚点
