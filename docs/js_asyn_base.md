@@ -193,4 +193,107 @@ console.log('1', a)  // 1, 1
 ```
 
 ### 6. 定时器
-- setTimeout setInterval requestAnimationFrame
+- 定时器在延迟队列中，延迟队列会在消息队列结束之后执行。
+```java
+void ProcessTimerTask(){
+  //从delayed_incoming_queue中取出已经到期的定时器任务
+  //依次执行这些任务
+}
+
+TaskQueue task_queue；
+void ProcessTask();
+bool keep_running = true;
+void MainTherad(){
+  for(;;){
+    //执行消息队列中的任务
+    Task task = task_queue.takeTask();
+    ProcessTask(task);
+    
+    //执行延迟队列中的任务
+    ProcessDelayTask()
+
+    if(!keep_running) //如果设置了退出标志，那么直接退出线程循环
+        break; 
+  }
+}
+```
+- 注意事项
+1. 如果当前任务执行时间过久，会影响定时器任务的执行
+```js
+function bar() {
+    console.log('bar')
+}
+function foo() {
+    setTimeout(bar, 0);
+    // 定时器会等待js脚本执行完成之后，再执行
+    for (let i = 0; i < 5000; i++) {
+        let i = 5+8+8+8
+        console.log(i)
+    }
+}
+foo()
+```
+2. 如果 setTimeout 存在嵌套调用，那么系统会设置最短时间间隔为 4 毫秒，系统会认为当前任务阻塞，所以会延迟执行
+3. 未激活的页面，setTimeout 执行最小间隔是 1000 毫秒，目的是为了节约资源
+4. 延时执行时间有最大值 2147483647 毫秒，超过时间定时器会立即执行
+5. 在定时器中使用this
+   + 使用箭头函数
+   + 使用bind绑定
+
+### 7. XMLHttpRequest
+```js
+
+ function GetWebData(URL){
+    /**
+     * 1:新建XMLHttpRequest请求对象
+     */
+    let xhr = new XMLHttpRequest()
+
+    /**
+     * 2:注册相关事件回调处理函数 
+     */
+    xhr.onreadystatechange = function () {
+        switch(xhr.readyState){
+          case 0: //请求未初始化
+            console.log("请求未初始化")
+            break;
+          case 1://OPENED
+            console.log("OPENED")
+            break;
+          case 2://HEADERS_RECEIVED
+            console.log("HEADERS_RECEIVED")
+            break;
+          case 3://LOADING  
+            console.log("LOADING")
+            break;
+          case 4://DONE
+            if(this.status == 200||this.status == 304){
+                console.log(this.responseText);
+                }
+            console.log("DONE")
+            break;
+        }
+    }
+
+    xhr.ontimeout = function(e) { console.log('ontimeout') }
+    xhr.onerror = function(e) { console.log('onerror') }
+
+    /**
+     * 3:打开请求
+     */
+    xhr.open('Get', URL, true);//创建一个Get请求,采用异步
+
+
+    /**
+     * 4:配置参数
+     */
+    xhr.timeout = 3000 //设置xhr请求的超时时间
+    xhr.responseType = "text" //设置响应返回的数据格式
+    xhr.setRequestHeader("X_TEST","time.geekbang")
+
+    /**
+     * 5:发送请求
+     */
+    xhr.send();
+}
+```
