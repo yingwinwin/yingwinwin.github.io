@@ -253,6 +253,7 @@ foo()
      * 2:注册相关事件回调处理函数 
      */
     xhr.onreadystatechange = function () {
+      // 请求的状态
         switch(xhr.readyState){
           case 0: //请求未初始化
             console.log("请求未初始化")
@@ -275,7 +276,9 @@ foo()
         }
     }
 
+    // 超时触发
     xhr.ontimeout = function(e) { console.log('ontimeout') }
+    // 错误触发
     xhr.onerror = function(e) { console.log('onerror') }
 
     /**
@@ -289,6 +292,7 @@ foo()
      */
     xhr.timeout = 3000 //设置xhr请求的超时时间
     xhr.responseType = "text" //设置响应返回的数据格式
+    // 配置其他请求头信息
     xhr.setRequestHeader("X_TEST","time.geekbang")
 
     /**

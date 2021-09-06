@@ -11,6 +11,7 @@ module.exports = {
       items: [
         "js_base",
         "RegExp", // md文件中设置的id ，这里找的是当前id是webpack文件的那篇文章
+        "js_writeTopic",
         {
           type: "category",
           label: "函数", // 二级标题
