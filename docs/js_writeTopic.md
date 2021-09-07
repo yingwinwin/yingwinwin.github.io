@@ -33,3 +33,27 @@ title: javaScirpt手写题
   console.log(p.name); // p
   console.log(myp.name); // myp
 ```
+
+### Object.create
+- 生成一个新的函数
+- 函数的原型对象赋值为传入的原型对象
+- 然后返回这个实例函数，这个函数的原型就已经指向了传入的原型上
+- 如果传入null，会返回一个纯净的没有原型对象的对象
+```js
+function myCreate(proto) {
+  function F() {};
+  F.prototype = proto;
+  return new F();
+}
+
+function Person(name) {
+  this.name = name
+}
+let p = new Person;
+let a = myCreate(Person.prototype);
+let b = Object.create(Person.prototype)
+console.log(a);
+console.log(b);
+```
+
+### Class
