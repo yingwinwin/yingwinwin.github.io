@@ -40,6 +40,7 @@ title: javaScirpt手写题
 - 然后返回这个实例函数，这个函数的原型就已经指向了传入的原型上
 - 如果传入null，会返回一个纯净的没有原型对象的对象
 ```js
+// MDN上面的polyfill
 function myCreate(proto) {
   function F() {};
   F.prototype = proto;
@@ -56,4 +57,71 @@ console.log(a);
 console.log(b);
 ```
 
-### Class
+### 继承
+
+## 函数
+
+### call
+1. 先看调用的是不是函数，不是函数就直接返回
+2. 是否有传入上下文，传入上下文就是当前上下文，不传入就是全局window
+3. 建立一个symbol做唯一key的属性，防止覆盖之前对象中的key
+4. 然后在当前传入的上下文的symbol属性，帮上当前调用的函数，也就是this
+5. 然后通过context调用方法，传入参数。拿到返回值（关键步骤）`就是因为这个才能this指向改变`
+6. 最后删除多余简历的fn属性。返回返回值
+```js
+Function.prototype.myCall = function (context,...arg) {
+  if(typeof this !== 'function') return;
+  context = context || winodw;
+  let fn = Symbol();
+  context.fn = this;
+  let r = context.fn(...arg);
+  delete context.fn;
+  return r;
+}
+
+let obj = {
+  name: 'zy',
+  getname: function (a, b) {
+    console.log(a, b);
+    return this.name;
+  }
+}
+
+let obj2 = {
+  name: 'zy1'
+}
+
+console.log(obj.getname.myCall(obj2,1,2));  // zy1 ,1, 2
+```
+### apply
+- 与call在传参上不同，其他功能一致
+- 
+```diff
+-Function.prototype.myCall = function (context,...arg) {
++Function.prototype.myApply = function (context,arg) {
+  if(typeof this !== 'function') return;
+  context = context || winodw;
+  let fn = Symbol();
+  context.fn = this;
+  let r = context.fn(...arg);
+  delete context.fn;
+  return r;
+}
+
+let obj = {
+  name: 'zy',
+  getname: function (a, b) {
+    console.log(a, b);
+    return this.name;
+  }
+}
+
+let obj2 = {
+  name: 'zy1'
+}
+
++ console.log(obj.getname.myApply(obj2, [1, 2]));  // zy1, 1,2
+- console.log(obj.getname.myCall(obj2,1,2));  // zy1 1, 2
+```
+
+### bind
