@@ -3,6 +3,10 @@ id: js_writeTopic
 title: javaScirpt手写题
 ---
 
+## 类型
+
+### 类型判断
+
 ## 对象
 
 ### new
@@ -95,7 +99,6 @@ console.log(obj.getname.myCall(obj2,1,2));  // zy1 ,1, 2
 ```
 ### apply
 - 与call在传参上不同，其他功能一致
-- 
 ```diff
 -Function.prototype.myCall = function (context,...arg) {
 +Function.prototype.myApply = function (context,arg) {
@@ -125,3 +128,55 @@ let obj2 = {
 ```
 
 ### bind
+```js
+```
+
+### 柯里化
+- a(1)(2)(3)
+
+### compose
+
+## 数组方法
+
+### map
+- 传入函数，循环调用传入数组的每一项
+- 把返回值push到一个数组中，返回新的数组 
+```js
+Array.prototype.myMap = function (fn) {
+  let mapArr = [];
+  for(let i = 0; i < this.length; i ++) {
+    mapArr.push(fn(this[i], i, this));
+  }
+  return mapArr;
+}
+
+let arr = [1 ,2 ,3,4].myMap((item) => item * 2)
+console.log(arr);  //  [2, 4, 6, 8]
+```
+### filter
+
+### forEach
+
+### flat
+
+### some
+
+### every
+
+### reduce
+
+## 算法
+
+### 斐波那契数列
+
+### 洗牌算法
+
+
+## 设计模式
+
+### 单例模式
+
+### 发布订阅模式
+
+### 工厂模式
+
