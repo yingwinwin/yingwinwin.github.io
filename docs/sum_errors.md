@@ -144,3 +144,10 @@ function getHDom() {
 ```
 - 用 padding * 目录层级
 - 用a标签做锚点
+
+### 日期
+[intl](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
+```js
+// 输入当天的星期
+new Intl.DateTimeFormat('zh-CN', {weekday: 'long'}).format(new Date);
+```
