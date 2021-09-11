@@ -147,7 +147,9 @@ function getHDom() {
 
 ### 日期
 [intl](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
+[toLocaleDateString](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString)
 ```js
 // 输入当天的星期
 new Intl.DateTimeFormat('zh-CN', {weekday: 'long'}).format(new Date);
+new Date().toLocaleDateString("default", {year: "numeric", month: "2-digit", day: "2-digit"}) // "2021/08/21"
 ```

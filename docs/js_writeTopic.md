@@ -62,7 +62,9 @@ console.log(b);
 ```
 
 ### 继承
-
+- 寄生组合式继承，继承属性和原型方法
+```
+```
 ## 函数
 
 ### call
@@ -136,9 +138,15 @@ let obj2 = {
 
 ### compose
 
-## 数组方法
+### 节流
 
+### 防抖
+
+### 图片懒加载
+
+## 数组方法
 ### map
+- 返回新数组
 - 传入函数，循环调用传入数组的每一项
 - 把返回值push到一个数组中，返回新的数组 
 ```js
@@ -154,23 +162,133 @@ let arr = [1 ,2 ,3,4].myMap((item) => item * 2)
 console.log(arr);  //  [2, 4, 6, 8]
 ```
 ### filter
+- 返回新数组
+- 不是true，就跳过，如果是true就把当前结果放到数组中返回
+```js
+Array.prototype.myFilter =  function (fn) {
+  let arr = []
+   for(let i = 0; i < this.length; i ++) {
+     if(!fn(this[i], i, this)) continue;
+     arr.push(this[i])
+   }
 
+   return arr;
+}
+let a = [1,2,3].myFilter(item => item > 1);
+console.log(a); // [2,3]
+```
 ### forEach
+- 无返回值
+- 数组循环
+```js
+Array.prototype.myForEach =  function (fn) {
+  let arr = []
+   for(let i = 0; i < this.length; i ++) {
+     fn(this[i], i, this)
+   }
+}
 
+let a = [1,2,3].myForEach((item, i) =>{
+  console.log(item, i);
+});
+```
 ### flat
+- 返回新数组
+- 不传参数时，默认“拉平”一层，可以传入一个整数，表示想要“拉平”的层数
+- Infinity 关键字作为参数时，无论多少层嵌套，都会转为一维数组
+- 负数不做改变
+- 空位会跳过
+```js
+// 1
+[1,2,[3, [4], [5]]].toString().split(',').map(item => parseFloat(item));
 
+// 2
+var arr = [1,2,[3, [4], [5]]];
+while (arr.some(item => Array.isArray(item))) {
+  arr = [].concat(...arr);
+}
+
+// 3
+Array.prototype.myFlat = function (detph = 1) {
+  if(detph === 0) return this;
+  return this.reduce((pre, cur) => {
+    if (Array.isArray(cur)) {
+      return [...pre, ...cur.myFlat(detph - 1)]
+    } else {
+      return [...pre, cur];
+    }
+  }, [])
+}
+
+let a = [1,2,[3, [4], [5]]].myFlat(2);
+console.log(a);  // [1, 2, 3, 4, 5]
+```
 ### some
+- 有一个为真就为真
+- 如果传入空数组，就为false
+```js
+Array.prototype.mySome = function (fn) {
+  if (this.length === 0) return false;
+  for (let i = 0; i < this.length; i ++) {
+    if (fn(this[i], i, this)) {
+      return true;
+    }
+  }
+  return false;
+}
 
+let a = [1,2,3].mySome(item => !item);
+console.log(a); // false
+```
 ### every
+- 传入空数组为true
+- 全部为true，才是true，有一个false就是假
+```js
+Array.prototype.myEvery = function (fn) {
+  if (this.length === 0) return true;
+  for (let i = 0; i < this.length; i ++) {
+    if (!fn(this[i], i, this)) {
+      return false;
+    }
+  }
+  return true;
+}
 
+let a = [1,2,3].myEvery(item => item > 0);
+console.log(a); // true
+```
 ### reduce
+- 如果没有传入初始值，初始值就是当前的第一项，然后下标+1
+- 如果传入了初始值，那么直接返回就可以了
+```js
+Array.prototype.myReduce = function (fn, pre) {
+   for (let i = 0; i < this.length; i ++) {
+     if (pre === undefined) {
+        // 如果初始值是undefined，那么就让第一项作为pre，第二项是当前值，然后坐标下移  
+        pre = fn(this[i], this[i + 1], i, this);
+        i++;
+     } else {
+        pre = fn(pre, this[i], i, this);
+     }
+   }
 
+   return pre;
+}
+
+let a = [1,2,3].myReduce((pre, cur, i, arr) =>{
+  return pre + cur
+});
+console.log(a); // 6
+```
 ## 算法
 
 ### 斐波那契数列
 
 ### 洗牌算法
 
+### 冒泡排序
+
+### 快排
 
 ## 设计模式
 
