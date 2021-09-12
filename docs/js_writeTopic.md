@@ -6,7 +6,21 @@ title: javaScirpt手写题
 ## 类型
 
 ### 类型判断
+- 核心：把数据转为字符串
+```js
+let obj = {}
+Object.prototype.toString.call(obj).slice(8, -1).toLowerCase();  // object
 
+// 通用函数
+  let Type = {};
+  let arr = ['Array', 'String', 'Number', 'Object'];
+  for (let i = 0;  i < arr.length; i ++) {
+    Type[`is${arr[i]}`] = function (params) {
+      return Object.prototype.toString.call(params) === `[object ${arr[i]}]`
+    }
+  }
+  console.log(Type.isString(''));  // true
+```
 ## 对象
 
 ### new
@@ -63,8 +77,89 @@ console.log(b);
 
 ### 继承
 - 寄生组合式继承，继承属性和原型方法
+- [面试官问：JS的继承](https://juejin.cn/post/6844903780035592205)
+```js
+  function Person(name) {
+    this.name = name;
+  }
+
+  Person.prototype.getName = function () {
+    return this.name;
+  }
+
+  function Chilren(age, name) {
+    // 继承属性
+    Person.call(this, name);
+    this.age = age;
+  }
+  // 继承方法（参考原型链图）
+  Chilren.prototype = Object.create(Person.prototype);
+  Chilren.prototype.constructor = Chilren;
+  Chilren.__proto__ = Person;
+  // 需要在继承之后再原型链上赋值
+  Chilren.prototype.getAge = function () {
+    return this.age;
+  }
 ```
+
+### 浅拷贝
+- 对象指向堆中地址，所以有时需要做拷贝操作
+```js
+let obj = {
+  a: '1',
+  b: '2'
+}
+// 1. 这样会改变target对象如果用于拷贝一般用target放入一个{},返回拷贝后的对象
+let newObj1 = Object.assign({}, obj)
+
+// 2. {...} 扩展运算符
+let newObj2 = {...obj}
+
+// 3. slice
 ```
+
+### 深拷贝
+```js
+// 1
+  JSON.parse(JSON.stringify(obj))
+/* 
+  缺点：
+  1. undefined 和 Symbol 的数据会被忽略
+  2. 不能序列化
+  3. 如果对象循环引用会报错
+*/
+
+
+// 2 
+  let obj = {
+    a: '1',
+    b: [
+      {a: '2'}
+    ],
+    c: undefined,
+    d: {
+      a: 'ddd'
+    }
+  }
+  function deepClone(obj) {
+    function isObject(o) {
+      // 如果对象是函数或者对象，且不是null的话，返回true
+      return (typeof o === 'function' || typeof o === 'object') && o !== null;
+    }
+
+    let newObj = Array.isArray(obj) ? [] : {}
+    Reflect.ownKeys(obj).forEach(key => {
+      newObj[key] = isObject(obj[key]) ? deepClone(obj[key]) : obj[key]
+    })
+    return newObj
+  }
+  let newobj = deepClone(obj);
+  newobj.d.a = 'aaa'
+  obj.b[0].a = '0'
+  console.log(obj === newobj);
+  console.log(obj, newobj);
+```
+
 ## 函数
 
 ### call
@@ -137,13 +232,69 @@ let obj2 = {
 - a(1)(2)(3)
 
 ### compose
+```js
 
+```
 ### 节流
+- 举例：机场大巴，第一个人上来之后，开始计时，10分钟开一趟。
+```js
+  let box = document.getElementById('box');
+  window.addEventListener('scroll', throttle(() => {
+    console.log(111);  // 每隔一秒输出111
+  }, 1000));
 
+  function throttle(fn, time) {
+    let last = 0;
+    return (...args) => {
+      let now = +new Date();
+      // 如果当前的时间 - 一开始记录的时间，大于了传入的时间，就进行更新
+      if (now - last >= time) {
+        last = now;
+        fn(...args);
+      }
+    }
+  }
+```
 ### 防抖
+- 举例：机场大巴，最后一个人上车了开始计时10分钟，如果中间又来人了就重新计时，知道中间10分钟都没有人来，才开车。
+```js
+  let box = document.getElementById('box');
+  window.addEventListener('scroll', debounce(() => {
+    console.log(111);  // 停止滑动后，1秒后输出
+  }, 1000));
 
+  function debounce(fn, delay) {
+    let timer = null;
+    return (...arg) => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(() => {
+        fn(...arg)
+      }, delay)
+    }
+  }
+```
 ### 图片懒加载
-
+- 核心：计算当前图片是否出现在视口范围内，如果出现了就加载
+- [intersectionobserver](http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html)
+```js
+  const imgs = document.getElementsByTagName('img');
+  // 获取可视区域的高度
+  const viewHeight = document.documentElement.clientHeight
+  let num = 0
+  function lazyload() {
+    for(let i = num; i < imgs.length; i ++) {
+      let distance = viewHeight - imgs[i].getBoundingClientRect().top;
+      console.log(distance);
+      if (distance >= 0) {
+        imgs[i].src = imgs[i].getAttribute('data-src');
+        num = i + 1;
+      }
+    }
+  }
+  window.addEventListener('scroll', lazyload);
+```
 ## 数组方法
 ### map
 - 返回新数组
