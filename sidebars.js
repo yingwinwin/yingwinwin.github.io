@@ -80,11 +80,12 @@ module.exports = {
           label: "数据结构",
           items: ["ds_list", "ds_doublyLinkedList"], // 栈，队列，链表，树
         },
-        {
-          type: "category",
-          label: "计算机网络",
-          items: [],  // 浏览器输入后到底发生了什么？
-        },
+        "cs_net"
+        // {
+        //   type: "category",
+        //   label: "计算机网络",
+        //   items: [],  // 浏览器输入后到底发生了什么？
+        // },
       ], // HTTP协议，数据结构，算法等等
     },
     {

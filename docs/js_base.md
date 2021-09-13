@@ -857,19 +857,69 @@ console.log(fn2());  // 1
 > CSRF攻击：利用用户的登录状态发起恶意请求
 
 - JSONP
-1. 利用`<script>`标签没有跨域限制的漏洞
+1. 利用`<script>`标签
 2. 简单，兼容性好，但是只能用于get请求
+3. 请求过程无法终止，导致弱网络下处理超时请求比较麻烦
+4. 无法捕获服务端返回的异常信息
 
 - CORS
 1. 需要浏览器和后端同时支持
 2. 需要服务端设置请求头：Access-Control-Allow-Origin
 
-- document.domain
+- 代理转发
+1. webpack-dev-server
+```js
+module.exports = {
+  //...
+  devServer: {
+    proxy: {
+      '/api': 'http://localhost:3000'
+    }
+  }
+};
+```
+2. nginx
+```nginx
+location /api {
+    proxy_pass   http://localhost:3000;
+}
+```
+
+- Websocket
+1. 用于浏览器与服务器进行实时通信场景
+```js
+var ws = new WebSocket("ws://b.com");
+ws.onopen = function(){
+  // ws.send(...);
+}
+ws.onmessage = function(e){
+  // console.log(e.data);
+}
+```
+#### 页面跨域iframe
+- postMessage(待补充)
+1. 用于获取嵌入页面的第三方页面数据
+```js
+// 通过 window.open() 函数打开了子页面，然后调用 child.postMessage() 函数发送了字符串数据“hi”给子页面
+// https://lagou.com
+var child = window.open('https://kaiwu.lagou.com');
+child.postMessage('hi', 'https://kaiwu.lagou.com');
+
+// 子页面中，只需要监听“message”事件即可得到父页面的数据,父页面也可以监听“message”事件来接收子页面发送的数据
+// https://kaiwu.lagou.com
+window.addEventListener('message', function(e) {
+  console.log(e.data);
+},false);
+
+// 子页面发送数据时则要通过 window.opener 对象来调用 postMessage() 函数
+// https://kaiwu.lagou.com
+window.opener.postMessage('hello', 'https://lagou.com');
+```
+
+- document.domain(改域)
 1. 只能用于二级域名相同的情况下，比如a.test.com, b.test.com
 2. 只需要给页面添加document.domain = test.com 表示二级域名都相同可以实现跨域。
 
-- postMessage(待补充)
-1. 用于获取嵌入页面的第三方页面数据
 
 ### 19. 储存
 | 特性 | cookie | localStorage | sessionStorage | indexDB |

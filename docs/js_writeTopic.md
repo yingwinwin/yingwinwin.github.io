@@ -230,6 +230,19 @@ let obj2 = {
 
 ### 柯里化
 - a(1)(2)(3)
+```js
+function add(...args) {
+  let arr = args
+  function fn(...newArgs) {
+    arr = [...arr, ...newArgs]
+    return fn;
+  }
+  fn.toString = fn.valueOf = function() {
+    return arr.reduce((acc, cur) => acc + parseInt(cur))
+  }
+  return fn
+}
+```
 
 ### compose
 ```js
@@ -256,7 +269,7 @@ let obj2 = {
   }
 ```
 ### 防抖
-- 举例：机场大巴，最后一个人上车了开始计时10分钟，如果中间又来人了就重新计时，知道中间10分钟都没有人来，才开车。
+- 举例：机场大巴，最后一个人上车了开始计时10分钟，如果中间又来人了就重新计时，直到中间10分钟都没有人来，才开车。
 ```js
   let box = document.getElementById('box');
   window.addEventListener('scroll', debounce(() => {
