@@ -64,12 +64,12 @@ module.exports = {
     {
       type: "category",
       label: "前端工程化",
-      items: ["webpack_use"],
+      items: ["webpack_use", "web_best"],
     },
     {
       type: "category",
       label: "问题/记录/总结",
-      items: ["view", "errors", "sum_macUse"],
+      items: ["errors", "sum_macUse"],
     },
     {
       type: "category", // 类别
