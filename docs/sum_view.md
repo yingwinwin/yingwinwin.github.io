@@ -149,8 +149,6 @@ new Promise (function (resolve, reject) {
 
 ## 面试复盘
 ### 1. 阿里外包，菜鸟（电话一面）
-- 这个面试官很垃圾，放人鸽子，也不准时。
-
 1. vdom是什么？解决了什么问题？
 2. 浏览器缓存？协商缓存？
 3. react hook钩子 useMemo useCallback 划重点：前端性能优化（可以展开说其他用性能优化处理的函数和钩子）
@@ -202,8 +200,7 @@ new Promise (function (resolve, reject) {
 7. flex布局
 8. 期望薪资
 
-### 5. 2021年9月13日（不知道哪家公司）
-- 电话基础面（面试官很好，我说的不全会帮我补全）
+### 5. 2021年9月13日
 1. css定位的几种方式
 2. css居中的方式
 3. css盒模型
@@ -214,8 +211,7 @@ new Promise (function (resolve, reject) {
 8. 用户输入url到页面渲染都发生了什么
 9. 浏览器缓存
 
-### 6. 仁励家
-- 电话一面，都是react原理 源码问题 （面试官建议：不要问什么答什么，尽量扩展延伸一些。）
+### 6. 2021年9月14日
 1. this.setState后都发生了什么
 2. react事件机制和原生事件机制有何不同，react团队对事件做了哪些处理
 3. react的key做了什么，如果用数组的index做key会造成什么问题？
@@ -230,3 +226,14 @@ new Promise (function (resolve, reject) {
 12. 设计模式：了解过那些设计模式
 13. 发布订阅讲一下，发布订阅数组删除的问题。
 14. 安全问题：XSS攻击
+
+### 7. 2021年9月15日
+1. flex布局都有哪些api
+2. css清除浮动
+3. 移动端遇到的兼容问题都有哪些
+4. react生命周期
+5. webpack有哪些常用模块
+6. loader 和 plugin 的区别
+7. webpack有哪些做项目优化的方案
+8. 浏览器缓存
+9. 浏览器资源下载
