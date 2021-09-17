@@ -64,7 +64,7 @@ module.exports = {
     {
       type: "category",
       label: "前端工程化",
-      items: ["webpack_use", "web_best"],
+      items: ["webpack_use"],
     },
     {
       type: "category",
