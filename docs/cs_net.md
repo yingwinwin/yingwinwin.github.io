@@ -120,3 +120,37 @@ content-type: text/html; charset=UTF-8  类型和编码方式
 - 充分利用好 Cookie 的 `SameSite` 属性，跨站点情况下，是否可以携带cookie
 - 验证请求的来源站点，通过`Referer` 和 `Origin`属性判断是否当前站点的请求
 - CSRF Token，进行token验证，没有携带token，不进行反馈
+
+## 前端鉴权
+
+### 为什么要鉴权？
+- http的无状态特性，导致客户端和服务端没有办法相认。所以当用户登录，也没有办法记录相应的状态。
+
+### 前端储存
+- 挂载到window上
+- cookie
+- sessionStorage
+- localStorage
+
+### cookie
+- [cookie](https://wangdoc.com/javascript/bom/cookie.html)
+- 请求头 `cookie` ，明文传输，最大为`4k`
+    + path domain -- 设置当前cookie的地址
+    + max-age expires  -- cookie携带时间
+    + sameSite  -- cookie跳转是否可携带
+    + Secure HttpOnly  -- cookie在https中，且不能通过document获取
+
+### session
+> 前端存id，后端存数据
+
+- 用户传账户名和密码，服务端查询库，校验客户
+- 把用户状态存储session 返回 sessionId给通过cookie带给客户端
+- 然后客户端在请求内容，通过cookie上面的sessionid
+- 服务端通过sessionId验证是否正确，然后查询数据库内容返回给客户端
+- 通常把session放在redis中，以免分布式导致用户信息不知道在哪里
+### token
+> 不需要后端贮存，都放在前端
+
+- 用户把信息给服务端
+- 服务端把用户传来的信息，编码形成token，带给cookie。jwt，就是一种成熟的编码方式
+- token过期时间，把用户信息和token一起放到cookie中

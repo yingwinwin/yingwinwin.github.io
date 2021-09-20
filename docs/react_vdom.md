@@ -24,10 +24,45 @@ title: 虚拟dom 和 diff
 ### 调和
 > 调和是使虚拟DOM 和 真实DOM 变成一致的过程
 
+
 - react15 栈调和
 - react16 fiber调和
 
 ### diff
 > diff是找到虚拟DOM 和 真实DOM 不同的地方
 
-<!-- TODO -->
+- 在reconcile过程中，在更新中会出发diff，判断当前节点是否可以进行复用。
+- react中会建立在以下3条的基础上进行diff
+    1. 只会进行同一层节点的diff
+    2. 不同类型的节点，直接进行删除重建
+    3. key可以保持渲染的稳定，由开发者决定是否进行删除重建，还是复用节点
+#### 单节点的diff
+1. 查看上次更新时的fiber节点是否存在
+2. 如果存在进行判断是否可以复用
+   - 先判断key是否一致，不一致直接新建
+   - key一致的情况下保证type一致，就可以复用，否则删除重建
+3. 不存在直接新建一个新的fiber节点
+
+#### 多节点的diff
+- 同一层级有多个节点
+
+1. diff会进行两遍循环，第一遍找出进行更新，第二遍进行增删和移动操作
+2. 第一次遍历
+   - key不同直接停止遍历
+   - type不同进行打上删除标记
+   - 如果newfiber 和 oldfiber先遍历完也停止当前遍历
+3. 第二次遍历
+   - 第一遍遍历时，所有节点都遍历完成
+   - newfiber没有遍历完，oldfiber遍历完，说明有新增，打上新增的tag
+   - newfiber遍历完 oldfiber遍历完，说明有删除，打上删除的tag
+   - newfiber 和 oldfiber 都没有遍历完，说明需要移动
+
+参考[kasong-React技术揭秘](https://react.iamkasong.com/diff/multi.html#%E6%A0%87%E8%AE%B0%E8%8A%82%E7%82%B9%E6%98%AF%E5%90%A6%E7%A7%BB%E5%8A%A8)
+
+
+## this.setState
+
+1. 创建一颗新的fiber树，进行diff操作，打上标记
+2. 然后将所有的setState推入队列中，当进行到该更新的生命周期时。
+3. 进行批量更新的处理`batchedUpdates`，然后替换掉之前的fiber树
+4. 如果当前已经在异步操作中，setState没有被打上批处理的标记，就会执行同步更新。

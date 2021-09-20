@@ -253,3 +253,5 @@ new Promise (function (resolve, reject) {
 12. 微前端是如何做隔离的？
 13. 前端的鉴权是如何进行的？cookie  setion token
 14. web安全要如何避免？
+15. 事件循环
+16. settimeout promise 有何不同？
