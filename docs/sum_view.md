@@ -255,3 +255,4 @@ new Promise (function (resolve, reject) {
 14. web安全要如何避免？
 15. 事件循环
 16. settimeout promise 有何不同？
+17. react的浅比较

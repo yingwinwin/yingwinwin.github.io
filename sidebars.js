@@ -52,7 +52,7 @@ module.exports = {
         {
           type: "category",
           label: "面试",
-          items: ["react_dataFlow", "react_vdom"],
+          items: ["react_dataFlow", "react_vdom", "react_other"],
         },
         {
           type: "category",
