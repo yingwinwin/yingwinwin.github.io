@@ -115,9 +115,13 @@ promise.then(
 
 ## 3. 符合A+规范
 - 链式调用
+  + .then返回普通值的时候，直接到下一个then中的成功
+  + .then中执行失败，直接会下一个then中的失败。或catch中
+  + 如果then返回一个promise会返回promise的执行结果
+  + 递归返回promise调用
 - 穿透调用
-- 递归返回promise调用
-- 已通过测试
+  + 如果是then没有传function，就给他包一个v=>v
+  + 如果是catch，就包一个throw
 ```js
 /**
  * @description 核心逻辑，用于处理返回值是promise还是一个普通值

@@ -1,110 +1,122 @@
 ---
 id: cs_algorithm
-title: 算法题
+title: 算法
 ---
 
-### 1. 两数之和
-- 方法一：
+## 数组链表
+
+### 移动零
+- [leetcode](https://leetcode-cn.com/problems/move-zeroes/)
+- 时间复杂度 `O(n)` n为数组的长度
+- 空间复杂度 `O(1)` 只需要常量储存 `j = 0`
 ```js
-var twoSum = function(nums, target) {
-    const map = new Map();
-    for(let i = 0; i < nums.length; i ++) {
-        if(map.has(target - nums[i])) {
-            return [map.get(target - nums[i]), i];
+  let arr = [0, 2, 3, 0, 1, 0];
+  function moveZero(arr) {
+    let j = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] !== 0) {
+        arr[j] = arr[i];
+        if (j < i) {
+          arr[i] = 0;
+        }
+        j++;
+      }
+    }
+  }
+  moveZero(arr);
+```
+
+### 盛水最多的容器
+- [leetcode](https://leetcode-cn.com/problems/container-with-most-water/)
+
+#### 暴力解法
+- 时间复杂度 O(n^2)
+- 空间复杂度 O(1)
+```js
+  let arr = [1,8,6,2,5,4,8,3,7]
+  function maxArea(arr) {
+    let max = 0;
+    for(let i = 0; i < arr.length - 1; i++) {
+      for(let j = 0; j < arr.length; j ++) {
+        let area = (j - i) * Math.min(arr[j] , arr[i]);
+        max = Math.max(area, max);
+      }
+    }
+
+    return max;
+  }
+  console.log(maxArea(arr));
+```
+
+#### 双指针
+- 时间复杂度 O(n)
+- 空间复杂度 O(1)
+
+```js
+  let arr = [1,8,6,2,5,4,8,3,7]
+  function maxArea(arr) {
+    let max = 0, i = 0, j = arr.length - 1;
+    while(i < j) {
+      // 谁小谁动
+      max =Math.max((j - i) * (arr[i] < arr[j] ? arr[i ++] : arr[j --]), max);
+    }
+    return max;
+  }
+  console.log(maxArea(arr));
+```
+### 爬楼梯
+- [leetcode](https://leetcode-cn.com/problems/climbing-stairs/)
+- 时间复杂度 O(n)
+- 空间复杂度 O(1)
+```js
+function climbStairs(n) {
+  if(n <= 2) return n;
+  let f1 = 1, f2 = 2, f3 = 3;
+  for (let i = 3; i <= n; i ++) {
+    f3 = f2 + f1;
+    f1 = f2;
+    f2 = f3;
+  }
+  return f3;
+}
+console.log(climbStairs(10));
+```
+### 3数之和
+- [leetcode](https://leetcode-cn.com/problems/3sum/)
+
+#### 双指针
+- 时间复杂度 O(n^2)
+- 空间复杂度 O(N)
+```js
+var threeSum = function(nums) {
+   let arr = [];
+    let len = nums.length;
+    if (len < 3) return arr;  // 如果传入数组的长度小于3，就不计算了
+    nums.sort((a, b) => a - b);  // 先排序
+    // 进行双指针循环
+    for (let i = 0; i < len; i++) {
+      if (nums[i] > 0) break; // 如果nums[i] 大于0，说明后面的数字都大于0，没有必要在进行循环了
+      if (nums[i] === nums[i - 1]) continue;  // 这里是解决当nums[i]已经枚举过，去掉重复的情况
+      let l = i + 1;  // i 左边的下标
+      let r = len - 1;  // 右边的下标
+      while (l < r) {  // 两个下标没有挨到一起
+        let sum = nums[i] + nums[l] + nums[r];  // 计算三数之和
+        if (sum === 0) {  // 如果三数之和等于0
+          arr.push([nums[i], nums[l], nums[r]]); // 存入结果中
+          while (nums[l] === nums[l + 1]) l++;   // 跳过相同的不计算
+          while (nums[r] === nums[r + 1]) r--;   // 跳过相同的不计算
+          l++;  // 跳到不相同的下标
+          r--;  // 跳到不相同的下标
+        } else if (sum < 0) { 
+          l++; // 如果三数之和小于0，也就是说左边的数字太小了，因为已经排好序了，所以左边向右移一位
+        } else if (sum > 0) { 
+          r--; // 如果三数之和大于0，右边的数字太大了，右边向里面移一位
         };
-        map.set(nums[i], i);
+      }
     }
-};
-``` 
-- 方法二：
-```js
-var twoSum = function(nums, target) {
-    for(let i = 0; i < nums.length; i ++) {
-        for(let j = i + 1; j < nums.length; j ++) {
-            if (nums[i] + nums[j] === target) {
-                return [i, j]
-            }
-        }
-    }
+    return arr;
 };
 ```
+### 链表反转
 
-### 2. 反转字符串中的单词 III
-- 输入："Let's take LeetCode contest"
-- 输出："s'teL ekat edoCteeL tsetnoc"
-
-```js
-var reverseWords = function(s) {
-  return s.split(' ').map(item => item.split('').reverse().join('')).join(' ')
-};
-```
-
-### 3. 计数二进制子串
-- 输入: "00110011"
-- 输出: 6
-
-```js
-/**
- * @param {string} s
- * @return {number}
- */
-var countBinarySubstrings = function(s) {
-    let match = (str) => {
-        let j = str.match(/^(0+)|(1+)/)[0];  // 正则取反
-        let o = (j[0]^1).toString().repeat(j.length);
-        /* 这里如果用正则匹配会堆栈溢出 */
-        if(str.startsWith(`${j}${o}`)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    let count = 0;
-    for (let i = 0 ; i < s.length - 1; i++) {
-        let sub = match(s.slice(i));
-        if (sub) {
-            count ++;
-        }
-    }
-    return count;
-};
-```
-
-### 4. 电话号码字母组合
-- 输入：digits = "23"
-- 输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]
-```js
-/**
- * @param {string} digits
- * @return {string[]}
- */
-var letterCombinations = function(digits) {
-    if(digits === '') {
-        return []
-    }
-    //电话号码表
-    let arr = ['', 1, 'abc', 'def', 'ghi', 'jkl', 'mno', 'pqrs', 'tuv', 'wxyz'];
-    let num = digits.split('')  // 把字符串2，3变成数组[2, 3];
-    let code = num.map(item => arr[item]);  // 得到2,3对应的电话号码字母的数组['abc', 'def'];
-    if(code.length == 1) {
-        return code[0].split('')
-    }
-    let comb = arr => {
-        let tmp = [];
-        
-        for(let i = 0 ; i < arr[0].length; i ++) {
-            for(let j = 0; j < arr[1].length; j ++ ) {
-                tmp.push(arr[0][i] + arr[1][j]);
-            }
-        }
-        arr.splice(0, 2, tmp); // 把数组的前两项变为一个数组
-        if(arr.length > 1) {
-            comb(arr);
-        } else {
-            return tmp;
-        }
-        return arr[0];
-    }
-    return comb(code);
-};
-```
+### 环形链表
