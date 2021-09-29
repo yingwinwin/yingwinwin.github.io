@@ -118,7 +118,7 @@ var threeSum = function(nums) {
 };
 ```
 ### 反转链表
-
+- [leetcode](https://leetcode-cn.com/problems/reverse-linked-list/)
 #### 递推
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
@@ -146,4 +146,88 @@ var reverseList = function(head) {
 };
 ```
 
+### 两两交换链表中的节点
+- [leetcode](https://leetcode-cn.com/problems/swap-nodes-in-pairs/)
+- 时间复杂度 O(n)
+- 空间复杂度 O(1)
+```js
+var swapPairs = function(head) {
+    let listnode = new ListNode(0); // 创建一个头部节点
+    listnode.next = head;  // 头部节点指向当前链表的头部 temp -> 1 -> 2 -> 3
+    let p = listnode;
+    // 如果有两个以上的node，就继续循环
+    while(p.next && p.next.next) {
+        let n1 = p.next; // 第一个节点
+        let n2 = p.next.next;  // 第二个节点 
+        /* 开始进行反转 */
+        p.next = n2;
+        n1.next = n2.next; 
+        n2.next = n1;
+        p = n1 // 开始下一轮循环
+    }
+    return listnode.next; // 返回第一个节点
+};
+```
 ### 环形链表
+- [leetcode](https://leetcode-cn.com/problems/linked-list-cycle/)
+- 时间复杂度 O(n)
+- 空间复杂度 O(1)
+
+```js
+var hasCycle = function(head) {
+    // 如果head 为空，那就没有环，直接返回
+    if (!head) {
+        return false;
+    }
+    // 快慢指针
+    let slow = head;
+    let fast = head;
+    // 判断是否有两步可以走，如果没有直接跳出，说明没有环了。
+    while (fast.next && fast.next.next) {
+        slow = slow.next;  // 慢指针走一步
+        fast = fast.next.next;  // 快指针走两步
+
+        if (slow === fast) {  // 当快指针追上慢指针的时候
+            return true;  // 说明有环
+        }    
+    }
+    return false;
+};
+```
+### 环形链表2
+- [leetcode](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
+- 时间复杂度 O(n)
+- 空间复杂度 O(1)
+
+```js
+var detectCycle = function(head) {
+    if (!head) return null;
+
+    let slow = head;
+    let fast = head;
+    let isCycle = false;  // 用来记录是否有环
+
+    // 与环形链表一致
+    while(fast.next && fast.next.next) {
+        slow = slow.next;
+        fast = fast.next.next;
+
+        if(fast == slow) {
+            isCycle = true;// 找到环就停止循环
+            break;
+        }
+    }
+    // 如果停了循环，但是没有环直接返回null
+    if(!isCycle) {
+        return null;
+    }
+    fast = head;  // 如果有环。先把快指针指向头。
+    // 然后两个指针都走1步，没碰到就一直走，直到碰到了跳出循环，然后返回当前快指针
+    while(slow !== fast) {
+        slow = slow.next;
+        fast = fast.next;
+    }
+
+    return fast;
+};
+```
