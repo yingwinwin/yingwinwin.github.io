@@ -34,17 +34,17 @@ title: 算法
 - 空间复杂度 O(1)
 ```js
   let arr = [1,8,6,2,5,4,8,3,7]
-  function maxArea(arr) {
+  var maxArea = function(height) {
     let max = 0;
-    for(let i = 0; i < arr.length - 1; i++) {
-      for(let j = 0; j < arr.length; j ++) {
-        let area = (j - i) * Math.min(arr[j] , arr[i]);
-        max = Math.max(area, max);
+    // 两层嵌套循环，求出i j所有的枚举可能性
+    for(let i = 0; i < height.length - 1; i ++) {
+      for(let j = i; j < height.length; j ++) {
+        let area =  (j - i) * Math.min(height[i], height[j])
+        max = Math.max(max, area)
       }
     }
-
     return max;
-  }
+};
   console.log(maxArea(arr));
 ```
 
