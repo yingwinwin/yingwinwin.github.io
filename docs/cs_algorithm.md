@@ -160,8 +160,8 @@ var swapPairs = function(head) {
         let n1 = p.next; // 第一个节点
         let n2 = p.next.next;  // 第二个节点 
         /* 开始进行反转 */
-        p.next = n2;
-        n1.next = n2.next; 
+        p.next = n2;  // 让前一个node指向n2，使n1 n2 转完之后不会跟链表断开
+        n1.next = n2.next;
         n2.next = n1;
         p = n1 // 开始下一轮循环
     }
