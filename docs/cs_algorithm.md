@@ -72,8 +72,11 @@ title: 算法
 function climbStairs(n) {
   if(n <= 2) return n;
   let f1 = 1, f2 = 2, f3 = 3;
+  // 斐波那契数列 f(n) = f(n - 1) + f(n -2)
+  // 前两个方法的和 就是下面一个方法的数量，所以把前两个值存起来
   for (let i = 3; i <= n; i ++) {
     f3 = f2 + f1;
+    // 两个变量的指针向前移一位，进行下一轮计算
     f1 = f2;
     f2 = f3;
   }
@@ -92,10 +95,11 @@ var threeSum = function(nums) {
    let arr = [];
     let len = nums.length;
     if (len < 3) return arr;  // 如果传入数组的长度小于3，就不计算了
-    nums.sort((a, b) => a - b);  // 先排序
+    nums.sort((a, b) => a - b);  // 先排序，从小到大
     // 进行双指针循环
     for (let i = 0; i < len; i++) {
       if (nums[i] > 0) break; // 如果nums[i] 大于0，说明后面的数字都大于0，没有必要在进行循环了
+      // 过滤i重复的情况，如果i重复直接进行下一次循环。
       if (i > 0 && nums[i] === nums[i - 1]) continue;  // i > 0, 防止i-1 溢出的情况，这里是解决当nums[i]已经枚举过，去掉重复的情况
       let l = i + 1;  // i 左边的下标
       let r = len - 1;  // 右边的下标
@@ -123,14 +127,19 @@ var threeSum = function(nums) {
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
 ```js
-var reverseList = function(head) {
+var reverseList = function(head) {  
     let prev = null;
-    while(head) {
-      // head.next 需要先进行替换
-      [head.next, prev, head] = [prev, head, head.next]
+    let cur = head;
+
+    while(cur) {
+        // 先存下后面一个指针 
+        let next = cur.next;
+        cur.next = prev;  // 把当前指针，指向next的指针指向prev
+        prev = cur; // 把prev向前移动
+        cur = next; // cur 指针向前移动
     }
     return prev;
-};
+}
 ```
 
 #### 递归
@@ -229,5 +238,51 @@ var detectCycle = function(head) {
     }
 
     return fast;
+};
+```
+
+### K个一组反转链表
+- [leetcode](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)
+- 时间复杂度：O(n)
+- 空间复杂度：O(1)
+```js
+// 反转链表
+const myReverse = (head, tail) => {
+    // 下一组的头是这一组的尾 
+    let prev = tail.next;
+    let p = head;
+    // 然后反转，到反转完成，头变成尾
+    while (prev !== tail) {
+        const nex = p.next;
+        p.next = prev;
+        prev = p;
+        p = nex;
+    }
+    // 头尾交换
+    return [tail, head];
+}
+var reverseKGroup = function(head, k) {
+    const hair = new ListNode(0);  // 创建一个节点
+    hair.next = head;  // 存头部节点
+    let pre = hair;
+
+    while (head) { 
+        let tail = pre;
+        // 查看剩余部分长度是否大于等于 k
+        for (let i = 0; i < k; ++i) {
+            tail = tail.next;
+            if (!tail) {
+                return hair.next;
+            }
+        }
+        const nex = tail.next;
+        [head, tail] = myReverse(head, tail);
+        // 把子链表重新接回原链表
+        pre.next = head;
+        tail.next = nex;
+        pre = tail;
+        head = tail.next;
+    }
+    return hair.next;
 };
 ```
