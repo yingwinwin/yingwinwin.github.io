@@ -286,3 +286,55 @@ var reverseKGroup = function(head, k) {
     return hair.next;
 };
 ```
+
+### 删除有序数组中的重复项
+- [leetcode](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)
+- 时间复杂度 O(n) 随着nums的长度n线性增长
+- 空间复杂度 O(1) 只用到了j
+
+```js
+var removeDuplicates = function(nums) {
+    if (!nums.length) return 0;
+    let j = 0;
+    for(let i = 0; i < nums.length; i ++) {
+        while(nums[i] === nums[i + 1]) i++;
+        nums[j] = nums[i];
+        j++;
+    }
+    return j
+};
+```
+
+### 旋转数组
+- [leetcode](https://leetcode-cn.com/problems/rotate-array/submissions/)
+- 时间复杂度 O(n)
+- 空间复杂度 O(n)
+```js
+var rotate = function(nums, k) {
+    let newNums = [];
+    for(let i = 0; i < nums.length; i ++) {
+        newNums[(i+k) % nums.length] = nums[i];
+    }
+    // nums = [...newNums];  // 这句不成立，因为修改了内存指向。堆中地址就变了
+    for(let i = 0; i < nums.length; i ++) {
+        // 这里的地址还是之前传入的那个
+        nums[i] = newNums[i];
+    }
+};
+```
+- 时间复杂度 O(n)
+- 空间复杂度 O(1)
+```js
+// 顺序交换
+const reverse = (nums, start, end) => {
+    while(start < end) {
+        [nums[start++], nums[end--]] = [nums[end], nums[start]];
+    }
+}
+var rotate = function(nums, k) {
+    k %= nums.length;
+    reverse(nums, 0, nums.length - 1) // [7,6,5,4,3,2,1]
+    reverse(nums, 0, k - 1); // [5,6,7,4,3,2,1]
+    reverse(nums, k, nums.length - 1) // [5,6,7,1,2,3,4]
+};
+```
