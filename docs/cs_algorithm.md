@@ -338,3 +338,27 @@ var rotate = function(nums, k) {
     reverse(nums, k, nums.length - 1) // [5,6,7,1,2,3,4]
 };
 ```
+
+### 合并两个有序链表
+- [leetcode21](https://leetcode-cn.com/problems/merge-two-sorted-lists/solution/)
+- 时间复杂度：O(n)
+- 空间复杂度：O(1)
+```js
+var mergeTwoLists = function(l1, l2) {
+    let headPrev = new ListNode(-1);
+    let prev = headPrev;  // 保存头结点
+
+    while(l1 && l2) {
+        if(l1.val <= l2.val) {
+            prev.next = l1;  // push
+            l1 = l1.next; // ++
+        } else {
+            prev.next = l2;
+            l2 = l2.next;
+        }
+        prev = prev.next;  // ++
+    }
+    prev.next = l1 === null ? l2 : l1;  // push
+    return headPrev.next;
+};
+```
