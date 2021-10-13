@@ -362,3 +362,27 @@ var mergeTwoLists = function(l1, l2) {
     return headPrev.next;
 };
 ```
+
+### 合并两个有序数组
+- [leetcode88](https://leetcode-cn.com/problems/merge-sorted-array/)
+- 时间复杂度：O(n)
+- 空间复杂度：O(1)
+```js
+var merge = function(nums1, m, nums2, n) {
+    // 三个下标
+    let i = m - 1, j = n - 1, k = m + n - 1;
+    let cur;  // 当前值
+    while (j >= 0 || i >= 0) { // 当数组的两个指针两个都小于等于0 才会停止循环，也就是说nums1 中的元素 和NUMS2中的元素都取出了
+        if (j < 0) {
+            cur = nums1[i --]
+        } else if (i < 0) {
+            cur = nums2[j --]
+        } else if (nums1[i] < nums2[j]) {
+            cur = nums2[ j --];
+        } else {
+            cur = nums1[i --];
+        }
+        nums1[k--] = cur;
+    }
+};
+```
