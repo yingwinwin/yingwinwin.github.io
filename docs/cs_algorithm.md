@@ -29,7 +29,7 @@ title: 算法
 ### 盛水最多的容器
 - [leetcode](https://leetcode-cn.com/problems/container-with-most-water/)
 
-#### 暴力解法
+#### 暴力解法（超时）
 - 时间复杂度 O(n^2)
 - 空间复杂度 O(1)
 ```js
@@ -66,6 +66,8 @@ title: 算法
 ```
 ### 爬楼梯
 - [leetcode](https://leetcode-cn.com/problems/climbing-stairs/)
+
+#### 动态规划
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
 ```js
@@ -121,6 +123,9 @@ var threeSum = function(nums) {
     return arr;
 };
 ```
+
+<!-- TODO 哈希 -->
+
 ### 反转链表
 - [leetcode](https://leetcode-cn.com/problems/reverse-linked-list/)
 #### 递推
@@ -365,6 +370,8 @@ var mergeTwoLists = function(l1, l2) {
 
 ### 合并两个有序数组
 - [leetcode88](https://leetcode-cn.com/problems/merge-sorted-array/)
+
+#### 逆向双指针
 - 时间复杂度：O(n)
 - 空间复杂度：O(1)
 ```js
@@ -372,12 +379,14 @@ var merge = function(nums1, m, nums2, n) {
     // 三个下标
     let i = m - 1, j = n - 1, k = m + n - 1;
     let cur;  // 当前值
-    while (j >= 0 || i >= 0) { // 当数组的两个指针两个都小于等于0 才会停止循环，也就是说nums1 中的元素 和NUMS2中的元素都取出了
+    while (j >= 0 || i >= 0) { // 当数组的两个指针两个都小于等于0 才会停止循环，也就是说nums1 中的元素 和nums2中的元素都取出了
         if (j < 0) {
+          // 如果有一方的下标小于0，也就是说某一个数据里面已经没有值了，那么就直接把另一个数组里面的数取出
             cur = nums1[i --]
         } else if (i < 0) {
             cur = nums2[j --]
         } else if (nums1[i] < nums2[j]) {
+          // 有一方有元素都会先走这里，也就是说会取出两个数组中的元素对比，取出大的放到 数组的最后面
             cur = nums2[ j --];
         } else {
             cur = nums1[i --];
@@ -386,3 +395,32 @@ var merge = function(nums1, m, nums2, n) {
     }
 };
 ```
+#### 直接用api排序
+- 时间复杂度：O(nlogn)
+- 空间复杂度：O(logn)
+```js
+var merge = function(nums1, m, nums2, n) {
+    nums1.splice(m, nums1.length - m, ...nums2);
+    nums1.sort((a, b) => a - b);
+};
+```
+
+### 两数之和
+
+#### 穷举法（一定要会）
+- 时间复杂度：O(n^2);
+- 空间复杂度：O(1);
+```js
+var twoSum = function(nums, target) {
+    for(let i = 0; i < nums.length - 1; i ++) {
+      // 从i的第二项开始，到数组的最后一项，逐一遍历
+        for(j = i + 1; j < nums.length; j ++) {
+            if (nums[i] + nums[j] == target) {
+               return [i, j] 
+            }
+        }
+    }
+};
+```
+
+<!-- TODO 哈希 -->
