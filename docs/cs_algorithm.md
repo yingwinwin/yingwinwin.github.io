@@ -406,7 +406,7 @@ var merge = function(nums1, m, nums2, n) {
 ```
 
 ### 两数之和
-
+- [leetcode - 1](https://leetcode-cn.com/problems/two-sum/)
 #### 穷举法（一定要会）
 - 时间复杂度：O(n^2);
 - 空间复杂度：O(1);
@@ -424,3 +424,37 @@ var twoSum = function(nums, target) {
 ```
 
 <!-- TODO 哈希 -->
+
+### 加一
+- [leetcode - 66](https://leetcode-cn.com/problems/plus-one/)
+
+#### BigInt
+- 时间复杂度：O(n);
+- 空间复杂度：O(1);
+```js
+var plusOne = function(digits) {
+    let sum = BigInt(digits.join('')) + BigInt(1);
+    return sum.toString().split('');
+};
+```
+
+#### 倒循环
+- 时间复杂度：O(n);
+- 空间复杂度：O(1);
+
+- 倒循环的时候`for(let i = digits.length; i > 0; i--)` 表现和 `for(i = len - 1 ; i >= 0; i --)` 不一致
+
+```js
+var plusOne = function(digits) {
+    let len = digits.length, i;
+    for(i = len - 1 ; i >= 0; i --) {
+        if(digits[i]!==9) {
+            digits[i]++;
+            return digits;
+        } else {
+            digits[i] = 0
+        }
+    }
+    return [1, ...digits]
+}; 
+```
