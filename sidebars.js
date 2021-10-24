@@ -86,7 +86,11 @@ module.exports = {
         //   label: "计算机网络",
         //   items: [],  // 浏览器输入后到底发生了什么？
         // },
-        "cs_algorithm"
+        {
+          type: "category",
+          label: "算法",
+          items: ["cs_arrayListnode", "cs_stackQueue"], // 栈，队列，链表，树
+        },
       ], // HTTP协议，数据结构，算法等等
     },
     {

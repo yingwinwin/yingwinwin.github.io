@@ -1,11 +1,9 @@
 ---
-id: cs_algorithm
-title: 算法
+id: cs_arrayListnode
+title: 数组、链表
 ---
 
-## 数组链表
-
-### 移动零
+## 移动零
 - [leetcode](https://leetcode-cn.com/problems/move-zeroes/)
 - 时间复杂度 `O(n)` n为数组的长度
 - 空间复杂度 `O(1)` 只需要常量储存 `j = 0`
@@ -26,10 +24,10 @@ title: 算法
   moveZero(arr);
 ```
 
-### 盛水最多的容器
+## 盛水最多的容器
 - [leetcode](https://leetcode-cn.com/problems/container-with-most-water/)
 
-#### 暴力解法（超时）
+### 暴力解法（超时）
 - 时间复杂度 O(n^2)
 - 空间复杂度 O(1)
 ```js
@@ -48,7 +46,7 @@ title: 算法
   console.log(maxArea(arr));
 ```
 
-#### 双指针
+### 双指针
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
 
@@ -64,10 +62,10 @@ title: 算法
   }
   console.log(maxArea(arr));
 ```
-### 爬楼梯
+## 爬楼梯
 - [leetcode](https://leetcode-cn.com/problems/climbing-stairs/)
 
-#### 动态规划
+### 动态规划
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
 ```js
@@ -86,10 +84,10 @@ function climbStairs(n) {
 }
 console.log(climbStairs(10));
 ```
-### 3数之和
+## 3数之和
 - [leetcode](https://leetcode-cn.com/problems/3sum/)
 
-#### 双指针
+### 双指针
 - 时间复杂度 O(n^2)
 - 空间复杂度 O(N)
 ```js
@@ -126,9 +124,9 @@ var threeSum = function(nums) {
 
 <!-- TODO 哈希 -->
 
-### 反转链表
+## 反转链表
 - [leetcode](https://leetcode-cn.com/problems/reverse-linked-list/)
-#### 递推
+### 递推
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
 ```js
@@ -147,7 +145,7 @@ var reverseList = function(head) {
 }
 ```
 
-#### 递归
+### 递归
 - 时间复杂度 O(n)
 - 空间复杂度 O(n)
 ```js
@@ -160,7 +158,7 @@ var reverseList = function(head) {
 };
 ```
 
-### 两两交换链表中的节点
+## 两两交换链表中的节点
 - [leetcode](https://leetcode-cn.com/problems/swap-nodes-in-pairs/)
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
@@ -182,7 +180,7 @@ var swapPairs = function(head) {
     return listnode.next; // 返回第一个节点
 };
 ```
-### 环形链表
+## 环形链表
 - [leetcode](https://leetcode-cn.com/problems/linked-list-cycle/)
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
@@ -208,7 +206,7 @@ var hasCycle = function(head) {
     return false;
 };
 ```
-### 环形链表2
+## 环形链表2
 - [leetcode](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
 - 时间复杂度 O(n)
 - 空间复杂度 O(1)
@@ -246,7 +244,7 @@ var detectCycle = function(head) {
 };
 ```
 
-### K个一组反转链表
+## K个一组反转链表
 - [leetcode](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)
 - 时间复杂度：O(n)
 - 空间复杂度：O(1)
@@ -292,7 +290,7 @@ var reverseKGroup = function(head, k) {
 };
 ```
 
-### 删除有序数组中的重复项
+## 删除有序数组中的重复项
 - [leetcode](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)
 - 时间复杂度 O(n) 随着nums的长度n线性增长
 - 空间复杂度 O(1) 只用到了j
@@ -310,7 +308,7 @@ var removeDuplicates = function(nums) {
 };
 ```
 
-### 旋转数组
+## 旋转数组
 - [leetcode](https://leetcode-cn.com/problems/rotate-array/submissions/)
 - 时间复杂度 O(n)
 - 空间复杂度 O(n)
@@ -344,7 +342,7 @@ var rotate = function(nums, k) {
 };
 ```
 
-### 合并两个有序链表
+## 合并两个有序链表
 - [leetcode21](https://leetcode-cn.com/problems/merge-two-sorted-lists/solution/)
 - 时间复杂度：O(n)
 - 空间复杂度：O(1)
@@ -368,10 +366,10 @@ var mergeTwoLists = function(l1, l2) {
 };
 ```
 
-### 合并两个有序数组
+## 合并两个有序数组
 - [leetcode88](https://leetcode-cn.com/problems/merge-sorted-array/)
 
-#### 逆向双指针
+### 逆向双指针
 - 时间复杂度：O(n)
 - 空间复杂度：O(1)
 ```js
@@ -395,7 +393,7 @@ var merge = function(nums1, m, nums2, n) {
     }
 };
 ```
-#### 直接用api排序
+### 直接用api排序
 - 时间复杂度：O(nlogn)
 - 空间复杂度：O(logn)
 ```js
@@ -405,9 +403,9 @@ var merge = function(nums1, m, nums2, n) {
 };
 ```
 
-### 两数之和
+## 两数之和
 - [leetcode - 1](https://leetcode-cn.com/problems/two-sum/)
-#### 穷举法（一定要会）
+### 穷举法（一定要会）
 - 时间复杂度：O(n^2);
 - 空间复杂度：O(1);
 ```js
@@ -425,10 +423,10 @@ var twoSum = function(nums, target) {
 
 <!-- TODO 哈希 -->
 
-### 加一
+## 加一
 - [leetcode - 66](https://leetcode-cn.com/problems/plus-one/)
 
-#### BigInt
+### BigInt
 - 时间复杂度：O(n);
 - 空间复杂度：O(1);
 ```js
@@ -438,7 +436,7 @@ var plusOne = function(digits) {
 };
 ```
 
-#### 倒循环
+### 倒循环
 - 时间复杂度：O(n);
 - 空间复杂度：O(1);
 

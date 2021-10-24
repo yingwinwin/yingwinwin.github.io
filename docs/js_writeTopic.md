@@ -445,20 +445,6 @@ let a = [1,2,3].myReduce((pre, cur, i, arr) =>{
 console.log(a); // 6
 ```
 ## 算法
-
-### 斐波那契数列
-
-### 洗牌算法
-
-### 冒泡排序
-
-### 快排
-
+- [算法-持续更新](https://yingwinwin.github.io/docs/cs_arrayListnode)
 ## 设计模式
-
-### 单例模式
-
-### 发布订阅模式
-
-### 工厂模式
 
