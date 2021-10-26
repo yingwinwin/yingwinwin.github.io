@@ -89,7 +89,7 @@ module.exports = {
         {
           type: "category",
           label: "算法",
-          items: ["cs_arrayListnode", "cs_stackQueue"], // 栈，队列，链表，树
+          items: ["cs_arrayListnode", "cs_stackQueue", "cs_hashTable"], // 栈，队列，链表，树
         },
       ], // HTTP协议，数据结构，算法等等
     },
@@ -101,7 +101,7 @@ module.exports = {
     {
       type: "category", // 类别
       label: "看书总结", // 一级标题
-      items: ["js4"], // js忍者秘籍， 你不知道的js123， js高级程序设计3
+      items: ["js4"],
     },
     {
       type: "category", // 类别
