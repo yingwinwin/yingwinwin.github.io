@@ -82,6 +82,26 @@ var groupAnagrams = function(strs) {
 };
 ```
 
+### 排序
+- 时间复杂度：O(nlogn);
+- 空间复杂度：O(nk);
+```js
+/**
+ * @param {string[]} strs
+ * @return {string[][]}
+ */
+var groupAnagrams = function(strs) {
+    let map = new Map();
+    for (let str of strs) {
+        let key = [...str].sort().toString();
+        let list = map.get(key) ? map.get(key) : [];
+        list.push(str);
+        map.set(key, list);
+    }
+    return Array.from(map.values())
+};
+```
+
 ## 两数之和 哈希
 
 ## 三数之和 哈希
