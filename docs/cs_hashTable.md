@@ -94,14 +94,27 @@ var groupAnagrams = function(strs) {
     let map = new Map();
     for (let str of strs) {
         let key = [...str].sort().toString();
-        let list = map.get(key) ? map.get(key) : [];
-        list.push(str);
-        map.set(key, list);
+        map.get(key) ? map.get(key).push(str) : map.set(key, [str])
     }
     return Array.from(map.values())
 };
 ```
 
 ## 两数之和 哈希
+```js
+var twoSum = function(nums, target) {
+    let map = new Map();
+
+    for(var i = 0; i < nums.length; i ++) {
+        let key = target - nums[i];
+
+        if (map.has(key)) {
+            return [map.get(key), i];
+        }
+
+        map.set(nums[i], i);
+    }
+};
+```
 
 ## 三数之和 哈希
