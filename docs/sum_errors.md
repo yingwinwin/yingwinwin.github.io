@@ -145,7 +145,7 @@ function getHDom() {
 - 用 padding * 目录层级
 - 用a标签做锚点
 
-### 日期
+### 14. 日期
 [intl](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Intl#locale_identification_and_negotiation)
 [toLocaleDateString](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString)
 ```js
@@ -153,3 +153,34 @@ function getHDom() {
 new Intl.DateTimeFormat('zh-CN', {weekday: 'long'}).format(new Date);
 new Date().toLocaleDateString("default", {year: "numeric", month: "2-digit", day: "2-digit"}) // "2021/08/21"
 ```
+
+### 15. 2021年10月遇到的问题
+1. 0.1 + 0.2 !== 0.3 的问题及其解决方案。[参考文档](https://blog.csdn.net/weixin_43720095/article/details/86108636)
+2. `ref.scrollIntoView({ behavior: 'smooth', block: 'start' ,inline:center});` 这行代码中的`inline:center`, 如果元素定位会导致元素位置偏移。TODO: 可以考虑复现和总结
+3. 在项目中多行文本溢出的css代码不生效，需要在`-webkit-box-orient: vertical;`上下写如下注释才会生效
+```css
+display: -webkit-box;
+/* autoprefixer: off */
+-webkit-box-orient: vertical;
+/* autoprefixer: on */
+-webkit-line-clamp: 2;
+overflow: hidden;
+```
+4. box-shadow 解决 1px问题代码
+```css
+.box-shadow-1px {
+  box-shadow: inset 0px -1px 1px -1px #c8c7cc;
+}
+```
+5. 数组倒删的问题 TODO: 可以把最近刷题遇到的问题都整理总结一下
+6. 手机号脱敏
+```js
+userPhone.replace(/(\d{3})\d*(\d{4})/g,'$1****$2')
+```
+7. 用css做悬浮球逻辑实现 TODO: 自己手写实现一下 [参考文档](https://juejin.cn/post/6844903841805107214)
+8. 异或运算 XOR 教程 [文档](https://www.ruanyifeng.com/blog/2021/01/_xor.html)
+9. 遇到了http的图片，无法在https的连接获取，`Referrer Policy: no-referrer`告知运维后运维说需要自己搭`oss`，加一层代理。TODO: 触及到了我的知识盲区
+10. 瀑布流组件 的实现`Masonry` TODO: 具体逻辑需要了解，封装组件
+11. `window.AMap` HTML5手机定位, 问题是，电脑定位的是时候取的字段和手机不一致。且电脑定位不准确。TODO: 具体使用实现模拟
+12. 文本溢出省略的实现 [参考文档](https://juejin.cn/post/6844903944259371016)，用:check 伪元素选择器很巧妙的处理了check的动作。css真的很强。
+13. TODO: 看了别人的bolg非常炫酷，觉得自己有时间可以写写，或者改一改自己的
