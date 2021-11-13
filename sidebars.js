@@ -104,9 +104,13 @@ module.exports = {
       items: ["js4"],
     },
     {
-      type: "category", // 类别
-      label: "个人生活", // 一级标题
-      items: ['life_musice', 'game'], 
+      type: "category",
+      label: "个人生活", 
+      items: ['life_musice', {
+        type: "category",
+        label: "单词",
+        items: ["English/togo", "English/down"],
+      },], 
     },
   ],
 };
