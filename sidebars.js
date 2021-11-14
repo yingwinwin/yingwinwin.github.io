@@ -109,7 +109,7 @@ module.exports = {
       items: ['life_musice', {
         type: "category",
         label: "单词",
-        items: ["English/togo", "English/down"],
+        items: ["English/togo", "English/down",  "English/come"],
       },], 
     },
   ],
