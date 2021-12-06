@@ -14,10 +14,15 @@
   "dependencies": {
     "@docusaurus/core": "2.0.0-alpha.70",
     "@docusaurus/preset-classic": "2.0.0-alpha.70",
+    "@docusaurus/theme-live-codeblock": "^2.0.0-alpha.70",
+    "@docusaurus/theme-search-algolia": "^2.0.0-alpha.70",
     "@mdx-js/react": "^1.6.21",
     "clsx": "^1.1.1",
+    "raw-loader": "^4.0.2",
     "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "react-dom": "^16.8.4",
+    "rehype-katex": "^4.0.0",
+    "remark-math": "^3.0.1"
   },
   "browserslist": {
     "production": [

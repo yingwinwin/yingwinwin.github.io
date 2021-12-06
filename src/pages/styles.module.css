@@ -4,6 +4,82 @@
  * CSS files with the .module.css suffix will be treated as CSS modules
  * and scoped locally.
  */
+.container {
+  margin: 0;
+  padding: 100px 0 0 100px;
+}
+.hero_wrap {
+  display: flex;
+  height: calc(100vh - 60px);
+  justify-content: center;
+  align-items: center;
+}
+
+.hero_title {
+  position: absolute;
+  top: -100000px;
+}
+
+.hero_subtitle {
+  position: relative;
+  top: -40px;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.8;
+  color: var(--ifm-navbar-link-color);
+  animation: bounce 2s cubic-bezier(0.1, 0.25, 1, 0.25) forwards;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  5% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  15% {
+    transform: translateY(0);
+    padding-bottom: 5px;
+  }
+  30% {
+    transform: translateY(-50%);
+  }
+  40% {
+    transform: translateY(0%);
+    padding-bottom: 6px;
+  }
+  50% {
+    transform: translateY(-30%);
+  }
+  70% {
+    transform: translateY(0%);
+    padding-bottom: 7px;
+  }
+  80% {
+    transform: translateY(-15%);
+  }
+  90% {
+    transform: translateY(0%);
+    padding-bottom: 8px;
+  }
+  95% {
+    transform: translateY(-7%);
+  }
+  97% {
+    transform: translateY(0%);
+    padding-bottom: 9px;
+  }
+  99% {
+    transform: translateY(-3%);
+  }
+  100% {
+    transform: translateY(0);
+    padding-bottom: 9px;
+    opacity: 1;
+  }
+}
 
 .heroBanner {
   padding: 4rem 0;
