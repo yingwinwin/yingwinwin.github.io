@@ -11,6 +11,7 @@ module.exports = {
   favicon: "img/favicon.ico", // 网页标签上面的小logo
   organizationName: "yingwinwin", // 这里是你github的名字
   projectName: "yingwinwin.github.io", // 这个是你要部署到的github的项目名字
+  onBrokenLinks: 'ignore',
   themeConfig: {
     prism: {
       theme: require('prism-react-renderer/themes/dracula'),
