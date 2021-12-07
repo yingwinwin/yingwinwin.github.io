@@ -3,7 +3,7 @@ const katex = require("rehype-katex");
 
 module.exports = {
   title: "yingwinwin的前端之路", // 标题
-  tagline: "少即是多，快即是慢", // 标题下面的字
+  tagline: "工欲善其事，必先利其器", // 标题下面的字
   url: "https://yingwinwin.github.io", // 当前页面的url
   baseUrl: "/", // 这里看自己需要添加，如果添加为/win/  访问主页就是 https://yingwinwin.github.io/win/
   onBrokenLinks: "throw", // 只有部署的时候生效
