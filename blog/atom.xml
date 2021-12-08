@@ -9,10 +9,10 @@
     <icon>https://yingwinwin.github.io/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[react发展介绍]]></title>
-        <id>/blog</id>
-        <link href="https://yingwinwin.github.io/blog/blog"/>
+        <id>/react</id>
+        <link href="https://yingwinwin.github.io/blog/react"/>
         <updated>2021-12-07T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[react18 api]]></summary>
+        <summary type="html"><![CDATA[react18]]></summary>
     </entry>
     <entry>
         <title type="html"><![CDATA[react项目搭建]]></title>
