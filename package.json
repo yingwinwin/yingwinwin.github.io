@@ -21,6 +21,7 @@
     "raw-loader": "^4.0.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-live": "^2.3.0",
     "rehype-katex": "^4.0.0",
     "remark-math": "^3.0.1"
   },

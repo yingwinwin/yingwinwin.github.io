@@ -8,6 +8,17 @@ module.exports = {
   FEBasis: [
     "FE/FEBasis/FEBasis",
   ],
+  // professionalWork: [
+  //   "FE/professionalWork/work",
+  //   {
+  //     type: 'category',
+  //     label: '文件上传',
+  //     items: [
+  //       "FE/professionalWork/upload/front",
+  //       "FE/professionalWork/upload/node",
+  //     ],
+  //   },
+  // ],
   javaSciprtCoder: [
     "FE/javaSciprtCoder/Coder",
   ],
@@ -26,6 +37,7 @@ module.exports = {
   typeScript: [
     "FE/typeScript/TS",
   ],
+  
   react: [
     "framework/react/react",
   ],
@@ -34,9 +46,6 @@ module.exports = {
   ],
   components: [
     "framework/components/components",
-  ],
-  aboutMe: [
-    "aboutMe/aboutMe",
   ],
   netWork: [
     "CS/netWork/netWork",

@@ -1,5 +1,5 @@
 ---
-slug: /blog
+slug: /react
 title: react发展介绍
 author: yingwinwin
 author_title: 前端开发
@@ -8,9 +8,71 @@ author_image_url: https://avatars.githubusercontent.com/u/55273635?s=60&v=4
 tags: [react, redux, react-router]
 ---
 
-## react18 api
-- [官方react18计划](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
-- [react18公告](https://github.com/reactwg/react-18/discussions/categories/announcement)
+## react18
+:::note
+- [x] react18 Alpha 已经完成
+- [x] **目前 react 处于beta版本**
+- [ ] 进入到RC版本，需要大概1-2个月，具体还需要看反馈。
+- [ ] RC结束之后，需要大概2~4周就会发布react18了。
+:::
+```shell
+# 安装方式
+npm install react@beta react-dom@beta
+```
+### 自动批处理
+
+如何理解批处理呢？从一道老生常谈的面试题谈起：`setState什么时候是同步的，什么时候是异步的？`
+- 来看一下，下面这段代码 （打开控制台点击按钮查看效果）
+```jsx live=true 
+() => {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setCount((count) => count + 1)
+    setCount((count) => count + 1)
+  }
+  console.log(123)
+  return <><button onClick={handleClick}>点击</button></>
+}
+```
+熟悉react的朋友，应该都知道，react会合并处理在事件函数和生命周期的setState的渲染，所以上面在console中的123，会打印`1`次。
+
+- 再来看下面这段代码（打开控制台点击按钮查看效果）
+```jsx live=true
+() => {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setTimeout(() => {
+      setCount((count) => count + 1)
+      setCount((count) => count + 1)
+    }, 0);
+  }
+  console.log(456)
+  return <><button onClick={handleClick}>点击</button></>
+}
+```
+结果可能大家也都已经知道了，console里面的值被打印了`2`次，也就是说react组件渲染了2次，在setTimeout中setState的批处理失效了。
+
+> 那道有名的面试题的答案也就出来了。
+1. react在事件处理和生命周期函数中是异步处理渲染（合并渲染，也就是批处理）
+2. 在异步任务中，如：promise.then，setTimeout等异步任务中，会同步进行渲染（不进行批处理）
+- 这样看其实setState在18版本之前只能算是半自动批处理。
+
+**批处理的概念说完了我们来看一下react18做了什么？**
+- react18中改掉了这个setState在异步中处理的问题，真正了实现了自动批处理。（狂喜，以后再也不用被setState的面试题支配:sunglasses:）
+
+
+如何使用react18的自动批处理呢？需要使用到react提供的新的root Api
+
+:::info
+- react提供了一个新的root Api，`ReactDOM.createRoot`用于并发渲染
+- 之前我们使用的`ReactDOM.render()`被称为`legacy模式`
+:::
+
+
+- [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
+- [react18工作组](https://github.com/reactwg/react-18/discussions/categories/announcement)
 
 ## react-router v6
 - [官方文档](https://reactrouter.com/)

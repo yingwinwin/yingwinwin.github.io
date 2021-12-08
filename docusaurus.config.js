@@ -13,6 +13,13 @@ module.exports = {
   projectName: "yingwinwin.github.io", // 这个是你要部署到的github的项目名字
   onBrokenLinks: 'ignore',
   themeConfig: {
+    liveCodeBlock: {
+      /**
+       * 实时效果显示的位置，可位于编辑器上方或下方。
+       * 可为："top" | "bottom"
+       */
+      playgroundPosition: 'bottom',
+    },
     prism: {
       theme: require('prism-react-renderer/themes/dracula'),
     },
@@ -61,6 +68,10 @@ module.exports = {
               label: "TypeScript ",
               to: "/docs/FE/typeScript ",
             },
+            // {
+            //   label: "前端业务",
+            //   to: "/docs/FE/professionalWork ",
+            // },
             // {
             //   label: "可视化 ",
             //   to: "/docs/FE/",
@@ -182,7 +193,7 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} YingWinWin, Inc. Built with Docusaurus.`, // 版权信息
     },
   },
-  themes: ['@docusaurus/theme-live-codeblock'],
+  plugins: ['@docusaurus/theme-live-codeblock'],
   presets: [
     [
       "@docusaurus/preset-classic", // 一开始安装的主题
@@ -208,23 +219,7 @@ module.exports = {
         theme: {
           customCss: require.resolve("./src/css/custom.css"), // 主题使用的css
         },
-        
       },
     ],
   ],
-  // plugins: [
-  //   [
-  //     "@docusaurus/plugin-content-blog",
-  //     // {
-  //     //   id: "secret-garden",
-  //     //   routeBasePath: "lifestyle",
-  //     //   path: "./lifestyle",
-  //     //   feedOptions: {
-  //     //     type: "all",
-  //     //     title: "峰华前端工程师",
-  //     //     copyright: `Copyright © ${new Date().getFullYear()} 峰华 (张旭乾) Built with Docusaurus.<p><a href="http://beian.miit.gov.cn/" >冀ICP备14007097号-3</a></p>`,
-  //     //   },
-  //     // },
-  //   ],
-  // ],
 };
