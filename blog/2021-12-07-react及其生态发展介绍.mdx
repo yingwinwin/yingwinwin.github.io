@@ -66,9 +66,17 @@ npm install react@beta react-dom@beta
 如何使用react18的自动批处理呢？需要使用到react提供的新的root Api
 
 :::info
-- react提供了一个新的root Api，`ReactDOM.createRoot`用于并发渲染
-- 之前我们使用的`ReactDOM.render()`被称为`legacy模式`
+- react提供了一个新的root Api，`ReactDOM.createRoot`用于并发渲染，可以选择优先级更高的任务进行渲染。
+- 之前我们使用的`ReactDOM.render()`被称为`legacy模式`，等待按照顺序渲染。
 :::
+
+上面的例子不变，我们来看一下，在react18中的表现。
+1. 首先需要修改react的引入模式为createRoot Api形式
+```diff jsx 
+- ReactDOM.render(<App/>, document.getElementById('root'))
++ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+```
+2. 其他和之前一样，可以看一下效果。
 
 
 - [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
