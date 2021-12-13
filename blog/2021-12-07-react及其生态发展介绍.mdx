@@ -15,31 +15,38 @@ tags: [react, redux, react-router]
 - [ ] 进入到RC版本，需要大概1-2个月，具体还需要看反馈。
 - [ ] RC结束之后，需要大概2~4周就会发布react18了。
 :::
-```shell
-# 安装方式
-npm install react@beta react-dom@beta
-```
+
 ### 自动批处理
 
 如何理解批处理呢？从一道老生常谈的面试题谈起：`setState什么时候是同步的，什么时候是异步的？`
 - 来看一下，下面这段代码 （打开控制台点击按钮查看效果）
-```jsx live=true 
-() => {
+```jsx
+import React, {useState} from 'react';
+import ReactDOM from 'react-dom';
+
+const App = () => {
   const [count, setCount] = useState(0);
 
   const handleClick = () => {
     setCount((count) => count + 1)
     setCount((count) => count + 1)
   }
-  console.log(123)
-  return <><button onClick={handleClick}>点击</button></>
+  console.log(111);
+
+  return <><button onClick={handleClick}>点击</button>{count}</>
 }
+ReactDOM.render(<App/>, document.getElementById('root'))
 ```
+效果：
+![image](./img/20211212150110.gif)
 熟悉react的朋友，应该都知道，react会合并处理在事件函数和生命周期的setState的渲染，所以上面在console中的123，会打印`1`次。
 
-- 再来看下面这段代码（打开控制台点击按钮查看效果）
-```jsx live=true
-() => {
+- 再来看下面这段代码
+```jsx {8,11}
+import React, {useState} from 'react';
+import ReactDOM from 'react-dom';
+
+const App = () => {
   const [count, setCount] = useState(0);
 
   const handleClick = () => {
@@ -48,11 +55,15 @@ npm install react@beta react-dom@beta
       setCount((count) => count + 1)
     }, 0);
   }
-  console.log(456)
-  return <><button onClick={handleClick}>点击</button></>
+  console.log(111);
+
+  return <><button onClick={handleClick}>点击</button>{count}</>
 }
+ReactDOM.render(<App/>, document.getElementById('root'))
 ```
-结果可能大家也都已经知道了，console里面的值被打印了`2`次，也就是说react组件渲染了2次，在setTimeout中setState的批处理失效了。
+效果：
+![image](./img/20211212150113.gif)
+结果可能大家也都已经知道了，console里面的值被打印了`2`次，也就是说每次点击react组件渲染了2次，在setTimeout中setState的批处理失效了。
 
 > 那道有名的面试题的答案也就出来了。
 1. react在事件处理和生命周期函数中是异步处理渲染（合并渲染，也就是批处理）
@@ -65,21 +76,76 @@ npm install react@beta react-dom@beta
 
 如何使用react18的自动批处理呢？需要使用到react提供的新的root Api
 
-:::info
+:::tip
 - react提供了一个新的root Api，`ReactDOM.createRoot`用于并发渲染，可以选择优先级更高的任务进行渲染。
 - 之前我们使用的`ReactDOM.render()`被称为`legacy模式`，等待按照顺序渲染。
 :::
 
 上面的例子不变，我们来看一下，在react18中的表现。
-1. 首先需要修改react的引入模式为createRoot Api形式
+1. 安装包更改为react18@beta版本。
+```shell
+# 安装方式
+npm install react@beta react-dom@beta
+```
+2. 需要修改react的挂载模式为createRoot Api形式
 ```diff jsx 
 - ReactDOM.render(<App/>, document.getElementById('root'))
 + ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 ```
-2. 其他和之前一样，可以看一下效果。
+3. 代码 
+```jsx
+import React, {useState} from 'react';
+import ReactDOM from 'react-dom';
 
+const App = () => {
+  const [count, setCount] = useState(0);
 
-- [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
+  const handleClick = () => {
+    setTimeout(() => {  // 异步
+      setCount((count) => count + 1)
+      setCount((count) => count + 1)
+    }, 0);
+  }
+  console.log(111);
+
+  return <><button onClick={handleClick}>点击</button>{count}</>
+}
+
+// 这里换成最新的createRoot API
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+```
+效果：
+![image](./img/20211212150110.gif)
+可以看到react18即便是在异步操作中，也不会出现重新渲染两次的情况。达到了真正的自动化批处理。
+
+**那么问题来了，我们并不是总是需要批处理呀，那怎么实现之前需要异步处理的情况呢？react官方提供了一个api，帮助我们处理这种不需要批处理的情况。**
+- `ReactDOM.flushSync`
+```jsx {9-11}
+import React, {useState} from 'react';
+import ReactDOM from 'react-dom';
+
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  const handleClick = () => {
+    setTimeout(() => {
+      ReactDOM.flushSync(() => {
+        setCount((count) => count + 1)
+      })
+      setCount((count) => count + 1)
+    }, 0);
+  }
+  console.log(111);
+
+  return <><button onClick={handleClick}>点击</button>{count}</>
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+```
+效果：
+![image](./img/20211212150113.gif)
+这样效果的表现和之前放到`异步`的表现是一致的。
+
+<!-- - [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
 - [react18工作组](https://github.com/reactwg/react-18/discussions/categories/announcement)
 
 ## react-router v6
@@ -89,4 +155,4 @@ npm install react@beta react-dom@beta
 - [官方文档](https://redux-toolkit.js.org/)
 
 ## ahooks
-- [官方文档](https://ahooks.gitee.io/zh-CN/hooks/use-request/index)
+- [官方文档](https://ahooks.gitee.io/zh-CN/hooks/use-request/index) -->
