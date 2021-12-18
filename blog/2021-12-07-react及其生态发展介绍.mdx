@@ -11,8 +11,8 @@ tags: [react, redux, react-router]
 ## react18
 :::note
 - [x] react18 Alpha 已经完成
-- [x] **目前 react 处于beta版本**
-- [ ] 进入到RC版本，需要大概1-2个月，具体还需要看反馈。
+- [x] react18 beta 已经完成
+- [x] **进入到RC版本，需要大概1-2个月，具体还需要看反馈** （12月9号左右）
 - [ ] RC结束之后，需要大概2~4周就会发布react18了。
 :::
 
@@ -144,23 +144,40 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 ![image](./img/20211212150113.gif)
 这样效果的表现和之前放到`异步`的表现是一致的。
 
-### Suspense
+- 原理就是把setState放到两个不同的优先级中处理，如果setState的话，react会自动合并两个在一个环境中的setState，判定为优先级相同，那么就会一起批量更新。
+
+<!-- ### Suspense
 - react在16.x的时候就已经支持了这个api，但是当时的实现方式，并不是真正的异步更新。在react18中，完成了对这个api的改造
 1. Legacy Suspense 中，同级兄弟组件会立即从 DOM 上卸载（mounted），相关的 effects 和生命周期会被触发，最后会隐藏这个组件。具体可以查看[代码示例](https://codesandbox.io/s/keen-banach-nzut8?file=/src/App.js)。
-2. Concurrent Suspense 中，同级兄弟组件并不会从 DOM 上卸载，相关的 effects 和生命周期会在 ComponentThatSuspends 处理完成时触发。具体可以查看[代码示例](https://codesandbox.io/s/romantic-architecture-ht3qi?file=/src/App.js)。
+2. Concurrent Suspense 中，同级兄弟组件并不会从 DOM 上卸载，相关的 effects 和生命周期会在 ComponentThatSuspends 处理完成时触发。具体可以查看[代码示例](https://codesandbox.io/s/romantic-architecture-ht3qi?file=/src/App.js)。 -->
 
 ### startTransition
+> 这个是为了解决，大数据下，渲染顺序的问题。很多时候，同步更新如果js更新内容过大，就会造成用户感受卡顿的感觉。react为了解决这个问题，和fiber开始就已经开始铺路了。这次react18，是全面进行并发的异步模式，让translate变成可能。
 
-### 
+#### useTransition
 
-<!-- - [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
+### useDeferredValue
+
+### useSyncExternalStore
+> react外部数据传入和更新的时候，都要依赖state的更新，所以传入的外部状态需要转换为state才能被react监听到，这个api是为了让react可以订阅外部数据变化，来让组件的更新，也就是说，我们可以不用手动转换state就可以达到让组件更新
+
+
+### 参考文档
+- [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
 - [react18工作组](https://github.com/reactwg/react-18/discussions/categories/announcement)
 - [Behavioral changes to Suspense in React 18](https://github.com/reactwg/react-18/discussions/7)
+- [「React18新特性」深度解读之useMutableSource](https://juejin.cn/post/7026210002042011655#heading-0)
+- [「React18新特性」深入浅出用户体验大师—transition](https://juejin.cn/post/7027995169211285512)
+
 ## react-router v6
+> 用户体验更佳
 - [官方文档](https://reactrouter.com/)
 
 ## redux-toolkit
+> redux 官网也非常建议使用tookit
+
 - [官方文档](https://redux-toolkit.js.org/)
 
 ## ahooks 3
-- [官方文档](https://ahooks.gitee.io/zh-CN/hooks/use-request/index) -->
+> 推出了一些新特性
+- [官方文档](https://ahooks.gitee.io/zh-CN/hooks/use-request/index)
