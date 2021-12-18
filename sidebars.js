@@ -37,7 +37,16 @@ module.exports = {
   typeScript: [
     "FE/typeScript/TS",
   ],
-  
+  visualization: [
+    "FE/visualization/visualization",
+    {
+      type: 'category',
+      label: 'SVG',
+      items: [
+        "FE/visualization/svg/SVG",
+      ],
+    },
+  ],
   react: [
     "framework/react/react",
   ],
@@ -55,11 +64,11 @@ module.exports = {
   ],
   English: [
     "liftStyle/english/english",
-    // {
-    //   type: 'category',
-    //   label: 'Advanced Guides',
-    //   items: ["English/english/togo", "English/english/down",  "English/english/come"],
-    // },
+    {
+      type: 'category',
+      label: '单词',
+      items: ["liftStyle/english/word/togo", "liftStyle/english/word/down",  "liftStyle/english/word/come"],
+    },
   ],
   // someError: [
   //   {

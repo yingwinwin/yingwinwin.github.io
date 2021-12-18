@@ -68,6 +68,10 @@ module.exports = {
               label: "TypeScript ",
               to: "/docs/FE/typeScript ",
             },
+            {
+              label: "可视化 ",
+              to: "/docs/FE/visualization",
+            },
             // {
             //   label: "前端业务",
             //   to: "/docs/FE/professionalWork ",

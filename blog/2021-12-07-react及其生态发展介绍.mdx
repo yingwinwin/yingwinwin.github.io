@@ -17,7 +17,6 @@ tags: [react, redux, react-router]
 :::
 
 ### 自动批处理
-
 如何理解批处理呢？从一道老生常谈的面试题谈起：`setState什么时候是同步的，什么时候是异步的？`
 - 来看一下，下面这段代码 （打开控制台点击按钮查看效果）
 ```jsx
@@ -145,14 +144,23 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 ![image](./img/20211212150113.gif)
 这样效果的表现和之前放到`异步`的表现是一致的。
 
+### Suspense
+- react在16.x的时候就已经支持了这个api，但是当时的实现方式，并不是真正的异步更新。在react18中，完成了对这个api的改造
+1. Legacy Suspense 中，同级兄弟组件会立即从 DOM 上卸载（mounted），相关的 effects 和生命周期会被触发，最后会隐藏这个组件。具体可以查看[代码示例](https://codesandbox.io/s/keen-banach-nzut8?file=/src/App.js)。
+2. Concurrent Suspense 中，同级兄弟组件并不会从 DOM 上卸载，相关的 effects 和生命周期会在 ComponentThatSuspends 处理完成时触发。具体可以查看[代码示例](https://codesandbox.io/s/romantic-architecture-ht3qi?file=/src/App.js)。
+
+### startTransition
+
+### 
+
 <!-- - [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
 - [react18工作组](https://github.com/reactwg/react-18/discussions/categories/announcement)
-
+- [Behavioral changes to Suspense in React 18](https://github.com/reactwg/react-18/discussions/7)
 ## react-router v6
 - [官方文档](https://reactrouter.com/)
 
 ## redux-toolkit
 - [官方文档](https://redux-toolkit.js.org/)
 
-## ahooks
+## ahooks 3
 - [官方文档](https://ahooks.gitee.io/zh-CN/hooks/use-request/index) -->
