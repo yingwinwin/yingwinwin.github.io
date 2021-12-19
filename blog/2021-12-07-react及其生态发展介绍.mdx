@@ -154,20 +154,159 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 ### startTransition
 > 这个是为了解决，大数据下，渲染顺序的问题。很多时候，同步更新如果js更新内容过大，就会造成用户感受卡顿的感觉。react为了解决这个问题，和fiber开始就已经开始铺路了。这次react18，是全面进行并发的异步模式，让translate变成可能。
 
+以下例子均来源于[「React18新特性」深入浅出用户体验大师—transition](https://juejin.cn/post/7027995169211285512)
+```jsx {41-44}
+import React, {memo} from 'react';
+import ReactDOM from 'react-dom';
+
+/*  模拟数据  */
+const mockDataArray = new Array(10000).fill(1)
+/* 高量显示内容 */
+function ShowText({ query }){
+   const text = 'asdfghjk'
+   let children
+   if(text.indexOf(query) > 0 ){
+       /* 找到匹配的关键词 */
+       const arr = text.split(query)
+       children = <div>{arr[0]}<span style={{ color:'pink' }} >{query}</span>{arr[1]} </div>
+   }else{
+      children = <div>{text}</div>
+   }
+   return <div>{children}</div>
+}
+/* 列表数据 */
+function List ({ query }){
+    console.log('List渲染')
+    return <div>
+        {
+           mockDataArray.map((item,index)=><div key={index} >
+              <ShowText query={query} />
+           </div>)
+        }
+    </div>
+}
+/* memo 做优化处理  */
+const NewList = memo(List)
+
+export default function App(){
+  const [ value ,setInputValue ] = React.useState('')
+  const [ isTransition , setTransion ] = React.useState(false)
+  const [ query ,setSearchQuery  ] = React.useState('')
+  const handleChange = (e) => {
+      /* 高优先级任务 —— 改变搜索条件 */
+      setInputValue(e.target.value)
+      if(isTransition){ /* transition 模式 */
+          React.startTransition(()=>{
+              /* 低优先级任务 —— 改变搜索过滤后列表状态  */
+              setSearchQuery(e.target.value)
+          })
+      }else{ /* 不加优化，传统模式 */
+          setSearchQuery(e.target.value)
+      }
+  }
+  return <div>
+      <button onClick={()=>setTransion(!isTransition)} >{isTransition ? 'transition' : 'normal'} </button>
+      <input onChange={handleChange}
+          placeholder="输入搜索内容"
+          value={value}
+      />
+     <NewList  query={query} />
+  </div>
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+```
+![image](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fda3c374cc0e43c3bcbbdc42aafd5ba1~tplv-k3u1fbpfcp-watermark.awebp?)
+
+通过这个例子可以看出来translate可以最大程度的保护用户体验，在输入内容时，延后list的渲染，不会让用户觉得输入的时候卡顿。
+
+#### 为什么不是setTimeout
+![image](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c3dad3d51d40421cbec2aea31b00a2e4~tplv-k3u1fbpfcp-watermark.awebp?)
+1. setTimeout 是异步的执行任务，不会阻碍浏览器的渲染。但是执行的时候，同样会抢浏览器的线程使用，会让用户产生卡顿的感觉。而translate是react使用并发中断当前list渲染，确保input输入，所以不会让用户觉得卡顿。
+2. setTimeout是异步的，而translate的执行时间会比setTimeout早，是在回调中执行的。可以更好的确保ui的渲染。
+
+#### 为什么不是节流防抖
+![image](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e0db256f94a147f697bcb0c2f86b4fe5~tplv-k3u1fbpfcp-watermark.awebp?)
+
+1. 节流防抖一定程度上可以解决这个问题。但是在节流防抖的时间把控上，需要人为判断，如果时间长可能会给用户造成延迟展示的感觉。早了的话，和`setTimeout`一样还是会有卡顿的感觉。`translate`不用考虑这么多。
+2. 节流防抖本质上还是`setTimeout`，原理是让list渲染的次数减少。`translate`是让其延迟展示，而不是减少渲染次数。
+
 #### useTransition
+> react 为了更好的使用translate 提供了一个hook函数
+
+- 不用hook使用
+```jsx
+React.startTransition(()=>{
+   /* 更新任务 */
+   setSearchQuery(value)
+})
+```
+- hook使用
+```jsx
+import { useTransition } from 'react' 
+
+/* 使用 */
+const  [ isPending , startTransition ] = useTransition ()
+// 可以精准的判断当前延迟时间，并进行相应的状态展示
+{ isPending  && <div>loading....</div> }
+```
+![image](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d256d72266974280adbaeba238d974cb~tplv-k3u1fbpfcp-watermark.awebp?)
+图中可以看到，translate的时间可以精准的被判断出来。
 
 ### useDeferredValue
 
-### useSyncExternalStore
-> react外部数据传入和更新的时候，都要依赖state的更新，所以传入的外部状态需要转换为state才能被react监听到，这个api是为了让react可以订阅外部数据变化，来让组件的更新，也就是说，我们可以不用手动转换state就可以达到让组件更新
+```jsx {3}
+export default function App(){
+    const [ value ,setInputValue ] = React.useState('')
+    const query = React.useDeferredValue(value)  // 把用translate延迟改为用useDeferredValue
+    const handleChange = (e) => {
+        setInputValue(e.target.value)
+    }
+    return  <div>
+      <button>useDeferredValue</button>
+      <input onChange={handleChange}
+          placeholder="输入搜索内容"
+          value={value}
+      />
+      <NewList  query={query} />
+   </div>
+}
+```
+![image](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/110f9db7ec21466398776a97c338a0b2~tplv-k3u1fbpfcp-watermark.awebp?)
 
+图上的效果与`useTransition`基本一致。实际上，现在react18工作组，对这两个api也没有一个明确的例子来说明两者明显的区别。在新文档出来之前可能还有一定的修改。具体可以看一下帖子中[Dan的回复](https://github.com/reactwg/react-18/discussions/100)
+
+
+1. 目前两者区别不大。可能在api使用上有一些区别。`useTransition`可以用于获取等待状态。
+2. 在执行时机上`useDeferredValue`相比较`useTransition`晚一些。
+
+<!-- ### useSyncExternalStore
+> react外部数据传入和更新的时候，都要依赖state的更新，所以传入的外部状态需要转换为state才能被react监听到，这个api是为了让react可以订阅外部数据变化，来让组件的更新，也就是说，我们可以不用手动转换state就可以达到让组件更新 -->
+### useId
+
+- [Intent to Ship: useId #111](https://github.com/reactwg/react-18/discussions/111)
+- [为了生成唯一id，React18专门引入了新Hook：useId](https://juejin.cn/post/7034691251165200398)
+
+### useSyncExternalStore
+- [「React18新特性」深度解读之useMutableSource](https://juejin.cn/post/7026210002042011655#heading-0)
+- [useMutableSource and selector stability #84](https://github.com/reactwg/react-18/discussions/84)
+- [useMutableSource → useSyncExternalStore #86](https://github.com/reactwg/react-18/discussions/86)
+
+### Suspense
+- [Behavioral changes to Suspense in React 18 #7](https://github.com/reactwg/react-18/discussions/7)
+- [React 18 Suspense 的变化](https://juejin.cn/post/6998086416836067365)
+- [Update to how we handle null or undefined Suspense fallbacks #72](https://github.com/reactwg/react-18/discussions/72)
 
 ### 参考文档
 - [官方react18介绍](https://react.docschina.org/blog/2021/06/08/the-plan-for-react-18.html)
 - [react18工作组](https://github.com/reactwg/react-18/discussions/categories/announcement)
-- [Behavioral changes to Suspense in React 18](https://github.com/reactwg/react-18/discussions/7)
-- [「React18新特性」深度解读之useMutableSource](https://juejin.cn/post/7026210002042011655#heading-0)
+- [Automatic batching for fewer renders in React 18](https://github.com/reactwg/react-18/discussions/21)
+- [New feature: startTransition](https://github.com/reactwg/react-18/discussions/41)
+- [Real world example: adding startTransition for slow renders](https://github.com/reactwg/react-18/discussions/65)
+- [Patterns for startTransition](https://github.com/reactwg/react-18/discussions/100)
+- [Education and course material coordination](https://github.com/reactwg/react-18/discussions/98)
+
 - [「React18新特性」深入浅出用户体验大师—transition](https://juejin.cn/post/7027995169211285512)
+- [React Conf 2021](https://docs.google.com/document/d/1QN5HnccK00XOVdx0bdEnOplbmwm5MI_luZx1-UoRF_Y/edit?usp=sharing)
 
 ## react-router v6
 > 用户体验更佳

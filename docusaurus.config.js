@@ -13,6 +13,10 @@ module.exports = {
   projectName: "yingwinwin.github.io", // 这个是你要部署到的github的项目名字
   onBrokenLinks: 'ignore',
   themeConfig: {
+    tableOfContents: {
+      minHeadingLevel: 2,
+      maxHeadingLevel: 6,
+    },
     liveCodeBlock: {
       /**
        * 实时效果显示的位置，可位于编辑器上方或下方。
