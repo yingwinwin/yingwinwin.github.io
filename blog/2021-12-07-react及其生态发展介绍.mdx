@@ -310,12 +310,109 @@ export default function App(){
 
 ## react-router v6
 > 用户体验更佳
+
+### <Routes>
+
+1. 将 `<Switch/>` 升级为 `<Routes>`
+2. 删除`<Route exact>`api
+3. 将`children` 改为 `element`
+```js
+
+```
+4. 路由嵌套更方便
+```js
+// This is a React Router v5 app
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch
+} from "react-router-dom";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/users">
+          <Users />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+function Users() {
+  let match = useRouteMatch();
+
+  return (
+    <div>
+      <nav>
+        <Link to={`${match.url}/me`}>My Profile</Link>
+      </nav>
+
+      <Switch>
+        <Route path={`${match.path}/me`}>
+          <OwnUserProfile />
+        </Route>
+        <Route path={`${match.path}/:id`}>
+          <UserProfile />
+        </Route>
+      </Switch>
+    </div>
+  );
+}
+```
+
+- v6
+```js
+// This is a React Router v6 app
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="users/*" element={<Users />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function Users() {
+  return (
+    <div>
+      <nav>
+        <Link to="me">My Profile</Link>
+      </nav>
+
+      <Routes>
+        {/* 不必在手动写入/user/:id这种形式 */}
+        <Route path=":id" element={<UserProfile />} />
+        <Route path="me" element={<OwnUserProfile />} />
+      </Routes>
+    </div>
+  );
+}
+```
+
 - [官方文档](https://reactrouter.com/)
+- [Upgrading from v5](https://reactrouter.com/docs/en/v6/upgrading/v5#upgrading-from-v5)
 
 ## redux-toolkit
 > redux 官网也非常建议使用tookit
 
 - [官方文档](https://redux-toolkit.js.org/)
+- [What is Redux Toolkit?](https://redux.js.org/redux-toolkit/overview)
 
 ## ahooks 3
 > 推出了一些新特性
