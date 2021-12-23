@@ -309,101 +309,79 @@ export default function App(){
 - [React Conf 2021](https://docs.google.com/document/d/1QN5HnccK00XOVdx0bdEnOplbmwm5MI_luZx1-UoRF_Y/edit?usp=sharing)
 
 ## react-router v6
-> 用户体验更佳
 
-### <Routes>
+### useNavigate
 
-1. 将 `<Switch/>` 升级为 `<Routes>`
-2. 删除`<Route exact>`api
-3. 将`children` 改为 `element`
-```js
+> react-router中会直接依赖history，不需要在`pakeage.json`中额外安装`history`依赖，所有导航方法，均从`useNavigate()`hook中取得。
 
-```
-4. 路由嵌套更方便
-```js
+```jsx title="v5"
 // This is a React Router v5 app
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch
-} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/">
-          <Home />
-        </Route>
-        <Route path="/users">
-          <Users />
-        </Route>
-      </Switch>
-    </BrowserRouter>
-  );
-}
-
-function Users() {
-  let match = useRouteMatch();
-
+  let history = useHistory();
+  function handleClick() {
+    history.push("/home");
+  }
   return (
     <div>
-      <nav>
-        <Link to={`${match.url}/me`}>My Profile</Link>
-      </nav>
-
-      <Switch>
-        <Route path={`${match.path}/me`}>
-          <OwnUserProfile />
-        </Route>
-        <Route path={`${match.path}/:id`}>
-          <UserProfile />
-        </Route>
-      </Switch>
+      <button onClick={handleClick}>go home</button>
     </div>
   );
 }
 ```
 
-- v6
-```js
+```jsx title="v6"
 // This is a React Router v6 app
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Link
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="users/*" element={<Users />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-function Users() {
+  let navigate = useNavigate();
+  function handleClick() {
+    navigate("/home");
+  }
   return (
     <div>
-      <nav>
-        <Link to="me">My Profile</Link>
-      </nav>
-
-      <Routes>
-        {/* 不必在手动写入/user/:id这种形式 */}
-        <Route path=":id" element={<UserProfile />} />
-        <Route path="me" element={<OwnUserProfile />} />
-      </Routes>
+      <button onClick={handleClick}>go home</button>
     </div>
   );
 }
 ```
+
+### useRoutes
+> 使用`useRoutes`hook，代替`react-router-config`，使用js对象定义router，更加简洁。
+
+```jsx title="v6"
+function App() {
+  let element = useRoutes([
+    // 每一项想当于一个Route
+    { path: "/", element: <Home /> },
+    { path: "dashboard", element: <Dashboard /> },
+    {
+      path: "invoices",
+      element: <Invoices />,
+      // 如果使用嵌套路由需要用children属性。相当于嵌套路由里面的route
+      children: [
+        { path: ":id", element: <Invoice /> },
+        { path: "sent", element: <SentInvoices /> }
+      ]
+    },
+    // 404的情况
+    { path: "*", element: <NotFound /> }
+  ]);
+
+  // 可以直接将element对象返回，在根组件挂载
+  return element;
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<BrowserRouter>
+    <App/>
+</BrowserRouter>);
+```
+
+### `<Routes/>`
+> `routes`可以完美替换`switch`，但是功能要强过`switch`。
+
+
 
 - [官方文档](https://reactrouter.com/)
 - [Upgrading from v5](https://reactrouter.com/docs/en/v6/upgrading/v5#upgrading-from-v5)
