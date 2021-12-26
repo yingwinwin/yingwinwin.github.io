@@ -301,6 +301,35 @@ const id = React.useId()
 ### Suspense
 > 服务端中引入开箱即用的Suspense
 
+- 请求与suspense一起使用
+```jsx
+import useSWR from "swr";  //  支持suspense的取数库
+
+function getUsername() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("name");
+    }, 3000);
+  });
+}
+
+const Name = () => {
+  const { data } = useSWR('/getUser', getUsername, {
+      suspense: true
+  });
+  console.log(data);
+  return <div>{data}</div>;
+};
+
+const App = () => {
+  return (
+    <Suspense fallback={<div>loading...</div>}>
+      <Name />
+    </Suspense>
+  );
+};
+```
+
 - [Behavioral changes to Suspense in React 18 #7](https://github.com/reactwg/react-18/discussions/7)
 - [React 18 Suspense 的变化](https://juejin.cn/post/6998086416836067365)
 - [Update to how we handle null or undefined Suspense fallbacks #72](https://github.com/reactwg/react-18/discussions/72)
