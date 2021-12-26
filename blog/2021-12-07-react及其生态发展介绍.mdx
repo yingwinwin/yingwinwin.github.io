@@ -282,16 +282,25 @@ export default function App(){
 <!-- ### useSyncExternalStore
 > react外部数据传入和更新的时候，都要依赖state的更新，所以传入的外部状态需要转换为state才能被react监听到，这个api是为了让react可以订阅外部数据变化，来让组件的更新，也就是说，我们可以不用手动转换state就可以达到让组件更新 -->
 ### useId
+> 如果你需要生成一个唯一Id，可以使用useId
+
+```jsx
+const id = React.useId()
+```
 
 - [Intent to Ship: useId #111](https://github.com/reactwg/react-18/discussions/111)
 - [为了生成唯一id，React18专门引入了新Hook：useId](https://juejin.cn/post/7034691251165200398)
 
 ### useSyncExternalStore
+> 在引入外部数据的时候，react引入了一个新的api。一般都是由库作者修改。普通开发者用不到，深入了解可以看下面的文章。
+
 - [「React18新特性」深度解读之useMutableSource](https://juejin.cn/post/7026210002042011655#heading-0)
 - [useMutableSource and selector stability #84](https://github.com/reactwg/react-18/discussions/84)
 - [useMutableSource → useSyncExternalStore #86](https://github.com/reactwg/react-18/discussions/86)
 
 ### Suspense
+> 服务端中引入开箱即用的Suspense
+
 - [Behavioral changes to Suspense in React 18 #7](https://github.com/reactwg/react-18/discussions/7)
 - [React 18 Suspense 的变化](https://juejin.cn/post/6998086416836067365)
 - [Update to how we handle null or undefined Suspense fallbacks #72](https://github.com/reactwg/react-18/discussions/72)
@@ -380,8 +389,194 @@ ReactDOM.createRoot(document.getElementById("root")).render(<BrowserRouter>
 
 ### `<Routes/>`
 > `routes`可以完美替换`switch`，但是功能要强过`switch`。
+1. `<Routes/>`中的路由都是相对的。在`<Link to/>` `<Route path>`的代码更简洁
 
+```jsx title="v5"
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Link,
+  useRouteMatch
+} from "react-router-dom";
 
+function App() {
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/users">
+          <Users />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  );
+}
+
+function Users() {
+  // 在v5中如果要使用 Switch中的route寻找到对应的router就要用match.path 和 match.url
+  let match = useRouteMatch();
+
+  return (
+    <div>
+      <nav>
+        <Link to={`${match.url}/me`}>My Profile</Link>
+      </nav>
+
+      <Switch>
+        <Route path={`${match.path}/me`}>
+          <OwnUserProfile />
+        </Route>
+        <Route path={`${match.path}/:id`}>
+          <UserProfile />
+        </Route>
+      </Switch>
+    </div>
+  );
+}
+```
+
+```jsx title = v6
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
+
+function App() {
+  // 在v6中使用 * 来代表此路由是有子路由的
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* 取消了 extra，用有 * 来匹配是否有子代路由  */}
+        <Route path="/" element={<Home />} />
+        <Route path="users/*" element={<Users />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function Users() {
+  return (
+    <div>
+      <nav>
+        <Link to="me">My Profile</Link>
+      </nav>
+      {/* 在子组件中，路由直接写相对路径就可以 */}
+      <Routes>
+        <Route path=":id" element={<UserProfile />} />
+        <Route path="me" element={<OwnUserProfile />} />
+      </Routes>
+    </div>
+  );
+}
+```
+2. 匹配规则从上到下，改成了最佳匹配路线
+> 下面这种情况，react-router 会选择渲染 NewTteam 组件，因为他的路由更精准，不用怕因为位置写错，而导致的问题了。
+```jsx
+<Routes>
+  <Route path="teams/:teamId" element={<Team />} />
+  <Route path="teams/new" element={<NewTeam />} />
+</Routes>
+```
+3. 可以将路由都在一个地方嵌套，而不是分散到各处
+```jsx title=嵌套路由
+// This is a React Router v6 app
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  Outlet
+} from "react-router-dom";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="users" element={<Users />}>
+          {/* 在这里直接使用嵌套路由，对小应用友好，注意这里不用加*，因为是直接嵌套在这里的 */}
+          <Route path="me" element={<OwnUserProfile />} />
+          <Route path=":id" element={<UserProfile />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function Users() {
+  return (
+    <div>
+      <nav>
+        <Link to="me">My Profile</Link>
+      </nav>
+      {/* 可以使用 Outlet 组件进行占位 */}
+      <Outlet />
+    </div>
+  );
+}
+```
+
+### `<Link to/>`
+> Link to 的表现和我们在使用`cd xxx`文件时的表现相似
+```js
+function App() {
+  return (
+    <Routes>
+      <Route path="users" element={<Users />}>
+        <Route path=":id" element={<UserProfile />} />
+      </Route>
+    </Routes>
+  );
+}
+
+function Users() {
+  return (
+    <div>
+      <h2>
+        {/* 这个link会跳到 /users - 当前路由 */}
+        <Link to=".">Users</Link>
+      </h2>
+
+      <ul>
+        {users.map(user => (
+          <li>
+            {/* 这个link会跳到 /users/:id - 孩子路由 */}
+            <Link to={user.id}>{user.name}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function UserProfile() {
+  return (
+    <div>
+      <h2>
+        {/* 这个link会跳到 /users - 父路由 */}
+        <Link to="..">All Users</Link>
+      </h2>
+
+      <h2>
+        {/* 这个link会跳到 /users/:id - 当前路由 */}
+        <Link to=".">User Profile</Link>
+      </h2>
+
+      <h2>
+        {/* 这个link会跳到 /users/mj - 一个兄弟路由 */}
+        <Link to="../mj">MJ</Link>
+      </h2>
+    </div>
+  );
+}
+```
+
+### 参考文档
 
 - [官方文档](https://reactrouter.com/)
 - [Upgrading from v5](https://reactrouter.com/docs/en/v6/upgrading/v5#upgrading-from-v5)
