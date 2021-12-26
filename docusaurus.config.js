@@ -49,16 +49,8 @@ module.exports = {
               to: "/docs/FE/FEBasis",
             },
             {
-              label: "JavaSciprt手撕代码",
-              to: "/docs/FE/javaSciprtCoder",
-            },
-            {
-              label: "JavaSciprt数据结构",
-              to: "/docs/FE/javaSciprtData",
-            },
-            {
-              label: "JavaSciprt设计模式",
-              to: "/docs/FE/javaSciprtDesign",
+              label: "JavaSciprt",
+              to: "/docs/FE/javaSciprt",
             },
             {
               label: "CSS",

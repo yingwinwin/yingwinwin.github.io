@@ -19,14 +19,8 @@ module.exports = {
   //     ],
   //   },
   // ],
-  javaSciprtCoder: [
-    "FE/javaSciprtCoder/Coder",
-  ],
-  javaSciprtData: [
-    "FE/javaSciprtData/Data",
-  ],
-  javaSciprtDesign: [
-    "FE/javaSciprtDesign/Design",
+  javaSciprt: [
+    "FE/javaSciprt/js",
   ],
   CSS: [
     "FE/CSS/CSS",
