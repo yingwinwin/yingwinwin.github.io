@@ -473,14 +473,18 @@ function Users() {
 }
 ```
 2. 匹配规则从上到下，改成了最佳匹配路线
+
 > 下面这种情况，react-router 会选择渲染 NewTteam 组件，因为他的路由更精准，不用怕因为位置写错，而导致的问题了。
+
 ```jsx
 <Routes>
   <Route path="teams/:teamId" element={<Team />} />
   <Route path="teams/new" element={<NewTeam />} />
 </Routes>
 ```
+
 3. 可以将路由都在一个地方嵌套，而不是分散到各处
+
 ```jsx title="嵌套路由"
 import {
   BrowserRouter,
@@ -520,6 +524,7 @@ function Users() {
 
 ### `<Link to/>`
 > Link to 的表现和我们在使用`cd xxx`文件时的表现相似
+
 ```jsx
 function App() {
   return (
@@ -578,12 +583,11 @@ function UserProfile() {
 - [官方文档](https://reactrouter.com/)
 - [Upgrading from v5](https://reactrouter.com/docs/en/v6/upgrading/v5#upgrading-from-v5)
 
-## redux-toolkit
+<!-- ## redux-toolkit
 > redux 官网也非常建议使用tookit
 
 - [官方文档](https://redux-toolkit.js.org/)
-- [What is Redux Toolkit?](https://redux.js.org/redux-toolkit/overview)
+- [What is Redux Toolkit?](https://redux.js.org/redux-toolkit/overview) -->
 
 ## ahooks 3
-> 推出了一些新特性
 - [官方文档](https://ahooks.gitee.io/zh-CN/hooks/use-request/index)
