@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[86],{153:function(a){a.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"react-router","name":"react-router","count":1,"permalink":"/blog/tags/react-router"}')}}]);
