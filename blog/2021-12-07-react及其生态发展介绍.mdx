@@ -84,7 +84,7 @@ ReactDOM.render(<App/>, document.getElementById('root'))
 1. 安装包更改为react18@beta版本。
 ```shell
 # 安装方式
-npm install react@beta react-dom@beta
+npm install react@rc react-dom@rc
 ```
 2. 需要修改react的挂载模式为createRoot Api形式
 ```diff jsx 
@@ -324,7 +324,6 @@ const id = React.useId()
 > react-router中会直接依赖history，不需要在`pakeage.json`中额外安装`history`依赖，所有导航方法，均从`useNavigate()`hook中取得。
 
 ```jsx title="v5"
-// This is a React Router v5 app
 import { useHistory } from "react-router-dom";
 
 function App() {
@@ -341,7 +340,6 @@ function App() {
 ```
 
 ```jsx title="v6"
-// This is a React Router v6 app
 import { useNavigate } from "react-router-dom";
 
 function App() {
@@ -438,7 +436,7 @@ function Users() {
 }
 ```
 
-```jsx title = v6
+```jsx title="v6"
 import {
   BrowserRouter,
   Routes,
@@ -483,8 +481,7 @@ function Users() {
 </Routes>
 ```
 3. 可以将路由都在一个地方嵌套，而不是分散到各处
-```jsx title=嵌套路由
-// This is a React Router v6 app
+```jsx title="嵌套路由"
 import {
   BrowserRouter,
   Routes,
@@ -523,7 +520,7 @@ function Users() {
 
 ### `<Link to/>`
 > Link to 的表现和我们在使用`cd xxx`文件时的表现相似
-```js
+```jsx
 function App() {
   return (
     <Routes>
