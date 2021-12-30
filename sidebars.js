@@ -29,7 +29,15 @@ module.exports = {
     "FE/browser/browser",
   ],
   typeScript: [
-    "FE/typeScript/TS",
+    "FE/typeScript/TS", 
+    {
+      type: 'category',
+      label: '基础',
+      items: [
+        "FE/typeScript/tsBasics/basicDataType",
+      ],
+    },
+    
   ],
   visualization: [
     "FE/visualization/visualization",
