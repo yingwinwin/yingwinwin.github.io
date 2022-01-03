@@ -129,10 +129,11 @@ function fn():void {
     
 }
 ```
-**和never的区别**
+:::info
+**void和never的区别**
 1. void可以返回null和undefined，never不可以返回任何值
 2. 返回void的函数可以正常执行，返回never的函数，不能正常执行
-
+:::
 ### `symbol`类型
 - 唯一不变的值
 ```json title="tsconfig.json"
@@ -148,8 +149,8 @@ let s2:symbol = Symbol('1');
 console.log(s1 === s2); // 返回false
 ```
 
-### `bigInt`类型
-- 大数相加，js最大的值为 `2**53-1`
+### `bigint`类型
+- 大整形，js最大的值为 `2**53-1`
 ```js title="js"
 const max = Number.MAX_SAFE_INTEGER // 2**53 - 1
 

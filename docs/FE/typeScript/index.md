@@ -33,11 +33,6 @@ tsc --init
 ```shell
 npm i ts-node -g
 ```
-
-### tsconfig
-```
-```
-
 ### 链接
 
 - [TypeScript 入门教程](https://ts.xcatliu.com/)

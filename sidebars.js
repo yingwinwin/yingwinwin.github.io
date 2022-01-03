@@ -35,6 +35,9 @@ module.exports = {
       label: '基础',
       items: [
         "FE/typeScript/tsBasics/basicDataType",
+        "FE/typeScript/tsBasics/complexDataType",
+        "FE/typeScript/tsBasics/functionType",
+        "FE/typeScript/tsBasics/classType",
       ],
     },
     
