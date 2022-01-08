@@ -104,6 +104,10 @@ module.exports = {
               label: "计算机网络",
               to: "/docs/CS/netWork",
             },
+            {
+              label: "数据结构与算法",
+              to: "/docs/CS/leetcode",
+            },
           ],
         },
         {

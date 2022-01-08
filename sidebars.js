@@ -41,7 +41,6 @@ module.exports = {
         "FE/typeScript/tsBasics/classType",
       ],
     },
-    
   ],
   visualization: [
     "FE/visualization/visualization",
@@ -64,6 +63,25 @@ module.exports = {
   ],
   netWork: [
     "CS/netWork/netWork",
+  ],
+  leetcode: [
+    "CS/leetcode/leetcode",
+    {
+      type: 'category',
+      label: '基础',
+      collapsed: false,
+      items: [
+        "CS/leetcode/shujujiegou/heap",
+      ],
+    },
+    // {
+    //   type: 'category',
+    //   label: '算法',
+    //   collapsed: false,
+    //   items: [
+    //     "CS/leetcode/suanfa/heap",
+    //   ],
+    // },
   ],
   essayist: [
     "liftStyle/essayist/essayist",
