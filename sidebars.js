@@ -33,6 +33,7 @@ module.exports = {
     {
       type: 'category',
       label: '基础',
+      collapsed: false,
       items: [
         "FE/typeScript/tsBasics/basicDataType",
         "FE/typeScript/tsBasics/complexDataType",
