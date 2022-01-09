@@ -124,5 +124,4 @@ const heap = new Heap(arr);
 
 ## leetcode
 - 堆常用于解决topk问题
-
-## 堆的其他应用
+- [215. 数组中的第K个最大元素](https://leetcode-cn.com/problems/kth-largest-element-in-an-array/)
