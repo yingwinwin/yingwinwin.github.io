@@ -210,5 +210,218 @@ class Person {
 console.log(Person.age);  // 获取类的静态属性
 ```
 
-<!-- TODO -->
 ## 装饰器
+
+### 装饰类
+需要下面的配置，让`ts`来支持实验性的装饰器语法。
+```json title="tsconfig.json"
+{
+    "experimentalDecorators": true, 
+}
+```
+
+1. 添加属性，当前的装饰器，只能支持写死的属性。
+```ts
+function addName (constructor: Function) {
+    constructor.prototype.name = 'zy'
+}
+
+@addName
+class Person {
+    name!:string;
+    constructor(){}
+}
+
+let p:Person = new Person();
+console.log(p.name);  // zy
+```
+
+2. 添加可以传参的属性
+```ts
+// 用一个外层函数来接受参数
+function addName (name:string) {
+    return function (constructor:Function) {
+        constructor.prototype.name = name
+    }
+}
+// highlight-next-line
+@addName('zy')  // 动态传参
+class Person {
+    name!:string;
+    constructor(){}
+}
+
+let p:Person = new Person();
+console.log(p.name);  // zy
+```
+
+3. 装饰器函数不仅仅可以返回函数，也可以返回一个类，来替换之前的类，需要注意的是，**返回新的类中的属性，只能多不能少**
+```ts
+function replaceClass (constructor:Function) {
+    return class {
+        name!:string;
+        // highlight-next-line
+        age!:number;  // 属性只能多，但是不能少
+        constructor(){
+            this.name = 'zy';
+            this.age = 26
+        }
+    }
+}
+
+@replaceClass
+class Person {
+    name!:string;
+    constructor(){}
+}
+
+let p:Person = new Person();
+console.log(p.name);
+```
+### 装饰属性
+
+**实例属性** 装饰器参数为，当前的原型对象和属性的name
+```ts
+/**
+ * @param target 当前类的原型对象 {}
+ * @param key 属性的名字
+ */
+function toUpperCase(target:any, key:string) {
+    let value = target[key];  // 从原型中取出之前的属性值
+    /* 定义setter 和 getter方法 */
+    const getter = () => value;
+    const setter = (newVal:string) => value = newVal.toUpperCase();
+
+    if(delete target[key]) {  // 如果成功删除掉了之前的属性就重新赋值
+        Object.defineProperty(target, key, {
+            set: setter,
+            get: getter,
+            enumerable: true,
+            configurable: true
+        })
+    }
+}
+
+class Person {
+    @toUpperCase  // 实例属性装饰器，把属性值变成大写
+    name:string = 'zy';
+    constructor(){}
+}
+
+let p:Person = new Person();
+console.log(p.name);  // ZY
+```
+
+**静态属性** 装饰器参数为，当前类和属性的名字
+```ts
+/**
+ * @param target 当前类
+ * @param key 当前属性的名字
+ */
+function toAdd(target:any, key:string) {
+    target[key] = target[key] + 1
+}
+
+class Person {
+    @toAdd  // 使装饰的年龄 + 1
+    static age:number = 26
+    constructor(){}
+}
+
+console.log(Person.age);  // 27
+```
+
+### 装饰方法
+1. 方法有三个参数，前两个和给属性一样，第三个是当前函数的描述属性，可以直接修改
+2. 方法和属性一样，也分静态方法和实例方法。静态方法，第一个参数是当前类。实例方法，第一个参数是当前原型
+```ts
+/**
+ * @param target 类的原型对象
+ * @param key 当前函数的名字
+ * @param descriptor 当前函数的描述符
+ * {
+  value: [Function: sum],
+  writable: true,
+  enumerable: false,
+  configurable: true
+}
+ */
+function toNumber(target:any, key: string, descriptor:PropertyDescriptor) {
+    let oldMethod = descriptor.value;
+    descriptor.value = function (...arg:any[]) {
+        arg = arg.map(item => parseFloat(item));
+        return oldMethod.apply(this,arg)
+    }
+}
+
+class Person {
+    @toNumber  // 把字符串参数转为数字相加
+    sum(...arg:any[]){
+        return arg.reduce((a,b) => a+b)
+    }
+}
+
+let p:Person = new Person();
+console.log(p.sum('1','2'));  // 3
+```
+### 装饰参数
+```ts
+/**
+ * @param target 静态方法是当前的原型，如果实例方法就是当前类
+ * @param methodName 方法名字
+ * @param index 参数的下标
+ */
+ function addAge(target:any, methodName:string, index:number) {
+     target.age = 26
+}
+
+class Person {
+    age!:number
+    toLogin(name:string, @addAge password:any) {  // 装饰方法的参数
+        console.log(this.age);
+    }
+}
+
+let p:Person = new Person();
+p.toLogin('zy', 123)
+```
+
+### 装饰器的执行顺序
+1. 类装饰器最后执行，如果类有两个装饰器，靠类近的先执行，远的后执行
+2. 类装饰器里面，属性和方法，谁在上面谁先执行。
+3. 类装饰器方法，方法参数装饰器 先于 方法装饰器执行。
+4. 总结：`先上后下，先内后外`
+
+## 抽象类
+> 1. 抽象类不能被实例化
+> 2. 抽象方法不在父类里面实现，必须在子类中实现
+
+
+```ts
+// 定义一个抽象类
+abstract class Animal{
+    name!: string;
+    abstract speak():void  // 抽象方法，子类中不实现
+}
+// 子类实现
+class Cat extends Animal{
+    speak(): void {  // 必须要是想speak方法, 不然会报错
+        console.log('喵喵喵');
+    }
+}
+// 子类实现
+class Dog extends Animal{
+    speak(): void {
+        console.log('汪汪汪');
+    }
+}
+```
+:::note
+**词汇辨析：继承和多态**
+- 继承：子类继承父类，可以获得父类的所有属性和方法。
+- 多态：同一个方法，在不同的子类中也有不同的实现。
+
+**词汇辨析：重写和重载**
+- 重写：子类重写继承自父类的方法
+- 重载：函数的重载，两个或两个以上的同名函数，参数不一样，需要给同名函数提供多函数定义。
+:::
