@@ -401,7 +401,7 @@ p.toLogin('zy', 123)
 // 定义一个抽象类
 abstract class Animal{
     name!: string;
-    abstract speak():void  // 抽象方法，子类中不实现
+    abstract speak():void  // 抽象方法，父类中不实现
 }
 // 子类实现
 class Cat extends Animal{

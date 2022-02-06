@@ -39,6 +39,7 @@ module.exports = {
         "FE/typeScript/tsBasics/complexDataType",
         "FE/typeScript/tsBasics/functionType",
         "FE/typeScript/tsBasics/classType",
+        "FE/typeScript/tsBasics/interface",
       ],
     },
   ],
@@ -49,6 +50,13 @@ module.exports = {
       label: 'SVG',
       items: [
         "FE/visualization/svg/SVG",
+      ],
+    },
+    {
+      type: 'category',
+      label: 'GIS',
+      items: [
+        "FE/visualization/gis/leaflet",
       ],
     },
   ],
