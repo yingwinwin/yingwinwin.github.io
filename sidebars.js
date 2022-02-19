@@ -21,6 +21,18 @@ module.exports = {
   // ],
   javaSciprt: [
     "FE/javaSciprt/js",
+    {
+      type: 'category',
+      label: '异步',
+      collapsed: false,
+      items: [
+        // "FE/javaSciprt/async/callback",
+        // "FE/javaSciprt/async/promise",
+        "FE/javaSciprt/async/generator",
+        "FE/javaSciprt/async/co",
+        "FE/javaSciprt/async/asyncAwait",
+      ],
+    },
   ],
   CSS: [
     "FE/CSS/CSS",
