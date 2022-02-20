@@ -27,10 +27,11 @@ module.exports = {
       collapsed: false,
       items: [
         // "FE/javaSciprt/async/callback",
-        // "FE/javaSciprt/async/promise",
+        "FE/javaSciprt/async/promise",
         "FE/javaSciprt/async/generator",
         "FE/javaSciprt/async/co",
         "FE/javaSciprt/async/asyncAwait",
+        // "FE/javaSciprt/async/eventloop",
       ],
     },
   ],
@@ -39,6 +40,14 @@ module.exports = {
   ],
   browser: [
     "FE/browser/browser",
+    {
+      type: 'category',
+      label: '事件机制',
+      collapsed: false,
+      items: [
+        "FE/browser/events/eventloop",
+      ],
+    },
   ],
   typeScript: [
     "FE/typeScript/TS", 

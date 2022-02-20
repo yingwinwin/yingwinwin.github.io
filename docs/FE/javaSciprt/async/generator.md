@@ -90,7 +90,7 @@ let obj = {0: 1, 1: 2, 2: 3, length: 3,
 console.log([...obj]) // [1, 2, 3]
 ```
 
-## `yield`的返回值
+## yield 的返回值
 ```js
 function * gen() {
     let a = yield 1;
@@ -107,7 +107,8 @@ it.next('a')  // 执行let a = yield 1; console.log(a);  yiled 2; 碰到了yield
 it.next('b')  // 执行let b = yield 2; console.log(b);  yiled 3; 碰到了yield立刻停止执行
 it.next('c')  // 执行let c = yield 3; console.log(c); 
 ```
-与直观上的感受不同，第一次`yield`的返回值不是`1`，而是`'a'`是第二次调用`next`时传入的参数，可以再看一下注释，理解一下。
+与直观上的感受不同，第一次`yield`的返回值不是`1`，而是`'a'`是第二次调用`next`时传入的参数，画了一张图，可能更好理解上面的流程。或者直接跳转到[原理部分](/docs/FE/javaSciprt/generator#生成器的原理)查看。
+![image](./img/yield.png)
 
 ### 为什么这样设计
 
