@@ -79,6 +79,16 @@ module.exports = {
           ],
         },
         {
+          label: "后端",
+          position: "right",
+          items: [
+            {
+              label: "Node.js",
+              to: "/docs/AE/node",
+            },
+          ],
+        },
+        {
           label: "框架",
           position: "right",
           items: [

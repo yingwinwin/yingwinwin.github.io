@@ -26,7 +26,7 @@ module.exports = {
       label: '异步',
       collapsed: false,
       items: [
-        // "FE/javaSciprt/async/callback",
+        "FE/javaSciprt/async/callback",
         "FE/javaSciprt/async/promise",
         "FE/javaSciprt/async/generator",
         "FE/javaSciprt/async/co",
@@ -80,6 +80,9 @@ module.exports = {
         "FE/visualization/gis/leaflet",
       ],
     },
+  ],
+  node: [
+    "AE/node/node",
   ],
   react: [
     "framework/react/react",
