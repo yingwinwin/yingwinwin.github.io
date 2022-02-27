@@ -143,6 +143,8 @@ fs.readFile(path.resolve(__dirname, "./2.txt"), "utf-8", (err, data) => {
 
 ### 发布订阅
 用发布订阅这种模式来模拟刚刚上面的情况
+1. 处理异步并发
+2. 复杂逻辑解耦
 ```js
 const fs = require("fs");
 const path = require("path");
@@ -178,7 +180,7 @@ fs.readFile(path.resolve(__dirname, "./2.txt"), "utf-8", (err, data) => {
 });
 ```
 
-// todo 完整版发布订阅模式  on emit off once listents
+// TODO: 完整版发布订阅模式  on emit off once listents
 
 ## 其他
 > 与发布订阅不同的是，观察者是被动触发的。订阅是主动触发的。
