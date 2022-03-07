@@ -83,6 +83,14 @@ module.exports = {
   ],
   node: [
     "AE/node/node",
+    // {
+    //   type: 'category',
+    //   label: 'express',
+    //   collapsed: false,
+    //   items: [
+    //     "AE/node/express/http",
+    //   ],
+    // },
   ],
   react: [
     "framework/react/react",
@@ -100,20 +108,22 @@ module.exports = {
     "CS/leetcode/leetcode",
     {
       type: 'category',
-      label: '基础',
+      label: '数据结构',
       collapsed: false,
       items: [
-        "CS/leetcode/shujujiegou/heap",
+        "CS/leetcode/dataStructure/heap",
       ],
     },
-    // {
-    //   type: 'category',
-    //   label: '算法',
-    //   collapsed: false,
-    //   items: [
-    //     "CS/leetcode/suanfa/heap",
-    //   ],
-    // },
+    {
+      type: 'category',
+      label: '算法',
+      collapsed: false,
+      items: [
+        "CS/leetcode/ai/binary",
+        // "CS/leetcode/ai/random",
+        "CS/leetcode/ai/sort",
+      ],
+    },
   ],
   essayist: [
     "liftStyle/essayist/essayist",

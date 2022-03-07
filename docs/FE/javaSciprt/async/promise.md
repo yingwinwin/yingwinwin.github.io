@@ -828,7 +828,7 @@ new Promise((resolve, reject) => {
 }).catch(res => {
     return res
 }).then(res => {
-    console.ltog(res) // 1
+    console.log(res) // 1
 })
 ```
 

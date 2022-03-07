@@ -180,7 +180,8 @@ fs.readFile(path.resolve(__dirname, "./2.txt"), "utf-8", (err, data) => {
 });
 ```
 
-// TODO: 完整版发布订阅模式  on emit off once listents
+发布订阅库源码阅读: https://www.yuque.com/zhouying-8riwx/gwuk7c/mz9u2i
+
 
 ## 其他
 > 与发布订阅不同的是，观察者是被动触发的。订阅是主动触发的。
