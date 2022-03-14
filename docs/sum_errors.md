@@ -183,4 +183,230 @@ userPhone.replace(/(\d{3})\d*(\d{4})/g,'$1****$2')
 10. 瀑布流组件 的实现`Masonry` TODO: 具体逻辑需要了解，封装组件
 11. `window.AMap` HTML5手机定位, 问题是，电脑定位的是时候取的字段和手机不一致。且电脑定位不准确。TODO: 具体使用实现模拟
 12. 文本溢出省略的实现 [参考文档](https://juejin.cn/post/6844903944259371016)，用:check 伪元素选择器很巧妙的处理了check的动作。css真的很强。
-13. TODO: 看了别人的bolg非常炫酷，觉得自己有时间可以写写，或者改一改自己的
+
+
+### 2021 11月 - 2021 2月
+- 前端验证身份证号码的真实性 https://juejin.cn/post/6993252081322688548
+- 去除 ios 浏览器中的input默认样式(带了一个白框)
+```css
+-webkit-appearance: none;
+```
+- 平移和旋转一起使用
+```css
+transform: translate(-50%, -15px) rotate(45deg)
+```
+- 1px问题 https://juejin.cn/post/6844904066301050893
+```css
+/* 底边框 */
+.b-border {
+  position: relative;
+}
+.b-border:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: #d9d9d9;
+  -webkit-transform: scaleY(0.5);
+  transform: scaleY(0.5);
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+```
+- css更换主题色 使用css变量（https://www.cnblogs.com/leiting/p/11203383.html）
+- 段落左右两端对齐
+```css
+text-align: justify;
+```
+- postMessage进行数据通信 https://juejin.cn/post/6844903685164630030#heading-0
+
+- nvm 提示找不到mac全局 变量问题 https://learnku.com/vuejs/t/51570
+- iframe 跨域问题 https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/X-Frame-Options
+- [React Error]: Target container is not a DOM element，dom还没有准备好，没有地方渲染react https://blog.csdn.net/cc7756789w/article/details/52083548
+- location的方法  https://www.cnblogs.com/niaowo/p/3968060.html
+- css隐藏元素的方法有哪些？
+- 如何进行文件上传？
+- h5 长按保存 https://juejin.cn/post/6844903861866463239  https://juejin.cn/post/6925325240398512141#heading-3
+- css 曲线运动 https://www.cnblogs.com/xiaobaibubai/p/7060189.html
+- 加盐加解密 CryptoJS 
+```js
+import CryptoJS from "crypto-js";
+// 这两个都是后端提供的
+const key = CryptoJS.enc.Utf8.parse("");  // 十六位十六进制数作为密钥
+const iv = CryptoJS.enc.Utf8.parse('');   // 十六位十六进制数作为密钥偏移量
+
+// 解密
+export function Decrypt(word) {
+    const encrypted = CryptoJS.AES.decrypt(word, key, { iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 })
+    return CryptoJS.enc.Utf8.stringify(encrypted).toString()
+}
+
+export function Encrypt(word) {
+    return CryptoJS.AES.encrypt(word, key, { iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 }).toString();
+}
+```
+
+- gitignore 不生效
+```js
+git rm -r --cached .
+
+git add .
+
+git commit -m "修改信息"
+
+git push -u origin master
+```
+
+- 管理后台的富文本编辑器 https://braft.margox.cn/
+- 时间转换为时间戳，兼容手机
+```js
+/**
+ * @description 将后端返回的日期格式转换为时间戳
+ * @param {Date} time 2021-10-19 18:30:00
+ * @returns 时间戳
+ */
+const formatTime = (time) => {
+    return new Date(time.replace(/-/g, '/')).getTime()
+}
+```
+
+- tab超过宽度左右滑动  flex-shrink
+- 身份证号码生成器
+- "node-sass": "^4.12.0",   要对应 node版本10
+- react-slick  轮播
+- https://excalidraw.com/ 好看的画图网站
+- 开源授权 https://blog.csdn.net/weixin_39963287/article/details/110808189
+- react文章
+  - https://mp.weixin.qq.com/s/J2i7Lv6_KblfXVZfnzhtaA   
+  - https://mp.weixin.qq.com/s/A1oV--p5NpiKjtdFv9ODBQ
+- 3个数据滚动一次只滚动一条
+```js
+import styles from './index.less'
+import React, { useState, useEffect, useRef } from 'react';
+
+
+export default ({ children, ...setting }) => {
+    const ref2 = useRef()
+    const [count, setCount] = useState(0)
+    const [size, setSize]= useState(0)
+    const [iheight, setiHeight]= useState(setting?.liHeight || 0)
+    const [styleObj, setStyleObj]= useState({
+        transform:  'translateY(0px)',
+        transition: '-webkit-transform 1000ms ease 0s'
+    })
+
+    useEffect(()=> {
+       if ( children.length > 0) {
+            setiHeight(ref2.current.children[0].offsetHeight)
+            setSize(children.length)
+       }
+    },[children])
+
+    useInterval(() => {
+        if ( size > 0 && count >= size ) {
+            setStyleObj({
+                transform:  `translateY(0px)`,
+            })
+            setCount(0);
+        } else {
+            setCount(count + 1);
+            setStyleObj({
+                transition: '-webkit-transform 1000ms ease 0s',
+                transform:  `translateY(-${ iheight  * (count + 1)}px)`,
+            })
+        }
+
+    }, setting?.time || 2000 );
+
+    return <div className={styles.rollCont} style={{ height: setting?.slidesToShow * iheight + 'px' }}>
+        <div className={styles.rollScroll} style={styleObj} ref={ref2}> 
+            { children }
+            { children }
+        </div>
+    </div>
+}
+
+
+function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+  
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
+```
+- 定时器，从另一个页面回来后，会重新计时，导致内容有一个回去的感觉。
+- 上传图片大小不能超过xxx像素
+```js
+		beforeUpload(file) {
+            const fileName = file.name.split('.')
+            const fileExt = fileName[fileName.length - 1]
+            const isTypeOk = this._.indexOf(this.ext, fileExt) >= 0
+            const isSizeOk = file.size / 1024 / 1024 < this.size
+            const [ width, height] = this.imgsize
+            let isSize = true
+            if (width && height) {
+                isSize = new Promise(function(resolve, reject) {
+                    let _URL = window.URL || window.webkitURL         
+                    let img = new Image()
+                    img.onload = function() {
+                        let valid = img.width == width && img.height == height
+                        valid ? resolve() : reject()
+                    }
+                    img.src = _URL.createObjectURL(file)
+                }).then(() => {
+                    return true
+                }, () => {
+                    this.$message.error(`上传的图片大小应为 ${width} * ${height} 像素!`)
+                    return Promise.reject()
+                })
+            }
+            if (!isTypeOk) {
+                this.$message.error('请上传图片类型文件！')
+                return Promise.reject()
+            }
+            if (!isSizeOk) {
+                this.$message.error(`上传图片大小不能超过 ${this.size}MB！`)
+                return Promise.reject()
+            }
+            this.fileSize = file.size
+            return isTypeOk && isSizeOk && isSize
+        },
+```
+- 洗牌算法 https://github.com/bilibili-lab/Blog/blob/master/docs/algorithm/11.md
+- 用antd-pro select参数 label 拼写错了，没有报错，但是select选择了不展示
+- 这个库 可以把坐标转成 高德 coordtransform  转成高德的地址
+
+
+### 2022年3月
+- qrcode.react 前端生成二维码 http://zpao.github.io/qrcode.react/
+- 前端截取执行帧 https://juejin.cn/post/7043433350630998052
+- 二次回退问题
+```js
+在跳转的时候，做pushState把loading页压入栈中，但是不会进入到页面，等到点击返回的时候，进入页面直接关闭应用
+```
+- umi antd-mobile v5 不生效
+```shell
+# 先安装
+npm i @umijs/plugin-antd-mobile
+```
+```js title=".umirc.ts"
+export default defineConfig({
+  antd: {
+    mobile: false
+  }
+});
+```
+- 移动端的视频列表页不能同时放很多个视频。会卡死，加载出错。建议一个页面只放一个。

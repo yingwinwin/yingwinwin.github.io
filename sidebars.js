@@ -83,14 +83,14 @@ module.exports = {
   ],
   node: [
     "AE/node/node",
-    // {
-    //   type: 'category',
-    //   label: 'express',
-    //   collapsed: false,
-    //   items: [
-    //     "AE/node/express/http",
-    //   ],
-    // },
+    {
+      type: 'category',
+      label: 'express',
+      collapsed: false,
+      items: [
+        "AE/node/express/http",
+      ],
+    },
   ],
   react: [
     "framework/react/react",
@@ -120,7 +120,7 @@ module.exports = {
       collapsed: false,
       items: [
         "CS/leetcode/ai/binary",
-        // "CS/leetcode/ai/random",
+        "CS/leetcode/ai/random",
         "CS/leetcode/ai/sort",
       ],
     },
