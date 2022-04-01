@@ -410,3 +410,4 @@ export default defineConfig({
 });
 ```
 - 移动端的视频列表页不能同时放很多个视频。会卡死，加载出错。建议一个页面只放一个。
+- 移动端回退 http://louiszhai.github.io/2017/02/24/back/
