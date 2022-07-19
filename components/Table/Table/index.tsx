@@ -1,52 +1,73 @@
-import React from "react";
-import './index.less'
-type rowKey = string;
-type TCloumns = {
-	title: string;
-	dataIndex: string;
-	key: string;
-	render?: (...arg: any[]) => React.ReactElement;
-	width?: string | number
+import React, { CSSProperties } from 'react';
+import './index.scss';
+import classNames from 'classnames';
+
+interface TCloumns {
+  title: string;
+  dataIndex: string;
+  key: string;
+  render?: (...arg: any[]) => React.ReactElement;
+  width?: string | number;
 }
 
 interface Props {
-	dataSource: {
-		key: string;
-		[key: string]: any;
-	}[];
-	columns: TCloumns[];
-	rowKey: rowKey;
-
+  dataSource: {
+    key: string;
+    [key: string]: any;
+  }[];
+  columns: TCloumns[];
+  rowKey: string;
+  titleClass: CSSProperties;
+  rowClass: CSSProperties;
 }
 
 const Table = (props: Props) => {
-	const { dataSource, columns, rowKey } = props
-	return (
-		<div>
-			<h3>表格</h3>
-			<div className="table" >
-				<div className="table__tr">
-					{columns.map((item) => {
-						return (<span className="table__th" style={{ width: item.width }} key={item.key}>{item.title}</span>)
-					})}
-				</div>
-				{
-					dataSource.map(data => {
-						return <div key={data.key} className="table__tr">
-							{
-								columns.map((item: TCloumns) => {
-									const key = item[rowKey];
-									if (item.render) {
-										return <span className="table__td" style={{ width: item.width }} key={key}>{item.render(data[item.dataIndex], data)}</span>
-									}
-									return <span className="table__td" style={{ width: item.width }} key={item.key}>{data[item.dataIndex]}</span>
-								})
-							}
-						</div>
-					})
-				}
-			</div>
-		</div>
-	)
-}
+  const { dataSource, columns, rowKey, titleClass, rowClass } = props;
+  return (
+    <div className="table">
+      <div className="table__tr">
+        {columns.map((item) => {
+          return (
+            <span
+              className={classNames('table__th', titleClass)}
+              style={{ width: item.width, flex: item.width ? 'none' : 1 }}
+              key={item.key}
+            >
+              {item.title}
+            </span>
+          );
+        })}
+      </div>
+      {dataSource.map((data) => {
+        return (
+          <div key={data.key} className="table__tr--content">
+            {columns.map((item: TCloumns) => {
+              const key = item[rowKey];
+              if (item.render) {
+                return (
+                  <span
+                    className={classNames('table__td', rowClass)}
+                    style={{ width: item.width, flex: item.width ? 'none' : 1 }}
+                    key={key}
+                  >
+                    {item.render(data[item.dataIndex], data)}
+                  </span>
+                );
+              }
+              return (
+                <span
+                  className={classNames('table__td', rowClass)}
+                  style={{ width: item.width, flex: item.width ? 'auto' : 1 }}
+                  key={item.key}
+                >
+                  {data[item.dataIndex]}
+                </span>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 export default Table;

@@ -1,20 +1,44 @@
+.table() {
+    display: flex;
+    border-radius: 4px;
+    margin: 4px;
+    border: 1px solid rgba(0, 125, 255, 0.49);
+    justify-content: center;
+    align-items: center;
+}
+
 .table {
-  
+    font-size: 14px;
+
     .table__tr {
-        border: 1px solid red;
-        margin: 10px;
-        border-radius: 4px;
+        .table();
+        background-image: linear-gradient(180deg, rgba(0, 73, 145, 0.50) 1%, rgba(0, 101, 217, 0.50) 100%);
 
         .table__th {
+            flex: 1;
             display: inline-block;
+
             padding: 10px;
             text-align: center;
+            color: #00F2E1;
         }
 
+    }
+
+    .table__tr--content {
+        .table();
+        background: rgba(0, 125, 255, 0.10);
+
         .table__td {
+            flex: 1;
             display: inline-block;
             padding: 10px;
             text-align: center;
+            cursor: pointer;
+        }
+
+        &:hover {
+            background: rgba(0, 125, 255, 0.50);
         }
     }
 }
